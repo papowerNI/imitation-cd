@@ -23,36 +23,22 @@ resources:
       endpoint: ni (2)
       name: ni/niveristand-custom-device-build-tools
 
-# Stage 1: Checkout
-stages:
-  - stage: Checkout
-    jobs:
-      - job: CheckoutRepos
-        displayName: Check out all necessary repositories
-        steps:
-        - checkout: self
-        - checkout: niveristand-custom-device-build-tools
+# Currently, no parallelism is needed so far, and no stages are needed so far
+# Checkout
+steps:
+  - checkout: self
+    displayName: checkout custom device repository
+  - checkout: niveristand-custom-device-build-tools
+    displayName: checkout build tools repository
 
-# Stage 2: Interpret TOML (?)
-  - stage: Prebuild
-    jobs:
-      - job: PrebuildSteps
-        displayName: Nothing right now (just echo)
-        steps:
-          - script: echo "in the future, do prebuild steps"
+# Step 2: Interpret TOML (?)
+  - script: echo "in the future, do prebuild steps"
+    displayName: nothing for now
 
 # Stage 3: Build Components
-  - stage: Build
-    jobs:
-      - job: BuildSteps
-        displayName: Nothing right now (just echo)
-        steps:
-          - script: echo "in the future, do build steps"
+  - script: echo "in the future, do build steps"
+    displayName: nothing for now
 
 # Stage 4: Archive
-  - stage: Archive
-    jobs:
-      - job: ArchiveSteps
-        displayName: Nothing right now (just echo)
-        steps:
-          - script: echo "in the future, do archive steps"
+  - script: echo "in the future, do archive steps"
+    displayName: nothing for now
