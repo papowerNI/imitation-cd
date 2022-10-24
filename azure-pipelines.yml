@@ -41,10 +41,12 @@ jobs:
       - powershell: cd imitation-cd; ls
         displayName: cd verification
         # 3: Build Components
-      - script: echo "in the future, do build steps"
-        displayName: nothing for now
-      - script: chdir
-        displayName: confirm checkouts are still there
+      - script: LabVIEWCLI -PortNumber "3363" -LabVIEWPath "C:\Program Files (x86)\National Instruments\LabVIEW 2020\LabVIEW.exe" -OperationName "ExecuteBuildSpec" -ProjectPath "imitation-cd\Source\TestProject.lvproj" -TargetName "My Computer" -BuildSpecName "BuildSpec"
+        displayName: Build Test Project Windows build specification
+      - script: LabVIEWCLI -PortNumber "3363" -LabVIEWPath "C:\Program Files (x86)\National Instruments\LabVIEW 2020\LabVIEW.exe" -OperationName "ExecuteBuildSpec" -ProjectPath "imitation-cd\Source\TestProject.lvproj" -TargetName "Linux x64" -BuildSpecName "BuildSpec"
+        displayName: Build Test Project Linux build specification 1
+      - script: LabVIEWCLI -PortNumber "3363" -LabVIEWPath "C:\Program Files (x86)\National Instruments\LabVIEW 2020\LabVIEW.exe" -OperationName "ExecuteBuildSpec" -ProjectPath "imitation-cd\Source\TestProject.lvproj" -TargetName "Linux x64" -BuildSpecName "LinuxOnlyBuildSpec"
+        displayName: Build Test Project Linux build specification 2
         # 4: Archive
       - script: echo "in the future, do archive steps"
         displayName: nothing for now
