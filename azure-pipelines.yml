@@ -25,37 +25,25 @@ resources:
 
 # Currently, no parallelism is needed so far, and no stages are needed so far
 jobs:
-    # Checkout
-  - job: init
-    displayName: Checkout Repos
+  - job: build_for_lv2020
+    displayName: Build for LabVIEW 2020
     steps:
+        # 1: Checkout
       - checkout: self
         displayName: checkout custom device repository
       - checkout: niveristand-custom-device-build-tools
         displayName: checkout build tools repository
-
-    # Step 2: Interpret TOML (?)
-  - job: prebuild
-    displayName: Prebuild Steps
-    steps:
+        # 2: Interpret TOML (?)
       - script: echo "in the future, do prebuild steps"
         displayName: nothing for now
       - script: chdir
         displayName: confirm checkouts are still there
-
-    # Stage 3: Build Components
-  - job: build
-    displayName: Build Steps
-    steps:
+        # 3: Build Components
       - script: echo "in the future, do build steps"
         displayName: nothing for now
       - script: chdir
         displayName: confirm checkouts are still there
-
-    # Stage 4: Archive
-  - job: archive
-    displayName: Archive
-    steps:
+        # 4: Archive
       - script: echo "in the future, do archive steps"
         displayName: nothing for now
       - script: chdir
