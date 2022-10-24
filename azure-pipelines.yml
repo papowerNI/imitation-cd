@@ -36,8 +36,14 @@ jobs:
         # 2: Interpret TOML (?)
       - script: echo "in the future, do prebuild steps"
         displayName: nothing for now
+      - script: cd niveristand-custom-device-build-tools
+        displayName: build-tools move
       - script: chdir
-        displayName: confirm checkouts are still there
+        displayName: build-tools check
+      - script: cd imitation-cd
+        displayName: cd move
+      - script: chdir
+        displayName: cd check
         # 3: Build Components
       - script: echo "in the future, do build steps"
         displayName: nothing for now
