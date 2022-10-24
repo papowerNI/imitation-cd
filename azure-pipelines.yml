@@ -1,0 +1,43 @@
+# test/POC pipeline for GitHub Veristand Custom Devices migration out of Jenkins
+
+# Triggering: if there is a change to one of the branches below, run the pipeline
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+      - release/*
+
+# Agent Pool:  choose an agent that meets the following requirements
+pool:
+  name: Drivers-NIBuildFarm-RFMIBUILD
+  demands:
+    - agent.os -equals Windows_NT
+
+# Repositories: include build tools (custom device repo included by default)
+resources:
+  repositories:
+    - repository: niveristand-custom-device-build-tools
+      type: github
+      ref: main
+      endpoint: ni (2)
+      name: ni/niveristand-custom-device-build-tools
+
+# Stage 1: Checkout
+stages:
+  - stage: Checkout
+    jobs:
+      - job: CheckoutRepos
+        displayName: Check out all necessary repositories
+        steps:
+        - checkout: self
+        - checkout: niveristand-custom-device-build-tools
+
+# Stage 2: Interpret TOML (?)
+  - stage: Prebuild
+
+# Stage 3: Build Components
+  - stage: Build
+
+# Stage 4: Archive
+  - stage: Archive
