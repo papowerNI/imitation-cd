@@ -40,7 +40,7 @@ jobs:
         displayName: build-tools move
       - powershell: ls
         displayName: build-tools check
-      - powershell: cd ..\imitation-cd
+      - powershell: cd imitation-cd
         displayName: cd move
       - powershell: ls
         displayName: cd check
