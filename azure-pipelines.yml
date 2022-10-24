@@ -36,11 +36,11 @@ jobs:
         # 2: Interpret TOML (?)
       - script: echo "in the future, do prebuild steps"
         displayName: nothing for now
-      - powershell: cd niveristand-custom-device-build-tools
+      - powershell: cd .\niveristand-custom-device-build-tools
         displayName: build-tools move
       - powershell: ls
         displayName: build-tools check
-      - powershell: cd imitation-cd
+      - powershell: cd .\imitation-cd
         displayName: cd move
       - powershell: ls
         displayName: cd check
