@@ -50,8 +50,8 @@
 			</Item>
 		</Item>
 	</Item>
-	<Item Name="RT PXI Target" Type="RT PXI Chassis">
-		<Property Name="alias.name" Type="Str">RT PXI Target</Property>
+	<Item Name="Linux x64" Type="RT PXI Chassis">
+		<Property Name="alias.name" Type="Str">Linux x64</Property>
 		<Property Name="alias.value" Type="Str">0.0.0.0</Property>
 		<Property Name="CCSymbols" Type="Str">TARGET_TYPE,RT;OS,Linux;CPU,x64;</Property>
 		<Property Name="host.ResponsivenessCheckEnabled" Type="Bool">true</Property>
@@ -135,7 +135,7 @@
 				<Property Name="Source[0].itemID" Type="Str">{8086E43A-7C11-4979-A660-96F5064DBF00}</Property>
 				<Property Name="Source[0].type" Type="Str">Container</Property>
 				<Property Name="Source[1].destinationIndex" Type="Int">0</Property>
-				<Property Name="Source[1].itemID" Type="Ref">/RT PXI Target/Main.vi</Property>
+				<Property Name="Source[1].itemID" Type="Ref">/Linux x64/Main.vi</Property>
 				<Property Name="Source[1].sourceInclusion" Type="Str">Include</Property>
 				<Property Name="Source[1].type" Type="Str">VI</Property>
 				<Property Name="SourceCount" Type="Int">2</Property>
@@ -171,7 +171,7 @@
 				<Property Name="Source[0].itemID" Type="Str">{8086E43A-7C11-4979-A660-96F5064DBF00}</Property>
 				<Property Name="Source[0].type" Type="Str">Container</Property>
 				<Property Name="Source[1].destinationIndex" Type="Int">0</Property>
-				<Property Name="Source[1].itemID" Type="Ref">/RT PXI Target/Main.vi</Property>
+				<Property Name="Source[1].itemID" Type="Ref">/Linux x64/Main.vi</Property>
 				<Property Name="Source[1].sourceInclusion" Type="Str">Include</Property>
 				<Property Name="Source[1].type" Type="Str">VI</Property>
 				<Property Name="SourceCount" Type="Int">2</Property>
