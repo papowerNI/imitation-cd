@@ -34,13 +34,12 @@ jobs:
       - checkout: niveristand-custom-device-build-tools
         displayName: checkout build tools repository
         # 2: Interpret TOML (?)
-      - script: echo "in the future, do prebuild steps"
-        displayName: nothing for now
       - powershell: cd niveristand-custom-device-build-tools\resources; ls
-        displayName: build-tools verification
+        displayName: TEMP - build-tools verification (not needed for final)
       - powershell: cd imitation-cd; ls
-        displayName: cd verification
+        displayName: TEMP - cd verification (not needed for final)
       - script: copy "imitation-cd\resources\LabVIEW.ini" "C:\Program Files (x86)\National Instruments\LabVIEW 2020\LabVIEW.ini"
+        displayName: TEMP - Copy ini file (not needed for final)
         # 3: Build Components
       - script: LabVIEWCLI -PortNumber "3363" -LabVIEWPath "C:\Program Files (x86)\National Instruments\LabVIEW 2020\LabVIEW.exe" -AdditionalOperationDirectory "niveristand-custom-device-build-tools\lv\operations" -OperationName "ExecuteBuildSpec" -ProjectPath "imitation-cd\Source\TestProject.lvproj" -TargetName "My Computer" -BuildSpecName "BuildSpec" -LogFilePath "%cd%\imitation-cd\lvBuildSpec_BuildSpec.log"
         displayName: Build Test Project Windows build specification
