@@ -50,5 +50,5 @@ jobs:
         displayName: building the nipkg
       - powershell: cd imitation-cd\Built; ls; cd \\nirvana\temp\papower\; ls
         displayName: TEMP - show contents of Built
-      - script: copy "%cd%\imitation-cd\Built" "%cd%\imitation-cd\"
+      - script: copy "%cd%\imitation-cd\Built\*" "%cd%\imitation-cd\"
         displayName: copying built files to \\nirvana archive
