@@ -46,7 +46,7 @@ jobs:
       - script: LabVIEWCLI -PortNumber "3363" -LabVIEWPath "C:\Program Files (x86)\National Instruments\LabVIEW 2020\LabVIEW.exe" -AdditionalOperationDirectory "niveristand-custom-device-build-tools\lv\operations" -OperationName "ExecuteBuildSpec" -ProjectPath "%cd%\imitation-cd\Source\TestProject.lvproj" -TargetName "Linux x64" -BuildSpecName "LinuxOnlyBuildSpec" -LogFilePath "%cd%\imitation-cd\lvBuildSpec_BuildSpec.log"
         displayName: Build Test Project Linux build specification 2
         # 4: Archive
-      - script: echo "in the future, do archive steps"
-        displayName: nothing for now
-      - script: chdir
-        displayName: confirm checkouts are still there
+      - script: echo build the nipkg
+        displayName: building the nipkg
+      - script: copy "imitation-cd\Built" "\\nirvana\temp\papower"
+        displayName: copying built files to //nirvana archive
