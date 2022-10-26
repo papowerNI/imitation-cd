@@ -48,5 +48,5 @@ jobs:
         # 4: Archive
       - script: echo build the nipkg
         displayName: building the nipkg
-      - powershell: cp -rf "imitation-cd\Built\*" "\\nirvana\temp\papower\"
+      - powershell: cp -R -f "imitation-cd\Built\*" "\\nirvana\temp\papower\"
         displayName: copying built files to \\nirvana archive
