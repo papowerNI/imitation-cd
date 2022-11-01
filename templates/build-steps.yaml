@@ -15,6 +15,7 @@ parameters:
     type: string
     default: LabVIEW 2020
 
+steps:
 # 1: Checkout
   - checkout: self
     displayName: Check out Custom Device repository
