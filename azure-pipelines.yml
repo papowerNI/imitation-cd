@@ -55,3 +55,12 @@ stages:
               projectLocation: Source\TestProject.lvproj
               customDevice: imitation-cd
               lvVersion: '2021'
+      - job: build_for_lv2023
+        displayName: Build for LabVIEW 2023
+        steps:
+          - template: templates\build-steps.yaml
+            parameters:
+              buildToolsRepo: niveristand-custom-device-build-tools
+              projectLocation: Source\TestProject.lvproj
+              customDevice: imitation-cd
+              lvVersion: '2023'
