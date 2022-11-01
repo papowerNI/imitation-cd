@@ -34,33 +34,24 @@ stages:
       name: ${{ parameters.agentPool }}
       demands:
         - agent.os -equals Windows_NT
-        - agent.osversion -equals 10.0.14393
-        - python3
 
     # Currently, no parallelism is needed so far, and no stages are needed so far
     jobs:
       - job: build_for_lv2020
         displayName: Build for LabVIEW 2020
         steps:
-            # 1: Checkout
-          - checkout: self
-            displayName: checkout custom device repository
-          - checkout: ${{ parameters.buildToolsRepo }}
-            displayName: checkout build tools repository
-            # 2: Interpret TOML (?) generate YAML
-          - script: copy "imitation-cd\resources\LabVIEW.ini" "C:\Program Files (x86)\National Instruments\LabVIEW 2020\LabVIEW.ini"
-            displayName: TEMP - Copy ini file (not needed for final)
-            # 3: Build Components
-          - script: copy "${{ parameters.buildToolsRepo }}\resources\LabVIEW.exe.config" "imitation-cd\Source\TestProject.lvproj.config"
-            displayName: move lvproj.config to project
-          - script: LabVIEWCLI -PortNumber "3363" -LabVIEWPath "C:\Program Files (x86)\National Instruments\LabVIEW 2020\LabVIEW.exe" -AdditionalOperationDirectory "${{ parameters.buildToolsRepo }}\lv\operations" -OperationName "ExecuteBuildSpec" -ProjectPath "%cd%\imitation-cd\Source\TestProject.lvproj" -TargetName "My Computer" -BuildSpecName "BuildSpec" -LogFilePath "%cd%\imitation-cd\lvBuildSpec_BuildSpec.log"
-            displayName: Build Test Project Windows build specification
-          - script: LabVIEWCLI -PortNumber "3363" -LabVIEWPath "C:\Program Files (x86)\National Instruments\LabVIEW 2020\LabVIEW.exe" -AdditionalOperationDirectory "${{ parameters.buildToolsRepo }}\lv\operations" -OperationName "ExecuteBuildSpec" -ProjectPath "%cd%\imitation-cd\Source\TestProject.lvproj" -TargetName "Linux x64" -BuildSpecName "BuildSpec" -LogFilePath "%cd%\imitation-cd\lvBuildSpec_BuildSpec.log"
-            displayName: Build Test Project Linux build specification 1
-          - script: LabVIEWCLI -PortNumber "3363" -LabVIEWPath "C:\Program Files (x86)\National Instruments\LabVIEW 2020\LabVIEW.exe" -AdditionalOperationDirectory "${{ parameters.buildToolsRepo }}\lv\operations" -OperationName "ExecuteBuildSpec" -ProjectPath "%cd%\imitation-cd\Source\TestProject.lvproj" -TargetName "Linux x64" -BuildSpecName "LinuxOnlyBuildSpec" -LogFilePath "%cd%\imitation-cd\lvBuildSpec_BuildSpec.log"
-            displayName: Build Test Project Linux build specification 2
-            # 4: Archive
-          - powershell: mkdir "nipkg"; cp -R "imitation-cd\Built\*" "nipkg\data\documents\National Instruments\NI VeriStand 2020\Custom Devices\National Instruments"
-            displayName: generate the nipkg files
-          - powershell: cp -R -force "imitation-cd\Built\*" "\\nirvana\temp\papower\"
-            displayName: copying built files to \\nirvana archive
+          - template: templates\build.steps.yaml
+            parameters:
+              buildToolsRepo: ${{ buildToolsRepo }}
+              projectLocation: Source\TestProject.lvproj
+              customDevice: imitation-cd
+              lvVersion: '2020'
+      - job: build_for_lv2021
+        displayName: Build for LabVIEW 2021
+        steps:
+          - template: templates\build.steps.yaml
+            parameters:
+              buildToolsRepo: ${{ buildToolsRepo }}
+              projectLocation: Source\TestProject.lvproj
+              customDevice: imitation-cd
+              lvVersion: '2021'
