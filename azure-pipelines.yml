@@ -1,13 +1,14 @@
 # test/POC pipeline for GitHub Veristand Custom Devices migration out of Jenkins
 
 # Repositories: include build tools (custom device repo included by default)
-  resources:
-    repositories:
-      - repository: niveristand-custom-device-build-tools
-        type: github
-        ref: main
-        endpoint: ni (2)
-        name: ni/niveristand-custom-device-build-tools
+resources:
+  repositories:
+    - repository: niveristand-custom-device-build-tools
+      type: github
+      ref: main
+      endpoint: ni (2)
+      name: ni/niveristand-custom-device-build-tools
+
 # Parameters
 parameters:
   - name: agentPool
