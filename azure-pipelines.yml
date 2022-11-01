@@ -1,9 +1,13 @@
 # test/POC pipeline for GitHub Veristand Custom Devices migration out of Jenkins
 
-# Variables
-variables:
-  agentPool: Drivers-NIBuildFarm-RFMIBUILD
-  buildToolsRepo: niveristand-custom-device-build-tools
+# Parameters
+parameters:
+  - name: agentPool
+    type: string
+    default: Drivers-NIBuildFarm-RFMIBUILD
+  - name: buildToolsRepo
+    type: string
+    default: niveristand-custom-device-build-tools
 
 # Triggering: if there is a change to one of the branches below, run the pipeline
 trigger:
@@ -15,18 +19,18 @@ trigger:
 
 # Agent Pool:  choose an agent that meets the following requirements
 pool:
-  name: ${{ variables.agentPool }}
+  name: ${{ parameters.agentPool }}
   demands:
     - agent.os -equals Windows_NT
 
 # Repositories: include build tools (custom device repo included by default)
 resources:
   repositories:
-    - repository: ${{ variables.buildToolsRepo }}
+    - repository: ${{ parameters.buildToolsRepo }}
       type: github
       ref: main
       endpoint: ni (2)
-      name: ni/${{ variables.buildToolsRepo }}
+      name: ni/${{ parameters.buildToolsRepo }}
 
 # Currently, no parallelism is needed so far, and no stages are needed so far
 jobs:
