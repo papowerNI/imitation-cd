@@ -1,0 +1,35 @@
+# File: build-steps.yaml
+
+# Parameters: buildToolsRepo, projectLocation, customDevice, and lvVersion
+parameters:
+  - name: buildToolsRepo
+    type: string
+    default: ni/niveristand-custom-device-build-tools
+  - name: projectLocation
+    type: string
+    default: Source\TestProject.lvproj
+  - name: customDevice
+    type: string
+    default: imitation-cd
+  - name: lvVersion
+    type: string
+    default: LabVIEW 2020
+
+# 1: Checkout
+  - checkout: self
+    displayName: Check out Custom Device repository
+  - checkout: ${{ parameters.buildToolsRepo }}
+    displayName: Check out NI VS Custom Device Build Tools repository
+# 2: Interpret TOML (?) generate YAML
+  - script: copy "imitation-cd\resources\LabVIEW.ini" "C:\Program Files (x86)\National Instruments\LabVIEW 2020\LabVIEW.ini"
+    displayName: TEMP - Copy ini file (not needed for final)
+# 3: Build all LabVIEW Build Specs
+  - script: copy "${{ parameters.buildToolsRepo }}\resources\LabVIEW.exe.config" "${{ customDevice }}\${{ parameters.projectLocation }}.config"
+    displayName: Place lvproj.config next to Project
+  - script: LabVIEWCLI -PortNumber "3363" -LabVIEWPath "C:\Program Files (x86)\National Instruments\LabVIEW ${{ lvVersion }}\LabVIEW.exe" -AdditionalOperationDirectory "${{ parameters.buildToolsRepo }}\lv\operations" -OperationName "ExecuteAllBuildSpecs" -ProjectPath "%cd%\${{ customDevice }}\${{ parameters.projectLocation }}" -LogFilePath "%cd%\${{ customDevice }}\lvBuildSpecs.log"
+    displayName: Build All Build Specs in ${{ projectLocation }}
+# 4: Archive
+  - powershell: mkdir "nipkg"; cp -R "${{ customDevice }}\Built\*" "nipkg\data\documents\National Instruments\NI VeriStand 2020\Custom Devices\National Instruments"
+    displayName: Generate nipkg Files
+  - powershell: cp -R -force "${{ customDevice }}\Built\*" "\\nirvana\temp\papower\${{ lvVersion }}"
+    displayName: Copying Built Files to \\nirvana Archive
