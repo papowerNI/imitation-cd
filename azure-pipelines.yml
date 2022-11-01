@@ -19,7 +19,7 @@ trigger:
 
 # Agent Pool:  choose an agent that meets the following requirements
 pool:
-  name: ${{ parameters.agentPool }}
+  name: Drivers-NIBuildFarm-RFMIBUILD
   demands:
     - agent.os -equals Windows_NT
     - agent.osversion -equals 10.0.14393
