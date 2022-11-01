@@ -22,6 +22,8 @@ pool:
   name: ${{ parameters.agentPool }}
   demands:
     - agent.os -equals Windows_NT
+    - agent.osversion -equals 10.0.14393
+    - python3
 
 # Repositories: include build tools (custom device repo included by default)
 resources:
