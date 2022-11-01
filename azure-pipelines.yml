@@ -40,7 +40,7 @@ stages:
       - job: build_for_lv2020
         displayName: Build for LabVIEW 2020
         steps:
-          - template: templates\build.steps.yaml
+          - template: templates\build-steps.yaml
             parameters:
               buildToolsRepo: niveristand-custom-device-build-tools
               projectLocation: Source\TestProject.lvproj
@@ -49,7 +49,7 @@ stages:
       - job: build_for_lv2021
         displayName: Build for LabVIEW 2021
         steps:
-          - template: templates\build.steps.yaml
+          - template: templates\build-steps.yaml
             parameters:
               buildToolsRepo: niveristand-custom-device-build-tools
               projectLocation: Source\TestProject.lvproj
