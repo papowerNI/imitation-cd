@@ -42,7 +42,7 @@ stages:
         steps:
           - template: templates\build.steps.yaml
             parameters:
-              buildToolsRepo: ${{ buildToolsRepo }}
+              buildToolsRepo: niveristand-custom-device-build-tools
               projectLocation: Source\TestProject.lvproj
               customDevice: imitation-cd
               lvVersion: '2020'
@@ -51,7 +51,7 @@ stages:
         steps:
           - template: templates\build.steps.yaml
             parameters:
-              buildToolsRepo: ${{ buildToolsRepo }}
+              buildToolsRepo: niveristand-custom-device-build-tools
               projectLocation: Source\TestProject.lvproj
               customDevice: imitation-cd
               lvVersion: '2021'
