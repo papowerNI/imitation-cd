@@ -17,7 +17,7 @@ steps:
   - ${{ if eq( parameters.bitness, '32' )}}:
     - powershell: Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
   - ${{ if eq( parameters.bitness, '64' )}}:
-    - powershell: Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
+    - powershell: Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
 # 1: Checkout
   - checkout: self
     displayName: Check out Custom Device repository
