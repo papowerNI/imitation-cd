@@ -10,6 +10,18 @@ parameters:
     type: string
   - name: lvVersion
     type: string
+  - name: bitness
+    type: string
+
+variables:
+  ${{ if eq( ${{ parameters.buildToolsRepo }}, '32' )}}:
+    - name: lvPath
+      type: string
+      value: 'C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}'
+  ${{ if eq( ${{ parameters.buildToolsRepo }}, '64' )}}:
+    - name: lvPath
+      type: string
+      value: 'C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}'
 
 steps:
 # 1: Checkout
@@ -19,7 +31,7 @@ steps:
     displayName: Check out NI VS Custom Device Build Tools repository
 
 # 2: Temporary step
-  - script: copy "imitation-cd\resources\LabVIEW.ini" "C:\Program Files (x86)\National Instruments\LabVIEW 2020\LabVIEW.ini"
+  - script: copy "imitation-cd\resources\LabVIEW.ini" "${{ variables.lvPath }}\LabVIEW.ini"
     displayName: TEMP - Copy ini file (not needed for final)
 
 # 3: Build all LabVIEW Build Specs
