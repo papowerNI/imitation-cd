@@ -21,6 +21,7 @@ resources:
 variables:
   agentPool: Drivers-NIBuildFarm-RFMIBUILD
   buildToolsRepo: niveristand-custom-device-build-tools
+  lvPath: 'TBD'
 
 stages:
   - stage: build
