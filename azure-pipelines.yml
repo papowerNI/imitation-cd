@@ -23,44 +23,53 @@ variables:
   buildToolsRepo: niveristand-custom-device-build-tools
   lvPath: 'TBD'
 
+# Use Stages so that each build runs on a different agent to avoid file conflicts durring parallel builds
 stages:
-  - stage: build
-
-  # Agent Pool:  choose an agent that meets the following requirements
+# -----Stage: Build LabVIEW 2020-----
+  - stage: build_for_lv2020
+    dependsOn: [] # Run in parallel with other stages
+    displayName: Build for LabVIEW 2020
     pool:
       name: ${{ variables.agentPool }}
       demands:
         - agent.os -equals Windows_NT
-
-    # Currently, no parallelism is needed so far, and no stages are needed so far
-    jobs:
-      - job: build_for_lv2020
-        displayName: Build for LabVIEW 2020
-        steps:
-          - template: templates\build-steps.yaml
-            parameters:
-              buildToolsRepo: ${{ variables.buildToolsRepo }}
-              projectLocation: Source\TestProject.lvproj
-              customDevice: imitation-cd
-              lvVersion: '2020'
-              bitness: '32'
-      - job: build_for_lv2021
-        displayName: Build for LabVIEW 2021
-        steps:
-          - template: templates\build-steps.yaml
-            parameters:
-              buildToolsRepo: ${{ variables.buildToolsRepo }}
-              projectLocation: Source\TestProject.lvproj
-              customDevice: imitation-cd
-              lvVersion: '2021'
-              bitness: '64'
-      - job: build_for_lv2023
-        displayName: Build for LabVIEW 2023
-        steps:
-          - template: templates\build-steps.yaml
-            parameters:
-              buildToolsRepo: ${{ variables.buildToolsRepo }}
-              projectLocation: Source\TestProject.lvproj
-              customDevice: imitation-cd
-              lvVersion: '2023'
-              bitness: '64'
+      steps:
+        - template: templates\build-steps.yaml
+          parameters:
+            buildToolsRepo: ${{ variables.buildToolsRepo }}
+            projectLocation: Source\TestProject.lvproj
+            customDevice: imitation-cd
+            lvVersion: '2020'
+            bitness: '32'
+# -----Stage: Build LabVIEW 2021-----
+  - stage: build_for_lv2021
+    dependsOn: [] # Run in parallel with other stages
+    displayName: Build for LabVIEW 2020
+    pool:
+      name: ${{ variables.agentPool }}
+      demands:
+        - agent.os -equals Windows_NT
+      steps:
+        - template: templates\build-steps.yaml
+          parameters:
+            buildToolsRepo: ${{ variables.buildToolsRepo }}
+            projectLocation: Source\TestProject.lvproj
+            customDevice: imitation-cd
+            lvVersion: '2021'
+            bitness: '64'
+# -----Stage: Build LabVIEW 2023-----
+  - stage: build_for_lv2023
+    dependsOn: [] # Run in parallel with other stages
+    displayName: Build for LabVIEW 2020
+    pool:
+      name: ${{ variables.agentPool }}
+      demands:
+        - agent.os -equals Windows_NT
+      steps:
+        - template: templates\build-steps.yaml
+          parameters:
+            buildToolsRepo: ${{ variables.buildToolsRepo }}
+            projectLocation: Source\TestProject.lvproj
+            customDevice: imitation-cd
+            lvVersion: '2023'
+            bitness: '64'
