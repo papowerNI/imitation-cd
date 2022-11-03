@@ -25,7 +25,7 @@ steps:
     displayName: Check out NI VS Custom Device Build Tools repository
 
 # 2: Temporary step
-  - script: copy "imitation-cd\resources\LabVIEW.ini" "${{ parameters.lvPath }}\LabVIEW.ini"
+  - script: copy "imitation-cd\resources\LabVIEW.ini" "${{ variables.lvPath }}\LabVIEW.ini"
     displayName: TEMP - Copy ini file (not needed for final)
 
 # 3: Build all LabVIEW Build Specs
