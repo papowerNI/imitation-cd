@@ -1,5 +1,13 @@
 # test/POC pipeline for GitHub Veristand Custom Devices migration out of Jenkins
 
+# Triggering: if there is a change to one of the branches below, run the pipeline
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+      - release/*
+
 # Repositories: include build tools (custom device repo included by default)
 resources:
   repositories:
@@ -9,7 +17,7 @@ resources:
       endpoint: ni (2)
       name: ni/niveristand-custom-device-build-tools
 
-# Parameters
+# Pipeline-level Parameters
 parameters:
   - name: agentPool
     type: string
@@ -17,14 +25,6 @@ parameters:
   - name: buildToolsRepo
     type: string
     default: niveristand-custom-device-build-tools
-
-# Triggering: if there is a change to one of the branches below, run the pipeline
-trigger:
-  batch: true
-  branches:
-    include:
-      - main
-      - release/*
 
 stages:
   - stage: build
@@ -55,3 +55,12 @@ stages:
               projectLocation: Source\TestProject.lvproj
               customDevice: imitation-cd
               lvVersion: '2021'
+      - job: build_for_lv2023
+        displayName: Build for LabVIEW 2023
+        steps:
+          - template: templates\build-steps.yaml
+            parameters:
+              buildToolsRepo: niveristand-custom-device-build-tools
+              projectLocation: Source\TestProject.lvproj
+              customDevice: imitation-cd
+              lvVersion: '2023'
