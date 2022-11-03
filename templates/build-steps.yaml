@@ -12,14 +12,12 @@ parameters:
     type: string
   - name: bitness
     type: string
+
+variables:
   ${{ if eq( ${{ parameters.buildToolsRepo }}, '32' )}}:
-    - name: lvPath
-      type: string
-      value: 'C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}'
+    lvPath: 'C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}'
   ${{ if eq( ${{ parameters.buildToolsRepo }}, '64' )}}:
-    - name: lvPath
-      type: string
-      value: 'C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}'
+    lvPath: 'C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}'
 
 
 steps:
