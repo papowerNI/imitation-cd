@@ -13,14 +13,11 @@ parameters:
   - name: bitness
     type: string
 
-variables:
+steps:
   ${{ if eq( ${{ parameters.buildToolsRepo }}, '32' )}}:
     lvPath: 'C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}'
   ${{ if eq( ${{ parameters.buildToolsRepo }}, '64' )}}:
     lvPath: 'C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}'
-
-
-steps:
 # 1: Checkout
   - checkout: self
     displayName: Check out Custom Device repository
