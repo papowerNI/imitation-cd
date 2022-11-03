@@ -33,16 +33,14 @@ stages:
       name: ${{ variables.agentPool }}
       demands:
         - agent.os -equals Windows_NT
-    jobs:
-      - job: Build2020
-        steps:
-          - template: templates\build-steps.yaml
-            parameters:
-              buildToolsRepo: ${{ variables.buildToolsRepo }}
-              projectLocation: Source\TestProject.lvproj
-              customDevice: imitation-cd
-              lvVersion: '2020'
-              bitness: '32'
+      steps:
+        - template: templates\build-steps.yaml
+          parameters:
+            buildToolsRepo: ${{ variables.buildToolsRepo }}
+            projectLocation: Source\TestProject.lvproj
+            customDevice: imitation-cd
+            lvVersion: '2020'
+            bitness: '32'
 # -----Stage: Build LabVIEW 2021-----
   - stage: build_for_lv2021
     dependsOn: [] # Run in parallel with other stages
@@ -51,16 +49,14 @@ stages:
       name: ${{ variables.agentPool }}
       demands:
         - agent.os -equals Windows_NT
-    jobs:
-      - job: Build2021
-        steps:
-          - template: templates\build-steps.yaml
-            parameters:
-              buildToolsRepo: ${{ variables.buildToolsRepo }}
-              projectLocation: Source\TestProject.lvproj
-              customDevice: imitation-cd
-              lvVersion: '2021'
-              bitness: '64'
+      steps:
+        - template: templates\build-steps.yaml
+          parameters:
+            buildToolsRepo: ${{ variables.buildToolsRepo }}
+            projectLocation: Source\TestProject.lvproj
+            customDevice: imitation-cd
+            lvVersion: '2021'
+            bitness: '64'
 # -----Stage: Build LabVIEW 2023-----
   - stage: build_for_lv2023
     dependsOn: [] # Run in parallel with other stages
@@ -69,13 +65,11 @@ stages:
       name: ${{ variables.agentPool }}
       demands:
         - agent.os -equals Windows_NT
-    jobs:
-      - job: Build2023
-        steps:
-          - template: templates\build-steps.yaml
-            parameters:
-              buildToolsRepo: ${{ variables.buildToolsRepo }}
-              projectLocation: Source\TestProject.lvproj
-              customDevice: imitation-cd
-              lvVersion: '2023'
-              bitness: '64'
+      steps:
+        - template: templates\build-steps.yaml
+          parameters:
+            buildToolsRepo: ${{ variables.buildToolsRepo }}
+            projectLocation: Source\TestProject.lvproj
+            customDevice: imitation-cd
+            lvVersion: '2023'
+            bitness: '64'
