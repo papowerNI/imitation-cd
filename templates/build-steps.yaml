@@ -31,7 +31,7 @@ steps:
 # 3: Build all LabVIEW Build Specs
   - script: copy "${{ parameters.buildToolsRepo }}\resources\LabVIEW.exe.config" "${{ parameters.customDevice }}\${{ parameters.projectLocation }}.config"
     displayName: Place lvproj.config next to Project
-  - script: LabVIEWCLI -PortNumber "3363" -LabVIEWPath "C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildToolsRepo }}\lv\operations" -OperationName "ExecuteAllBuildSpecs" -ProjectPath "%cd%\${{ parameters.customDevice }}\${{ parameters.projectLocation }}" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvBuildSpecs.log"
+  - script: LabVIEWCLI -PortNumber "3363" -LabVIEWPath "${{ variables.lvPath }}\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildToolsRepo }}\lv\operations" -OperationName "ExecuteAllBuildSpecs" -ProjectPath "%cd%\${{ parameters.customDevice }}\${{ parameters.projectLocation }}" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvBuildSpecs.log"
     displayName: Build All Build Specs in ${{ parameters.projectLocation }} for LabVIEW ${{ parameters.lvVersion }}
 # 4: Archive
   - powershell: mkdir "nipkg"; cp -R "${{ parameters.customDevice }}\Built\*" "nipkg\data\documents\National Instruments\NI VeriStand 2020\Custom Devices\National Instruments"
