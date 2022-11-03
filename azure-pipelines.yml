@@ -19,7 +19,7 @@ resources:
 
 # Pipeline-level Variables
 variables:
-  agentPool: Drivers-NIBuildFarm-RFMIBUILD
+  agentPool: custom-device-temp
   buildToolsRepo: niveristand-custom-device-build-tools
   lvPath: 'TBD'
 
