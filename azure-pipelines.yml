@@ -46,6 +46,7 @@ stages:
               projectLocation: Source\TestProject.lvproj
               customDevice: imitation-cd
               lvVersion: '2020'
+              bitness: '32'
       - job: build_for_lv2021
         displayName: Build for LabVIEW 2021
         steps:
@@ -55,6 +56,7 @@ stages:
               projectLocation: Source\TestProject.lvproj
               customDevice: imitation-cd
               lvVersion: '2021'
+              bitness: '64'
       - job: build_for_lv2023
         displayName: Build for LabVIEW 2023
         steps:
@@ -64,3 +66,4 @@ stages:
               projectLocation: Source\TestProject.lvproj
               customDevice: imitation-cd
               lvVersion: '2023'
+              bitness: '64'
