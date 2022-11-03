@@ -17,21 +17,17 @@ resources:
       endpoint: ni (2)
       name: ni/niveristand-custom-device-build-tools
 
-# Pipeline-level Parameters
-parameters:
-  - name: agentPool
-    type: string
-    default: Drivers-NIBuildFarm-RFMIBUILD
-  - name: buildToolsRepo
-    type: string
-    default: niveristand-custom-device-build-tools
+# Pipeline-level Variables
+variables:
+  agentPool: Drivers-NIBuildFarm-RFMIBUILD
+  buildToolsRepo: niveristand-custom-device-build-tools
 
 stages:
   - stage: build
 
   # Agent Pool:  choose an agent that meets the following requirements
     pool:
-      name: ${{ parameters.agentPool }}
+      name: ${{ variables.agentPool }}
       demands:
         - agent.os -equals Windows_NT
 
@@ -42,7 +38,7 @@ stages:
         steps:
           - template: templates\build-steps.yaml
             parameters:
-              buildToolsRepo: niveristand-custom-device-build-tools
+              buildToolsRepo: ${{ variables.buildToolsRepo }}
               projectLocation: Source\TestProject.lvproj
               customDevice: imitation-cd
               lvVersion: '2020'
@@ -52,7 +48,7 @@ stages:
         steps:
           - template: templates\build-steps.yaml
             parameters:
-              buildToolsRepo: niveristand-custom-device-build-tools
+              buildToolsRepo: ${{ variables.buildToolsRepo }}
               projectLocation: Source\TestProject.lvproj
               customDevice: imitation-cd
               lvVersion: '2021'
@@ -62,7 +58,7 @@ stages:
         steps:
           - template: templates\build-steps.yaml
             parameters:
-              buildToolsRepo: niveristand-custom-device-build-tools
+              buildToolsRepo: ${{ variables.buildToolsRepo }}
               projectLocation: Source\TestProject.lvproj
               customDevice: imitation-cd
               lvVersion: '2023'
