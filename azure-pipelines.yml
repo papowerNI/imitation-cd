@@ -37,7 +37,7 @@ stages:
       - job: build_for_lv2020
         displayName: Build for LabVIEW 2020
         steps:
-          - template: templates\build-steps.yaml
+          - template: azure-templates\build-steps.yaml
             parameters:
               buildToolsRepo: ${{ variables.buildToolsRepo }}
               projectLocation: Source\TestProject.lvproj
@@ -48,7 +48,7 @@ stages:
       - job: build_for_lv2021
         displayName: Build for LabVIEW 2021
         steps:
-          - template: templates\build-steps.yaml
+          - template: azure-templates\build-steps.yaml
             parameters:
               buildToolsRepo: ${{ variables.buildToolsRepo }}
               projectLocation: Source\TestProject.lvproj
@@ -59,7 +59,7 @@ stages:
       - job: build_for_lv2023
         displayName: Build for LabVIEW 2023
         steps:
-          - template: templates\build-steps.yaml
+          - template: azure-templates\build-steps.yaml
             parameters:
               buildToolsRepo: ${{ variables.buildToolsRepo }}
               projectLocation: Source\TestProject.lvproj
