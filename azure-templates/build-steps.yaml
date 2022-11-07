@@ -35,7 +35,8 @@ steps:
   - script: LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildToolsRepo }}\lv\operations" -OperationName "ExecuteAllBuildSpecs" -ProjectPath "%cd%\${{ parameters.customDevice }}\${{ parameters.projectLocation }}" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvBuildSpecs.log"
     displayName: Build All Build Specs in ${{ parameters.projectLocation }} for LabVIEW ${{ parameters.lvVersion }}
   - script: taskkill /im labview.exe /f
-    displayName: Kill LabVIEW ${{ parameters.lvVersion }} Process
+    displayName: Close LabVIEW ${{ parameters.lvVersion }} Process
+    condition: always() # always close LabVIEW, even if previous step fails
 # 3: Archive
   - ${{ if eq( parameters.pack, true )}}:
     - powershell: rm -r "nipkg"; mkdir "nipkg"; cp -R "${{ parameters.customDevice }}\Built\*" "nipkg\data\documents\National Instruments\NI VeriStand 2020\Custom Devices\National Instruments"
