@@ -46,7 +46,7 @@ steps:
 # 3: Place lvproj.config files
   - script: copy "${{ parameters.buildToolsRepo }}\resources\LabVIEW.exe.config" "$(lvConfigFilePath)"
     displayName: Place lvproj.config next to Project
-  - powershell: (Get-Content -Path '$(lvConfigFilePath)') -replace '2016', '$(lvConfigVersion)' | Set-Content -Path '$(lvConfigFilePath)'
+  - powershell: (Get-Content -Path '$(lvConfigFilePath)') -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path '$(lvConfigFilePath)'
     displayName: Redefine contents for LV year
 
 # 4: Build all LabVIEW Build Specs
