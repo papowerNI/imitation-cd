@@ -16,12 +16,26 @@ parameters:
 
 steps:
 # 1: Configure Variables
+  # --- lvPath ---
   - ${{ if eq( parameters.bitness, '32' )}}:
     - powershell: Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
       displayName: Use 32-bit settings
   - ${{ if eq( parameters.bitness, '64' )}}:
     - powershell: Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
       displayName: Use 64-bit settings
+  # --- lvConfigVersion ---
+  - ${{ if eq( parameters.lvVersion, '2020' )}}:
+    - powershell: Write-Host "##vso[task.setvariable variable=lvConfigVersion]8.0.0.0"
+      displayName: Use LV 2020 settings
+  - ${{ if eq( parameters.lvVersion, '2021' )}}:
+    - powershell: Write-Host "##vso[task.setvariable variable=lvConfigVersion]9.0.0.0"
+      displayName: Use LV 2021 settings
+  - ${{ if eq( parameters.lvVersion, '2023' )}}:
+    - powershell: Write-Host "##vso[task.setvariable variable=lvConfigVersion]10.0.0.0"
+      displayName: Use LV 2023 settings
+  # --- lvConfigFilePath ---
+  - powershell: Write-Host "##vso[task.setvariable variable=lvConfigFilePath]${{ parameters.customDevice }}\${{ parameters.projectLocation }}.config"
+
 
 # 2: Checkout Repos
   - checkout: self
@@ -29,15 +43,19 @@ steps:
   - checkout: ${{ parameters.buildToolsRepo }}
     displayName: Check out NI VS Custom Device Build Tools repository
 
-# 2: Build all LabVIEW Build Specs
-  - script: copy "${{ parameters.buildToolsRepo }}\resources\LabVIEW.exe.config" "${{ parameters.customDevice }}\${{ parameters.projectLocation }}.config"
+# 3: Place lvproj.config files
+  - script: copy "${{ parameters.buildToolsRepo }}\resources\LabVIEW.exe.config" "$(lvConfigFilePath)"
     displayName: Place lvproj.config next to Project
+  - powershell: (Get-Content -Path '$(lvConfigFilePath)') -replace '2016', '$(lvConfigVersion)' | Set-Content -Path '$(lvConfigFilePath)'
+    displayName: Redefine contents for LV year
+
+# 4: Build all LabVIEW Build Specs
   - script: LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildToolsRepo }}\lv\operations" -OperationName "ExecuteAllBuildSpecs" -ProjectPath "%cd%\${{ parameters.customDevice }}\${{ parameters.projectLocation }}" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvBuildSpecs.log"
     displayName: Build All Build Specs in ${{ parameters.projectLocation }} for LabVIEW ${{ parameters.lvVersion }}
   - script: taskkill /im labview.exe /f
     displayName: Close LabVIEW ${{ parameters.lvVersion }} Process
     condition: always() # always close LabVIEW, even if previous step fails
-# 3: Archive
+# 5: Archive
   - ${{ if eq( parameters.pack, true )}}:
     - powershell: rm -r "nipkg"; mkdir "nipkg"; cp -R "${{ parameters.customDevice }}\Built\*" "nipkg\data\documents\National Instruments\NI VeriStand 2020\Custom Devices\National Instruments"
       displayName: Generate nipkg File structure (INCOMPLETE)
