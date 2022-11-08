@@ -8,16 +8,20 @@ trigger:
       - main
       - release/*
 
+# Repositories: include build tools (custom device repo included by default)
+resources:
+  repositories:
+    - repository: niveristand-custom-device-build-tools
+      type: github
+      ref: main
+      endpoint: ni (2)
+      name: ni/niveristand-custom-device-build-tools
+
 # Pipeline-level Variables
 variables:
   agentPool: custom-device-temp
   buildToolsRepo: niveristand-custom-device-build-tools
-
-# Import Resources from Template
-extends: 
-  template: azure-templates\build-steps.yaml
-  parameters:
-    buildToolsRepo: $[variables.buildToolsRepo]
+  lvPath: 'TBD'
 
 stages:
   - stage: build
