@@ -31,7 +31,7 @@ steps:
     - powershell: Write-Host "##vso[task.setvariable variable=lvConfigVersion]9.0.0.0"
       displayName: Use LV 2021 settings
   - ${{ if eq( parameters.lvVersion, '2023' )}}:
-    - powershell: Write-Host "##vso[task.setvariable variable=lvConfigVersion]11.0.0.0"
+    - powershell: Write-Host "##vso[task.setvariable variable=lvConfigVersion]10.0.0.0"
       displayName: Use LV 2023 settings
   # --- lvConfigFilePath ---
   - powershell: Write-Host "##vso[task.setvariable variable=lvConfigFilePath]${{ parameters.customDevice }}\${{ parameters.projectLocation }}.config"
