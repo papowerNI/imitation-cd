@@ -35,6 +35,8 @@ steps:
       displayName: Use LV 2023 settings
   # --- lvConfigFilePath ---
   - powershell: Write-Host "##vso[task.setvariable variable=lvConfigFilePath]${{ parameters.customDevice }}\${{ parameters.projectLocation }}.config"
+  # --- lvCLICall ---
+  - powershell: Write-Host "##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath '$(lvPath)\LabVIEW.exe' -AdditionalOperationDirectory '%cd%\${{ parameters.buildToolsRepo }}\lv\operations'"
 
 
 # 2: Checkout Repos
@@ -49,13 +51,17 @@ steps:
   - powershell: (Get-Content -Path '$(lvConfigFilePath)') -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path '$(lvConfigFilePath)'
     displayName: Redefine contents for LV year
 
-# 4: Build all LabVIEW Build Specs
-  - script: LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildToolsRepo }}\lv\operations" -OperationName "ExecuteAllBuildSpecs" -ProjectPath "%cd%\${{ parameters.customDevice }}\${{ parameters.projectLocation }}" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvBuildSpecs.log"
+# 4: Clear Compiled Cache
+  - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\${{ parameters.buildToolsRepo }}\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvClearCache.log"
+    displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }}
+
+# 5: Build all LabVIEW Build Specs
+  - script: $(lvCLICall) -OperationName "ExecuteAllBuildSpecs" -ProjectPath "%cd%\${{ parameters.customDevice }}\${{ parameters.projectLocation }}" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvBuildSpecs.log"
     displayName: Build All Build Specs in ${{ parameters.projectLocation }} for LabVIEW ${{ parameters.lvVersion }}
   - script: taskkill /im labview.exe /f
     displayName: Close LabVIEW ${{ parameters.lvVersion }} Process
     condition: always() # always close LabVIEW, even if previous step fails
-# 5: Archive
+# 6: Archive
   - ${{ if eq( parameters.pack, true )}}:
     - powershell: rm -r "nipkg"; mkdir "nipkg"; cp -R "${{ parameters.customDevice }}\Built\*" "nipkg\data\documents\National Instruments\NI VeriStand 2020\Custom Devices\National Instruments"
       displayName: Generate nipkg File structure (INCOMPLETE)
@@ -63,4 +69,4 @@ steps:
       displayName: Pack nipkg (INCOMPLETE)
   - powershell: cp -R -force "${{ parameters.customDevice }}\Built\*" "\\nirvana\temp\papower\LabVIEW ${{ parameters.lvVersion }}"
     displayName: Copying Built Files to \\nirvana Archive
-#6: Clean up
+# 7: Clean up
