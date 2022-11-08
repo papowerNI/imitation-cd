@@ -1,5 +1,6 @@
 # File: build-steps.yaml
 
+###########  Input Parameters for Template  ###########
 parameters:
   - name: buildToolsRepo
     type: string
@@ -15,53 +16,52 @@ parameters:
     type: boolean
 
 steps:
-# 1: Configure Variables
-  # --- lvPath ---
+###########  Configure Variables  ###########
+  # --- lvPath (32-bit or 64-bit LabVIEW directory) ---
   - ${{ if eq( parameters.bitness, '32' )}}:
     - powershell: Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
-      displayName: Use 32-bit settings
+      displayName: Use 32-bit LabVIEW
   - ${{ if eq( parameters.bitness, '64' )}}:
     - powershell: Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
-      displayName: Use 64-bit settings
-  # --- lvConfigVersion ---
+      displayName: Use 64-bit LabVIEW
+  # --- lvConfigVersion (.NET Assembly Version) ---
   - ${{ if eq( parameters.lvVersion, '2020' )}}:
     - powershell: Write-Host "##vso[task.setvariable variable=lvConfigVersion]8.0.0.0"
-      displayName: Use LV 2020 settings
+      displayName: Use .NET Assembly Version 8.0.0.0
   - ${{ if eq( parameters.lvVersion, '2021' )}}:
     - powershell: Write-Host "##vso[task.setvariable variable=lvConfigVersion]9.0.0.0"
-      displayName: Use LV 2021 settings
+      displayName: Use .NET Assembly Version 9.0.0.0
   - ${{ if eq( parameters.lvVersion, '2023' )}}:
     - powershell: Write-Host "##vso[task.setvariable variable=lvConfigVersion]10.0.0.0"
-      displayName: Use LV 2023 settings
-  # --- lvConfigFilePath ---
-  - powershell: Write-Host "##vso[task.setvariable variable=lvConfigFilePath]${{ parameters.customDevice }}\${{ parameters.projectLocation }}.config"
-  # --- lvCLICall ---
-  - powershell: Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildToolsRepo }}\lv\operations"'
+      displayName: Use .NET Assembly Version 10.0.0.0
+  # --- lvConfigFilePath, lvCLICall ---
+  - powershell: | 
+      Write-Host "##vso[task.setvariable variable=lvConfigFilePath]${{ parameters.customDevice }}\${{ parameters.projectLocation }}.config" |
+      Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildToolsRepo }}\lv\operations"'
+    displayName: Store reused strings as variables
 
-
-# 2: Checkout Repos
+###########  Checkout Necessary Repos  ###########
   - checkout: self
-    displayName: Check out Custom Device repository
+    displayName: Check out ${{ parameters.customDevice }} repository
   - checkout: ${{ parameters.buildToolsRepo }}
     displayName: Check out NI VS Custom Device Build Tools repository
 
-# 3: Place lvproj.config files
+###########  Lvproj.config File Placement  ###########
   - script: copy "${{ parameters.buildToolsRepo }}\resources\LabVIEW.exe.config" "$(lvConfigFilePath)"
     displayName: Place lvproj.config next to Project
   - powershell: (Get-Content -Path '$(lvConfigFilePath)') -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path '$(lvConfigFilePath)'
-    displayName: Redefine contents for LV year
+    displayName: Update lvproj.config to reference correct .NET Assembly version
 
-# 4: Clear Compiled Cache
+###########  Build all LabVIEW Build Specs  ###########
   - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\${{ parameters.buildToolsRepo }}\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvClearCache.log"
     displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }}
-
-# 5: Build all LabVIEW Build Specs
   - script: $(lvCLICall) -OperationName "ExecuteAllBuildSpecs" -ProjectPath "%cd%\${{ parameters.customDevice }}\${{ parameters.projectLocation }}" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvBuildSpecs.log"
     displayName: Build All Build Specs in ${{ parameters.projectLocation }} for LabVIEW ${{ parameters.lvVersion }}
   - script: taskkill /im labview.exe /f
     displayName: Close LabVIEW ${{ parameters.lvVersion }} Process
     condition: always() # always close LabVIEW, even if previous step fails
-# 6: Archive
+
+###########  Archive  ###########
   - ${{ if eq( parameters.pack, true )}}:
     - powershell: rm -r "nipkg"; mkdir "nipkg"; cp -R "${{ parameters.customDevice }}\Built\*" "nipkg\data\documents\National Instruments\NI VeriStand 2020\Custom Devices\National Instruments"
       displayName: Generate nipkg File structure (INCOMPLETE)
@@ -69,4 +69,3 @@ steps:
       displayName: Pack nipkg (INCOMPLETE)
   - powershell: cp -R -force "${{ parameters.customDevice }}\Built\*" "\\nirvana\temp\papower\LabVIEW ${{ parameters.lvVersion }}"
     displayName: Copying Built Files to \\nirvana Archive
-# 7: Clean up
