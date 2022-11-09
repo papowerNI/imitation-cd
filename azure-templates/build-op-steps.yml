@@ -30,7 +30,7 @@ steps:
 
 ###########  Execute LabVIEW Build Operation  ###########
     - script: $(lvCLICall) -OperationName ${{ parameters.buildOperation }} -ProjectPath "%cd%\$(customDevice)\${{ parameters.projectLocation }}" -LogFilePath "%cd%\$(customDevice)\lvBuildSpecs.log"
-      displayName: Run ${{ buildOperation }} in ${{ parameters.projectLocation }} for LabVIEW $(lvVersion)
+      displayName: Run ${{ parameters.buildOperation }} in ${{ parameters.projectLocation }} for LabVIEW $(lvVersion)
     - script: taskkill /im labview.exe /f
       displayName: Close LabVIEW $(lvVersion) Process
       condition: always() # always close LabVIEW, even if previous step fails
