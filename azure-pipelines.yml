@@ -52,7 +52,7 @@ stages:
     jobs:
       - ${{ each lvVersion in parameters.lvVersions }}:
         - job:
-          displayName: Build ${{ parameters.customDevice }} for LabVIEW ${{ lvVersion}}
+          displayName: Build ${{ parameters.customDevice }} for LabVIEW ${{ lvVersion }}
           steps:
             - template: azure-templates\pre-job-steps.yml # Configure variables, check out repos, Clear cache
               parameters:
@@ -67,6 +67,6 @@ stages:
                   buildSpec:       ${{ buildStep[3] }}
             - template: azure-templates\post-job-steps.yml # nipkg and archive
               parameters:
-                buildOutputLocation: ${{ buildOutputLocation }}
-                archiveLocation:     ${{ archiveLocation }}
+                buildOutputLocation: ${{ parameters.buildOutputLocation }}
+                archiveLocation:     ${{ parameters.archiveLocation }}
                 pack:                false
