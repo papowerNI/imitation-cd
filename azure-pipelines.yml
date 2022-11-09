@@ -59,10 +59,19 @@ stages:
         - job:
           displayName: Build ${{ parameters.customDevice }} for LabVIEW ${{ lvVersion}}
           steps:
-            - template: azure-templates\build-steps.yaml
+            - template: azure-templates\pre-job-steps.yml # Configure variables, check out repos, Clear cache
               parameters:
+                customDevice: ${{ parameters.customDevice }}
                 buildTools: ${{ parameters.buildTools }}
+                lvVersion: ${{ lvVersion}}
+            - template: azure-templates\build-steps.yml # config file and build specs
+              parameters:
+                customDevice: ${{ parameters.customDevice }}
+                buildTools: ${{ parameters.buildTools }}
+                lvVersion: ${{ lvVersion}}
                 projectLocations: ${{ parameters.projectLocations }}
+                buildOperation: empty
+            - template: azure-templates\post-job-steps.yml # nipkg and archive
+              parameters:
                 customDevice: ${{ parameters.customDevice }}
                 lvVersion: ${{ lvVersion}}
-                pack: true
