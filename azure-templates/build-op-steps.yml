@@ -14,7 +14,7 @@ steps:
     - powershell: |
         $fileExists = Test-Path -Path "$(customDevice)\${{ parameters.projectLocation }}.config"
         Write-Host "##vso[task.setvariable variable=configFileExists]$fileExists"
-    - ${{ eq(variables['configFileExists'], false)}}:
+    - ${{ eq(variables['configFileExists'], 'False')}}:
         # Configure build variables: lvConfigFilePath
       - powershell: |
           Write-Host "##vso[task.setvariable variable=lvConfigFilePath]$(customDevice)\${{ parameters.projectLocation }}.config"
