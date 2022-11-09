@@ -2,7 +2,7 @@
 
 ###########  Input Parameters for Template  ###########
 parameters:
-  - name: buildToolsRepo
+  - name: buildTools
     type: string
   - name: projectLocations
     type: object
@@ -34,23 +34,23 @@ steps:
   # --- lvConfigFilePath, lvCLICall ---
   - powershell: | 
       Write-Host "##vso[task.setvariable variable=lvConfigFilePath]${{ parameters.customDevice }}\${{ parameters.projectLocation }}.config"
-      Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildToolsRepo }}\lv\operations"'
+      Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildTools }}\lv\operations"'
     displayName: Store reused strings as variables
 
 ###########  Checkout Necessary Repos  ###########
   - checkout: self
     displayName: Check out ${{ parameters.customDevice }} repository
-  - checkout: ${{ parameters.buildToolsRepo }}
+  - checkout: ${{ parameters.buildTools }}
     displayName: Check out NI VS Custom Device Build Tools repository
 
 ###########  Lvproj.config File Placement  ###########
-  - script: copy "${{ parameters.buildToolsRepo }}\resources\LabVIEW.exe.config" "$(lvConfigFilePath)"
+  - script: copy "${{ parameters.buildTools }}\resources\LabVIEW.exe.config" "$(lvConfigFilePath)"
     displayName: Place lvproj.config next to Project
   - powershell: (Get-Content -Path '$(lvConfigFilePath)') -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path '$(lvConfigFilePath)'
     displayName: Update lvproj.config to reference correct .NET Assembly version
 
 ###########  Build all LabVIEW Build Specs  ###########
-  - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\${{ parameters.buildToolsRepo }}\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvClearCache.log"
+  - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\${{ parameters.buildTools }}\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvClearCache.log"
     displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }}
   - script: $(lvCLICall) -OperationName "ExecuteAllBuildSpecs" -ProjectPath "%cd%\${{ parameters.customDevice }}\${{ parameters.projectLocation }}" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvBuildSpecs.log"
     displayName: Build All Build Specs in ${{ parameters.projectLocation }} for LabVIEW ${{ parameters.lvVersion }}
