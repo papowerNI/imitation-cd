@@ -33,7 +33,7 @@ steps:
       displayName: Use .NET Assembly 10.0.0.0 & 64-bit
   # --- lvConfigFilePath, lvCLICall ---
   - powershell: | 
-      Write-Host "##vso[task.setvariable variable=lvConfigFilePath]${{ parameters.customDevice }}\${{ parameters.projectLocation }}.config"
+      Write-Host "##vso[task.setvariable variable=lvConfigFilePath]${{ parameters.customDevice }}\${{ parameters.s }}.config"
       Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildTools }}\lv\operations"'
     displayName: Store reused strings as variables
 
@@ -52,8 +52,8 @@ steps:
 ###########  Build all LabVIEW Build Specs  ###########
   - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\${{ parameters.buildTools }}\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvClearCache.log"
     displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }}
-  - script: $(lvCLICall) -OperationName "ExecuteAllBuildSpecs" -ProjectPath "%cd%\${{ parameters.customDevice }}\${{ parameters.projectLocation }}" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvBuildSpecs.log"
-    displayName: Build All Build Specs in ${{ parameters.projectLocation }} for LabVIEW ${{ parameters.lvVersion }}
+  - script: $(lvCLICall) -OperationName "ExecuteAllBuildSpecs" -ProjectPath "%cd%\${{ parameters.customDevice }}\${{ parameters.projectLocations }}" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvBuildSpecs.log"
+    displayName: Build All Build Specs in ${{ parameters.projectLocations }} for LabVIEW ${{ parameters.lvVersion }}
   - script: taskkill /im labview.exe /f
     displayName: Close LabVIEW ${{ parameters.lvVersion }} Process
     condition: always() # always close LabVIEW, even if previous step fails
