@@ -1,4 +1,4 @@
-# test/POC pipeline for GitHub Veristand Custom Devices migration out of Jenkins
+# File: azure-pipelines.yml
 
 # Triggering: if there is a change to one of the branches below, run the pipeline
 trigger:
@@ -17,7 +17,7 @@ resources:
       endpoint: ni (2)
       name: ni/niveristand-custom-device-build-tools
 
-# Main Pipeline Parameters
+# Shared Pipeline Parameters
 parameters:
   - name: agentPool
     type: string
@@ -25,15 +25,24 @@ parameters:
   - name: buildTools
     type: string
     default: niveristand-custom-device-build-tools
-  - name: lvVersions
-    type: object
-    default:
-      - "2020"
-      - "2021"
-      - "2023"
+
+# Custom Device-specific Parameters
+    # Custom Device Name
   - name: customDevice
     type: string
     default: imitation-cd
+    # LabVIEW Versions to Build
+  - name: lvVersions
+    type: object
+    default:
+      - '2020'
+      - '2021'
+      - '2023'
+    # Custom Device Project Locations
+  - name: projectLocations
+    type: object
+    default:
+      - 'Source\TestProject.lvproj'
 
 stages:
   - stage: build
@@ -53,8 +62,7 @@ stages:
             - template: azure-templates\build-steps.yaml
               parameters:
                 buildTools: ${{ parameters.buildTools }}
-                projectLocations:
-                  - 'Source\TestProject.lvproj'
+                projectLocations: ${{ parameters.projectLocations }}
                 customDevice: ${{ parameters.customDevice }}
                 lvVersion: ${{ lvVersion}}
                 pack: true
