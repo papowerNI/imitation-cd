@@ -14,20 +14,23 @@ parameters:
 
 steps:
 ###########  Configure Job-wide Variables  ###########
-  # --- lvConfigVersion (.NET Assembly Version), lvPath ---
+  # --- lvConfigVersion (.NET Assembly Version), lvPath, architecture ---
   - ${{ if eq( parameters.lvVersion, '2020' )}}:
     - powershell: |
         Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
+        Write-Host "##vso[task.setvariable variable=architecture]x86"
         Write-Host "##vso[task.setvariable variable=lvConfigVersion]8.0.0.0"
       displayName: Use .NET Assembly 8.0.0.0 & 32-bit
   - ${{ if eq( parameters.lvVersion, '2021' )}}:
     - powershell: |
         Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
+        Write-Host "##vso[task.setvariable variable=architecture]x64"
         Write-Host "##vso[task.setvariable variable=lvConfigVersion]9.0.0.0"
       displayName: Use .NET Assembly 9.0.0.0 & 64-bit
   - ${{ if eq( parameters.lvVersion, '2023' )}}:
     - powershell: |
         Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
+        Write-Host "##vso[task.setvariable variable=architecture]x64"
         Write-Host "##vso[task.setvariable variable=lvConfigVersion]10.0.0.0"
       displayName: Use .NET Assembly 10.0.0.0 & 64-bit
   # --- buildTools, customDevice, lvVersion, lvCLICall ---
