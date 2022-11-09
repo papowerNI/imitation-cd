@@ -40,7 +40,7 @@ parameters:
 # Post-build Archive Location
   - name:    archiveLocation
     type:    string
-    default: "\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc_eds_custom_device"
+    default: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc_eds_custom_device'
 # Custom Device Build Steps (project location, LabVIEW CLI Build operation)
   - name:    buildSteps
     type:    object
