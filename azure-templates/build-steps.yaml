@@ -43,20 +43,22 @@ steps:
   - checkout: ${{ parameters.buildTools }}
     displayName: Check out NI VS Custom Device Build Tools repository
 
-###########  Lvproj.config File Placement  ###########
-  - script: copy "${{ parameters.buildTools }}\resources\LabVIEW.exe.config" "$(lvConfigFilePath)"
-    displayName: Place lvproj.config next to Project
-  - powershell: (Get-Content -Path '$(lvConfigFilePath)') -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path '$(lvConfigFilePath)'
-    displayName: Update lvproj.config to reference correct .NET Assembly version
+###########  Iterate through Project Locations  ###########
+  - ${{ each projectLocation in parameters.projectLocations }}:
+      # Lvproj.config File Placement
+    - script: copy "${{ parameters.buildTools }}\resources\LabVIEW.exe.config" "$(lvConfigFilePath)"
+      displayName: Place lvproj.config next to Project
+    - powershell: (Get-Content -Path '$(lvConfigFilePath)') -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path '$(lvConfigFilePath)'
+      displayName: Update lvproj.config to reference correct .NET Assembly version
 
-###########  Build all LabVIEW Build Specs  ###########
-  - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\${{ parameters.buildTools }}\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvClearCache.log"
-    displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }}
-  - script: $(lvCLICall) -OperationName "ExecuteAllBuildSpecs" -ProjectPath "%cd%\${{ parameters.customDevice }}\${{ parameters.projectLocations }}" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvBuildSpecs.log"
-    displayName: Build All Build Specs in ${{ parameters.projectLocations }} for LabVIEW ${{ parameters.lvVersion }}
-  - script: taskkill /im labview.exe /f
-    displayName: Close LabVIEW ${{ parameters.lvVersion }} Process
-    condition: always() # always close LabVIEW, even if previous step fails
+      # Build all LabVIEW Build Specs
+    - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\${{ parameters.buildTools }}\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvClearCache.log"
+      displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }}
+    - script: $(lvCLICall) -OperationName "ExecuteAllBuildSpecs" -ProjectPath "%cd%\${{ parameters.customDevice }}\${{ projectLocation }}" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvBuildSpecs.log"
+      displayName: Build All Build Specs in ${{ projectLocation }} for LabVIEW ${{ parameters.lvVersion }}
+    - script: taskkill /im labview.exe /f
+      displayName: Close LabVIEW ${{ parameters.lvVersion }} Process
+      condition: always() # always close LabVIEW, even if previous step fails
 
 ###########  Archive  ###########
   - ${{ if eq( parameters.pack, true )}}:
