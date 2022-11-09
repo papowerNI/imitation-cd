@@ -33,7 +33,7 @@ steps:
       displayName: Use .NET Assembly 10.0.0.0 & 64-bit
   # --- lvConfigFilePath, lvCLICall ---
   - powershell: | 
-      Write-Host "##vso[task.setvariable variable=lvConfigFilePath]${{ parameters.customDevice }}\${{ parameters.s }}.config"
+      Write-Host "##vso[task.setvariable variable=lvConfigFilePath]${{ parameters.customDevice }}\${{ parameters.projectLocations }}.config"
       Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildTools }}\lv\operations"'
     displayName: Store reused strings as variables
 
