@@ -46,7 +46,6 @@ stages:
         - job:
           displayName: Build ${{ parameters.customDevice }} for LabVIEW ${{ lvVersion}}
           steps:
-            - powershell: Write-Host '##vso[task.setvariable variable=buildTools]niveristand-custom-device-build-tools'
             - template: azure-templates\pre-job-steps.yml # Configure variables, check out repos, Clear cache
               parameters:
                 customDevice: ${{ parameters.customDevice }}

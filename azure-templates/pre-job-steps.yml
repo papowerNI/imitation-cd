@@ -7,11 +7,14 @@ parameters:
     type: string
   - name: lvVersion
     type: string
+  - name: buildTools
+    type: string
+    default: niveristand-custom-device-build-tools
 
 
 steps:
 ###########  Configure Job-wide Variables  ###########
-  # --- lvConfigVersion (.NET Assembly Version), lvPath ---
+  # --- lvConfigVersion (.NET Assembly Version), lvPath, buildTools, lvCLICall ---
   - ${{ if eq( parameters.lvVersion, '2020' )}}:
     - powershell: |
         Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
@@ -28,12 +31,13 @@ steps:
         Write-Host "##vso[task.setvariable variable=lvConfigVersion]10.0.0.0"
       displayName: Use .NET Assembly 10.0.0.0 & 64-bit
   - powershell: |
-      Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
-      
+      Write-Host '##vso[task.setvariable variable=buildTools]${{ parameters.buildTools }}'
+      Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildTools }}\lv\operations"'
+
 ###########  Checkout Necessary Repos  ###########
   - checkout: self
     displayName: Check out ${{ parameters.customDevice }} repository # run once per job
-  - checkout: $(buildTools)
+  - checkout: ${{ parameters.buildTools }}
     displayName: Check out NI VS Custom Device Build Tools repository # run once per job
 
 ###########  Clear Compile Cache  ###########
