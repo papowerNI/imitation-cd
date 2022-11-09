@@ -36,11 +36,11 @@ parameters:
 # Build Output Location
   - name:    buildOutputLocation
     type:    string
-    default: "Built"
+    default: 'Built'
 # Post-build Archive Location
   - name:    archiveLocation
     type:    string
-    default: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc_eds_custom_device'
+    default: '\\nirvana\temp\papower\Measurements\VeriStandAddons\imitation-cd'
 # Custom Device Build Steps (project location, LabVIEW CLI Build operation)
   - name:    buildSteps
     type:    object
@@ -67,4 +67,6 @@ stages:
                   buildSpec:       ${{ buildStep[3] }}
             - template: azure-templates\post-job-steps.yml # nipkg and archive
               parameters:
-                pack: false
+                buildOutputLocation: ${{ buildOutputLocation }}
+                archiveLocation:     ${{ archiveLocation }}
+                pack:                false
