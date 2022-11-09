@@ -3,8 +3,6 @@
 
 ###########  Input Parameters for Template  ###########
 parameters:
-  - name: buildTools
-    type: string
   - name: projectLocations
     type: object
   - name: buildOperation
@@ -23,7 +21,7 @@ steps:
       displayName: determine config file path # run once per project
 
       # Lvproj.config File Placement
-    - script: copy "${{ parameters.buildTools }}\resources\LabVIEW.exe.config" "$(lvConfigFilePath)"
+    - script: copy "${{ variables.buildTools }}\resources\LabVIEW.exe.config" "$(lvConfigFilePath)"
       displayName: Place lvproj.config next to Project # run once per project
     - powershell: (Get-Content -Path '$(lvConfigFilePath)') -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path '$(lvConfigFilePath)'
       displayName: Update lvproj.config to reference correct .NET Assembly version # run once per project
