@@ -17,12 +17,7 @@ resources:
       endpoint: ni (2)
       name: ni/niveristand-custom-device-build-tools
 
-# Pipeline-level Variables
-variables:
-  agentPool: 
-  buildToolsRepo: niveristand-custom-device-build-tools
-
-# Parameters
+# Main Pipeline Parameters
 parameters:
   - name: agentPool
     type: string
