@@ -50,11 +50,11 @@ stages:
               parameters:
                 customDevice: ${{ parameters.customDevice }}
                 lvVersion: ${{ lvVersion}}
-            - ${{ each buildOperation in parameters.buildOperations }}:
+            - ${{ each buildStep in parameters.buildSteps }}:
               - template: azure-templates\build-op-steps.yml # config file and build specs
                 parameters:
-                  projectLocation: ${{ buildSteps[0] }}
-                  buildOperation: ${{ buildSteps[1] }}
+                  projectLocation: ${{ buildStep[0] }}
+                  buildOperation: ${{ buildStep[1] }}
             - template: azure-templates\post-job-steps.yml # nipkg and archive
               parameters:
                 pack: false
