@@ -64,7 +64,7 @@ stages:
                 customDevice: ${{ parameters.customDevice }}
                 buildTools: ${{ parameters.buildTools }}
                 lvVersion: ${{ lvVersion}}
-            - template: azure-templates\build-steps.yml # config file and build specs
+            - template: azure-templates\build-op-steps.yml # config file and build specs
               parameters:
                 customDevice: ${{ parameters.customDevice }}
                 buildTools: ${{ parameters.buildTools }}
