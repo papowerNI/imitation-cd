@@ -13,9 +13,9 @@ steps:
       # Check if lvproj config files placed for this project, if not, place the file
     - powershell: |
         $fileExists = Test-Path -Path "$(customDevice)\${{ parameters.projectLocation }}.config"
-        Write-Host "##vso[task.setvariable variable=configFileExists]$fileExists"
+        Write-Output "##vso[task.setvariable variable=configFileExists]$fileExists"
       displayName: check if config file exists already for ${{ parameters.projectLocation }}
-    - ${{ ne(variables['configFileExists'], 'True')}}:
+    - ${{ ne(variables['configFileExists'], True)}}:
         # Configure build variables: lvConfigFilePath
       - powershell: |
           Write-Host "##vso[task.setvariable variable=lvConfigFilePath]$(customDevice)\${{ parameters.projectLocation }}.config"
