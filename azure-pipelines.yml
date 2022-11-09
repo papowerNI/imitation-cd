@@ -21,6 +21,7 @@ pool:
     - agent.os -equals Windows_NT
 
 # Custom Device-specific Parameters
+parameters:
     # Custom Device Name
   - name: customDevice
     type: string
