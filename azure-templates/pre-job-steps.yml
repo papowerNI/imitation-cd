@@ -28,14 +28,14 @@ steps:
         Write-Host "##vso[task.setvariable variable=lvConfigVersion]10.0.0.0"
       displayName: Use .NET Assembly 10.0.0.0 & 64-bit
   - powershell: |
-      Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ variables.buildTools }}\lv\operations"'
+      Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
       
 ###########  Checkout Necessary Repos  ###########
   - checkout: self
     displayName: Check out ${{ parameters.customDevice }} repository # run once per job
-  - checkout: ${{ variables.buildTools }}
+  - checkout: $(buildTools)
     displayName: Check out NI VS Custom Device Build Tools repository # run once per job
 
 ###########  Clear Compile Cache  ###########
-  - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\${{ variables.buildTools }}\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvClearCache.log"
+  - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvClearCache.log"
     displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }} # run once per job
