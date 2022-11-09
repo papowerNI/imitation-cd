@@ -7,6 +7,10 @@ parameters:
     type: string
   - name: buildOperation
     type: string
+  - name: target
+    type: string
+  - name: buildSpec
+    type: string
 
 steps:
 ###########  Set lvproj Config  ###########
@@ -29,8 +33,14 @@ steps:
       condition: eq(variables['configFileExists'], 'False')
 
 ###########  Execute LabVIEW Build Operation  ###########
-    - script: $(lvCLICall) -OperationName ${{ parameters.buildOperation }} -ProjectPath "%cd%\$(customDevice)\${{ parameters.projectLocation }}" -LogFilePath "%cd%\$(customDevice)\lvBuildSpecs.log"
-      displayName: Run ${{ parameters.buildOperation }} in ${{ parameters.projectLocation }}
+    - script: |
+        $(lvCLICall) ^
+        -OperationName ${{ parameters.buildOperation }} ^
+        -ProjectPath "%cd%\$(customDevice)\${{ parameters.projectLocation }}" ^
+        -TargetName ${{ parameters.target }} ^
+        -BuildSpecName ${{ parameters.buildSpec }} ^
+        -LogFilePath "%cd%\$(customDevice)\lvBuildSpecs.log"
+      displayName: Build ${{ parameters.buildSpec }} on ${{ parameters.target }} in ${{ parameters.projectLocation }}
     - script: taskkill /im labview.exe /f
       displayName: Close LabVIEW
       condition: always() # always close LabVIEW, even if previous step fails
