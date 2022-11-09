@@ -22,7 +22,7 @@ steps:
         Copy-Item "$(buildTools)\resources\LabVIEW.exe.config" -Destination "$(lvConfigFilePath)"
         (Get-Content -Path '$(lvConfigFilePath)') -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path '$(lvConfigFilePath)'
       displayName: Update lvproj.config to reference correct .NET Assembly version
-      condition: eq($(configFileExists), 'False')
+      condition: eq(variables['configFileExists']), 'False')
 
 ###########  Execute LabVIEW Build Operation  ###########
     - script: $(lvCLICall) -OperationName ${{ parameters.buildOperation }} -ProjectPath "%cd%\$(customDevice)\${{ parameters.projectLocation }}" -LogFilePath "%cd%\$(customDevice)\lvBuildSpecs.log"
