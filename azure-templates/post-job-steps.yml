@@ -22,7 +22,7 @@ steps:
     - script: echo "this is incomplete"
       displayName: Pack nipkg (INCOMPLETE)
   - powershell: |
-      Copy-Item ` 
+      Copy-Item `
       -Path "$(customDevice)\${{ parameters.buildOutputLocation }}\*" `
       -Destination "${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\$(Build.BuildId)\$(lvVersion)\$(architecture)\" `
       -Recurse
