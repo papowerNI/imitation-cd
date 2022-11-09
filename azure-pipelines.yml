@@ -19,51 +19,46 @@ resources:
 
 # Pipeline-level Variables
 variables:
-  agentPool: custom-device-temp
+  agentPool: 
   buildToolsRepo: niveristand-custom-device-build-tools
-  lvPath: 'TBD'
+
+# Parameters
+parameters:
+  - name: agentPool
+    type: string
+    default: custom-device-temp
+  - name: buildTools
+    type: string
+    default: niveristand-custom-device-build-tools
+  - name: lvVersions
+    type: object
+    default:
+      - "2020"
+      - "2021"
+      - "2023"
+  - name: customDevice
+    type: string
+    default: imitation-cd
 
 stages:
   - stage: build
 
   # Agent Pool:  choose an agent that meets the following requirements
     pool:
-      name: ${{ variables.agentPool }}
+      name: ${{ parameters.agentPool }}
       demands:
         - agent.os -equals Windows_NT
 
     # Currently, no parallelism is needed so far, and no stages are needed so far
     jobs:
-      - job: build_for_lv2020
-        displayName: Build for LabVIEW 2020
-        steps:
-          - template: azure-templates\build-steps.yaml
-            parameters:
-              buildToolsRepo: ${{ variables.buildToolsRepo }}
-              projectLocation: Source\TestProject.lvproj
-              customDevice: imitation-cd
-              lvVersion: '2020'
-              bitness: '32'
-              pack: true
-      - job: build_for_lv2021
-        displayName: Build for LabVIEW 2021
-        steps:
-          - template: azure-templates\build-steps.yaml
-            parameters:
-              buildToolsRepo: ${{ variables.buildToolsRepo }}
-              projectLocation: Source\TestProject.lvproj
-              customDevice: imitation-cd
-              lvVersion: '2021'
-              bitness: '64'
-              pack: true
-      - job: build_for_lv2023
-        displayName: Build for LabVIEW 2023
-        steps:
-          - template: azure-templates\build-steps.yaml
-            parameters:
-              buildToolsRepo: ${{ variables.buildToolsRepo }}
-              projectLocation: Source\TestProject.lvproj
-              customDevice: imitation-cd
-              lvVersion: '2023'
-              bitness: '64'
-              pack: true
+      - ${{ each lvVersion in parameters.lvVersions }}:
+        - job:
+          displayName: Build ${{ parameters.customDevice }} for LabVIEW ${{ lvVersion}}
+          steps:
+            - template: azure-templates\build-steps.yaml
+              parameters:
+                buildTools: ${{ parameters.buildTools }}
+                projectLocations: Source\TestProject.lvproj
+                customDevice: ${{ parameters.customDevice }}
+                lvVersion: ${{ lvVersion}}
+                pack: true
