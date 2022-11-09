@@ -34,11 +34,12 @@ steps:
 
 ###########  Execute LabVIEW Build Operation  ###########
     - script: |
+        echo on
         $(lvCLICall) ^
-        -OperationName ${{ parameters.buildOperation }} ^
+        -OperationName "${{ parameters.buildOperation }}" ^
         -ProjectPath "%cd%\$(customDevice)\${{ parameters.projectLocation }}" ^
-        -TargetName ${{ parameters.target }} ^
-        -BuildSpecName ${{ parameters.buildSpec }} ^
+        -TargetName "${{ parameters.target }}" ^
+        -BuildSpecName "${{ parameters.buildSpec }}" ^
         -LogFilePath "%cd%\$(customDevice)\lvBuildSpecs.log"
       displayName: Build ${{ parameters.buildSpec }} on ${{ parameters.target }} in ${{ parameters.projectLocation }}
     - script: taskkill /im labview.exe /f
