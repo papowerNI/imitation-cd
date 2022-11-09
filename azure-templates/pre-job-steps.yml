@@ -39,5 +39,5 @@ steps:
     displayName: Check out NI VS Custom Device Build Tools repository # run once per job
 
 ###########  Clear Compile Cache  ###########
-    - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\${{ parameters.buildTools }}\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvClearCache.log"
-      displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }} # run once per job
+  - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\${{ parameters.buildTools }}\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\${{ parameters.customDevice }}\lvClearCache.log"
+    displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }} # run once per job
