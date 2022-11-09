@@ -54,7 +54,7 @@ stages:
               parameters:
                 buildTools: ${{ parameters.buildTools }}
                 projectLocations:
-                  - Source\TestProject.lvproj
+                  - 'Source\TestProject.lvproj'
                 customDevice: ${{ parameters.customDevice }}
                 lvVersion: ${{ lvVersion}}
                 pack: true
