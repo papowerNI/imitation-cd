@@ -12,6 +12,10 @@ parameters:
   - name: buildSpec
     type: string
 
+variables:
+  targetArgument: ''
+  buildSpecArgument: ''
+
 steps:
 ###########  Set lvproj Config  ###########
       # Check if lvproj config files placed for this project, if not, place the file
@@ -33,13 +37,19 @@ steps:
       condition: eq(variables['configFileExists'], 'False')
 
 ###########  Execute LabVIEW Build Operation  ###########
+    - ${{ ne(parameters.target, "") }}:
+      - powershell: |
+          Write-Host '##vso[task.setvariable variable=targetArgument]-TargetName "${{ parameters.target }}"'
+    - ${{ ne(parameters.buildSpec, "") }}:
+      - powershell: |
+          Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildSpec }}"'
     - script: |
         echo on
         $(lvCLICall) ^
         -OperationName "${{ parameters.buildOperation }}" ^
         -ProjectPath "%cd%\$(customDevice)\${{ parameters.projectLocation }}" ^
-        -TargetName "${{ parameters.target }}" ^
-        -BuildSpecName "${{ parameters.buildSpec }}" ^
+        $(targetArgument) ^
+        $(buildSpecArgument) ^
         -LogFilePath "%cd%\$(customDevice)\lvBuildSpecs.log"
       displayName: Build ${{ parameters.buildSpec }} on ${{ parameters.target }} in ${{ parameters.projectLocation }}
     - script: taskkill /im labview.exe /f
