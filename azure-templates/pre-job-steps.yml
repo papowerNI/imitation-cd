@@ -3,8 +3,6 @@
 
 # Inputs: buildTools, customDevice, lvVersion
 parameters:
-  - name: buildTools
-    type: string
   - name: customDevice
     type: string
   - name: lvVersion
