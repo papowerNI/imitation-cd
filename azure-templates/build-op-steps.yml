@@ -14,19 +14,23 @@ steps:
     - powershell: |
         $fileExists = Test-Path -Path "$(customDevice)\${{ parameters.projectLocation }}.config"
         Write-Output "##vso[task.setvariable variable=configFileExists]$fileExists"
-      displayName: check if config file exists already for ${{ parameters.projectLocation }}
+      displayName: Check if config file exists already for ${{ parameters.projectLocation }}
 
-      # Configure build variables: lvConfigFilePath
+      # Copy and update lvproj.config file to project
     - powershell: |
         Write-Host "##vso[task.setvariable variable=lvConfigFilePath]$(customDevice)\${{ parameters.projectLocation }}.config"
+      displayName: Determine lvproj config file path
+      condition: eq(variables['configFileExists'], 'False')
+  
+    - powershell: |
         Copy-Item "$(buildTools)\resources\LabVIEW.exe.config" -Destination "$(lvConfigFilePath)"
         (Get-Content -Path '$(lvConfigFilePath)') -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path '$(lvConfigFilePath)'
-      displayName: Update lvproj.config to reference correct .NET Assembly version
+      displayName: Update lvproj.config to reference correct .NET Assembly version for ${{ parameters.projectLocation }}
       condition: eq(variables['configFileExists'], 'False')
 
 ###########  Execute LabVIEW Build Operation  ###########
     - script: $(lvCLICall) -OperationName ${{ parameters.buildOperation }} -ProjectPath "%cd%\$(customDevice)\${{ parameters.projectLocation }}" -LogFilePath "%cd%\$(customDevice)\lvBuildSpecs.log"
-      displayName: Build All Build Specs in ${{ parameters.projectLocation }} for LabVIEW $(lvVersion)
+      displayName: Run ${{ buildOperation }} in ${{ parameters.projectLocation }} for LabVIEW $(lvVersion)
     - script: taskkill /im labview.exe /f
       displayName: Close LabVIEW $(lvVersion) Process
       condition: always() # always close LabVIEW, even if previous step fails
