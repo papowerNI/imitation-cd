@@ -1,12 +1,8 @@
 # File: post-job-steps.yml
 ##### Steps Template After All Builds #####
 
-# Inputs: customDevice, lvVersion, pack (optional)
+# Inputs: pack
 parameters:
-  - name: customDevice
-    type: string
-  - name: lvVersion
-    type: string
   - name: pack
     type: boolean
     default: false
@@ -14,9 +10,9 @@ parameters:
 steps:
 ###########  Archive  ###########
   - ${{ if eq( parameters.pack, true )}}:
-    - powershell: rm -r "nipkg"; mkdir "nipkg"; cp -R "${{ parameters.customDevice }}\Built\*" "nipkg\data\documents\National Instruments\NI VeriStand 2020\Custom Devices\National Instruments"
-      displayName: Generate nipkg File structure (INCOMPLETE) # run once per job
+    - powershell: rm -r "nipkg"; mkdir "nipkg"; cp -R "$(customDevice)\Built\*" "nipkg\data\documents\National Instruments\NI VeriStand 2020\Custom Devices\National Instruments"
+      displayName: Generate nipkg File structure (INCOMPLETE)
     - script: echo "this is incomplete"
-      displayName: Pack nipkg (INCOMPLETE) # run once per job
-  - powershell: cp -R -force "${{ parameters.customDevice }}\Built\*" "\\nirvana\temp\papower\LabVIEW ${{ parameters.lvVersion }}"
-    displayName: Copying Built Files to \\nirvana Archive # run once per job
+      displayName: Pack nipkg (INCOMPLETE)
+  - powershell: cp -R -force "$(customDevice)\Built\*" "\\nirvana\temp\papower\LabVIEW $(lvVersion)"
+    displayName: Copying Built Files to \\nirvana Archive

@@ -33,8 +33,8 @@ parameters:
       - '2020'
       - '2021'
       - '2023'
-    # Custom Device Build Operations
-  - name: buildOperations
+    # Custom Device Build Steps (project location, LabVIEW CLI Build operation)
+  - name: buildSteps
     type: object
     default:
       - ['Source\TestProject.lvproj', 'ExecuteAllBuildSpecs']
@@ -53,11 +53,8 @@ stages:
             - ${{ each buildOperation in parameters.buildOperations }}:
               - template: azure-templates\build-op-steps.yml # config file and build specs
                 parameters:
-                  customDevice: ${{ parameters.customDevice }}
-                  lvVersion: ${{ lvVersion }}
-                  projectLocations: ${{ buildOperation[0] }}
-                  buildOperation: ${{ buildOperation[1] }}
+                  projectLocation: ${{ buildSteps[0] }}
+                  buildOperation: ${{ buildSteps[1] }}
             - template: azure-templates\post-job-steps.yml # nipkg and archive
               parameters:
-                customDevice: ${{ parameters.customDevice }}
-                lvVersion: ${{ lvVersion}}
+                pack: false
