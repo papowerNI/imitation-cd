@@ -15,17 +15,17 @@ steps:
         $fileExists = Test-Path -Path "$(customDevice)\${{ parameters.projectLocation }}.config"
         Write-Host "##vso[task.setvariable variable=configFileExists]$fileExists"
         Write-Output "##vso[task.getvariable variable=configFileExists]"
-    - ${{ eq(variables['configFileExists'], 'False')}}:
+#    - ${{ eq(variables['configFileExists'], 'False')}}:
         # Configure build variables: lvConfigFilePath, lvCLICall
-      - powershell: |
-          Write-Host "##vso[task.setvariable variable=lvConfigFilePath]$(customDevice)\${{ parameters.projectLocation }}.config"
-        displayName: determine config file path
+    - powershell: |
+        Write-Host "##vso[task.setvariable variable=lvConfigFilePath]$(customDevice)\${{ parameters.projectLocation }}.config"
+      displayName: determine config file path
 
-        # Lvproj.config File Placement
-      - script: copy "$(buildTools)\resources\LabVIEW.exe.config" "$(lvConfigFilePath)"
-        displayName: Place lvproj.config next to Project
-      - powershell: (Get-Content -Path '$(lvConfigFilePath)') -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path '$(lvConfigFilePath)'
-        displayName: Update lvproj.config to reference correct .NET Assembly version
+      # Lvproj.config File Placement
+    - script: copy "$(buildTools)\resources\LabVIEW.exe.config" "$(lvConfigFilePath)"
+      displayName: Place lvproj.config next to Project
+    - powershell: (Get-Content -Path '$(lvConfigFilePath)') -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path '$(lvConfigFilePath)'
+      displayName: Update lvproj.config to reference correct .NET Assembly version
 
 ###########  Execute LabVIEW Build Operation  ###########
     - script: $(lvCLICall) -OperationName ${{ parameters.buildOperation }} -ProjectPath "%cd%\$(customDevice)\${{ parameters.projectLocation }}" -LogFilePath "%cd%\$(customDevice)\lvBuildSpecs.log"
