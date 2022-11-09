@@ -31,11 +31,6 @@ steps:
         Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
         Write-Host "##vso[task.setvariable variable=lvConfigVersion]10.0.0.0"
       displayName: Use .NET Assembly 10.0.0.0 & 64-bit
-  # --- lvConfigFilePath, lvCLICall ---
-  - powershell: | 
-      Write-Host "##vso[task.setvariable variable=lvConfigFilePath]${{ parameters.customDevice }}\${{ parameters.projectLocations }}.config"
-      Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildTools }}\lv\operations"'
-    displayName: Store reused strings as variables
 
 ###########  Checkout Necessary Repos  ###########
   - checkout: self
@@ -45,6 +40,12 @@ steps:
 
 ###########  Iterate through Project Locations  ###########
   - ${{ each projectLocation in parameters.projectLocations }}:
+      # Configure build variables: lvConfigFilePath, lvCLICall
+    - powershell: |
+        Write-Host "##vso[task.setvariable variable=lvConfigFilePath]${{ parameters.customDevice }}\${{ projectLocation }}.config"
+        Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildTools }}\lv\operations"'
+      displayName: determine config file path
+
       # Lvproj.config File Placement
     - script: copy "${{ parameters.buildTools }}\resources\LabVIEW.exe.config" "$(lvConfigFilePath)"
       displayName: Place lvproj.config next to Project
