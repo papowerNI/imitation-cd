@@ -33,11 +33,11 @@ parameters:
       - '2020'
       - '2021'
       - '2023'
-    # Custom Device Project Locations
-  - name: projectLocations
+    # Custom Device Build Operations
+  - name: buildOperations
     type: object
     default:
-      - 'Source\TestProject.lvproj'
+      - ['Source\TestProject.lvproj', 'ExecuteAllBuildSpecs']
 
 stages:
   - stage: build
@@ -50,12 +50,13 @@ stages:
               parameters:
                 customDevice: ${{ parameters.customDevice }}
                 lvVersion: ${{ lvVersion}}
-            - template: azure-templates\build-op-steps.yml # config file and build specs
-              parameters:
-                customDevice: ${{ parameters.customDevice }}
-                lvVersion: ${{ lvVersion}}
-                projectLocations: ${{ parameters.projectLocations }}
-                buildOperation: empty
+            - ${{ each buildOperation in parameters.buildOperations }}:
+              - template: azure-templates\build-op-steps.yml # config file and build specs
+                parameters:
+                  customDevice: ${{ parameters.customDevice }}
+                  lvVersion: ${{ lvVersion }}
+                  projectLocations: ${{ buildOperation[0] }}
+                  buildOperation: ${{ buildOperation[1] }}
             - template: azure-templates\post-job-steps.yml # nipkg and archive
               parameters:
                 customDevice: ${{ parameters.customDevice }}
