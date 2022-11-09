@@ -9,15 +9,15 @@ parameters:
     type: string
 
 steps:
-###########  Set Project LVproj Config  ###########
+###########  Set lvproj Config  ###########
       # Check if lvproj config files placed for this project, if not, place the file
     - powershell: |
-        $fileExists = Test-Path -Path "$(customDevice)\${{ projectLocation }}.config"
+        $fileExists = Test-Path -Path "$(customDevice)\${{ parameters.projectLocation }}.config"
         Write-Host "##vso[task.setvariable variable=configFileExists]$fileExists"
     - ${{ eq(configFileExists, False)}}:
         # Configure build variables: lvConfigFilePath, lvCLICall
       - powershell: |
-          Write-Host "##vso[task.setvariable variable=lvConfigFilePath]$(customDevice)\${{ projectLocation }}.config"
+          Write-Host "##vso[task.setvariable variable=lvConfigFilePath]$(customDevice)\${{ parameters.projectLocation }}.config"
         displayName: determine config file path
 
         # Lvproj.config File Placement
@@ -27,8 +27,8 @@ steps:
         displayName: Update lvproj.config to reference correct .NET Assembly version
 
 ###########  Execute LabVIEW Build Operation  ###########
-    - script: $(lvCLICall) -OperationName $(buildOperation) -ProjectPath "%cd%\$(customDevice)\${{ projectLocation }}" -LogFilePath "%cd%\$(customDevice)\lvBuildSpecs.log"
-      displayName: Build All Build Specs in ${{ projectLocation }} for LabVIEW $(lvVersion)
+    - script: $(lvCLICall) -OperationName ${{ parameters.buildOperation }} -ProjectPath "%cd%\$(customDevice)\${{ parameters.projectLocation }}" -LogFilePath "%cd%\$(customDevice)\lvBuildSpecs.log"
+      displayName: Build All Build Specs in ${{ parameters.projectLocation }} for LabVIEW $(lvVersion)
     - script: taskkill /im labview.exe /f
       displayName: Close LabVIEW $(lvVersion) Process
       condition: always() # always close LabVIEW, even if previous step fails
