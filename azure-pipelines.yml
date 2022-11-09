@@ -53,7 +53,8 @@ stages:
             - template: azure-templates\build-steps.yaml
               parameters:
                 buildTools: ${{ parameters.buildTools }}
-                projectLocations: Source\TestProject.lvproj
+                projectLocations:
+                  - 'Source\TestProject.lvproj'
                 customDevice: ${{ parameters.customDevice }}
                 lvVersion: ${{ lvVersion}}
                 pack: true
