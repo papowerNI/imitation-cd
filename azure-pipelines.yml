@@ -54,7 +54,7 @@ stages:
     jobs:
       - ${{ each lvVersion in parameters.lvVersions }}:
         - job:
-          displayName: Build $(Build.Repository.Name) for LabVIEW ${{ lvVersion }}
+          displayName: Build for LabVIEW ${{ lvVersion }}
           steps:
             - template: azure-templates\pre-job-steps.yml # Configure variables, check out repos, Clear cache
               parameters:
