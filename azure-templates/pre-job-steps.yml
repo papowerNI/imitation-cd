@@ -3,9 +3,12 @@
 
 # Inputs: buildTools, lvVersion
 parameters:
+  - name: customDeviceRepoName
+    type: string
   - name: lvVersion
     type: string
   - name: bitness
+    type: string
   - name: buildTools
     type: string
     default: niveristand-custom-device-build-tools
@@ -41,17 +44,16 @@ steps:
   - powershell: |
       Write-Host '##vso[task.setvariable variable=buildTools]${{ parameters.buildTools }}'
       Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersion }}'
+      Write-Host '##vso[task.setvariable variable=customDeviceRepoName]${{ parameters.customDeviceRepoName }}'
       Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildTools }}\lv\operations"'
-      $currentDir = Get-Location
-      Write-Host '##vso[task.setvariable variable=currentDirectory]$currentDir'
     displayName: Define Job-wide Variables
 
 ###########  Checkout Necessary Repos  ###########
   - checkout: self
-    displayName: Check out $(Build.Repository.Name) repository
+    displayName: Check out ${{ parameters.customDeviceRepoName }} repository
   - checkout: ${{ parameters.buildTools }}
     displayName: Check out NI VS Custom Device Build Tools repository
 
 ###########  Clear Compile Cache  ###########
-  - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" -LogFilePath "$(currentDirectory)\lvClearCache.log"
+  - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\$(customDeviceRepoName)\lvClearCache.log"
     displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }}
