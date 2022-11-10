@@ -45,10 +45,10 @@ parameters:
   - name:    buildSteps
     type:    object
     default:
-      - [projectLocation: 'Source\TestProject.lvproj', 
-         buildOperation: 'ExecuteAllBuildSpecs', 
-         target: '', 
-         buildSpec: '']
+      - projectLocation: 'Source\TestProject.lvproj'
+        buildOperation: 'ExecuteAllBuildSpecs'
+        target: ''
+        buildSpec: ''
 
 stages:
   - stage: build
