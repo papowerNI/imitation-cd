@@ -33,10 +33,10 @@ steps:
       condition: eq(variables['configFileExists'], 'False')
 
 ###########  Execute LabVIEW Build Operation  ###########
-    - ${{ ne(parameters.target, "") }}:
+    - ${{ ne(parameters.target, '') }}:
       - powershell: |
           Write-Host '##vso[task.setvariable variable=targetArgument]-TargetName "${{ parameters.target }}"'
-    - ${{ ne(parameters.buildSpec, "") }}:
+    - ${{ ne(parameters.buildSpec, '') }}:
       - powershell: |
           Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildSpec }}"'
     - script: |
