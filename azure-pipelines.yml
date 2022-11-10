@@ -22,17 +22,16 @@ pool:
 
 # Custom Device-specific Parameters
 parameters:
-    # Custom Device Name
-  - name:    customDevice
-    type:    string
-    default: imitation-cd
     # LabVIEW Versions to Build
   - name:    lvVersions
     type:    object
     default:
-      - '2020'
-      - '2021'
-      - '2023'
+      - version: '2020'
+        bitness: 'x86'
+      - version: '2021'
+        bitness: 'x64'
+      - version: '2023'
+        bitness: 'x64'
 # Build Output Location
   - name:    buildOutputLocation
     type:    string
@@ -55,12 +54,12 @@ stages:
     jobs:
       - ${{ each lvVersion in parameters.lvVersions }}:
         - job:
-          displayName: Build ${{ parameters.customDevice }} for LabVIEW ${{ lvVersion }}
+          displayName: Build $(Build.Repository.Name) for LabVIEW ${{ lvVersion }}
           steps:
             - template: azure-templates\pre-job-steps.yml # Configure variables, check out repos, Clear cache
               parameters:
-                customDevice: ${{ parameters.customDevice }}
-                lvVersion:    ${{ lvVersion }}
+                lvVersion: ${{ lvVersion.version }}
+                bitness:   ${{ lvVersion.bitness }} 
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: azure-templates\build-op-steps.yml # config file and build specs
                 parameters:
