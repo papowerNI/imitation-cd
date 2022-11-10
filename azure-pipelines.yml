@@ -45,7 +45,7 @@ parameters:
   - name:    buildSteps
     type:    object
     default:
-      - ['Source\TestProject.lvproj', 'ExecuteAllBuildSpecs', '', '']
+      - [proj: 'Source\TestProject.lvproj', buildOp: 'ExecuteAllBuildSpecs', target: '', buildSpec: '']
 
 stages:
   - stage: build
@@ -61,12 +61,12 @@ stages:
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: azure-templates\build-op-steps.yml # config file and build specs
                 parameters:
-                  projectLocation: ${{ buildStep[0] }}
-                  buildOperation:  ${{ buildStep[1] }}
-                  target:          ${{ buildStep[2] }}
-                  buildSpec:       ${{ buildStep[3] }}
+                  projectLocation: ${{ buildStep[proj]      }}
+                  buildOperation:  ${{ buildStep[buildOp]   }}
+                  target:          ${{ buildStep[target]    }}
+                  buildSpec:       ${{ buildStep[buildSpec] }}
             - template: azure-templates\post-job-steps.yml # nipkg and archive
               parameters:
                 buildOutputLocation: ${{ parameters.buildOutputLocation }}
-                archiveLocation:     ${{ parameters.archiveLocation }}
+                archiveLocation:     ${{ parameters.archiveLocation     }}
                 pack:                false
