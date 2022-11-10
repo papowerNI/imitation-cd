@@ -61,10 +61,10 @@ stages:
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: azure-templates\build-op-steps.yml # config file and build specs
                 parameters:
-                  projectLocation: ${{ buildStep[proj]      }}
-                  buildOperation:  ${{ buildStep[buildOp]   }}
-                  target:          ${{ buildStep[target]    }}
-                  buildSpec:       ${{ buildStep[buildSpec] }}
+                  projectLocation: ${{ buildStep.proj      }}
+                  buildOperation:  ${{ buildStep.buildOp   }}
+                  target:          ${{ buildStep.target    }}
+                  buildSpec:       ${{ buildStep.buildSpec }}
             - template: azure-templates\post-job-steps.yml # nipkg and archive
               parameters:
                 buildOutputLocation: ${{ parameters.buildOutputLocation }}
