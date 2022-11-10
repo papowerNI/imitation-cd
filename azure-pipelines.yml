@@ -27,11 +27,11 @@ parameters:
     type:    object
     default:
       - version: '2020'
-        bitness: 'x86'
+        bitness: '32-bit'
       - version: '2021'
-        bitness: 'x64'
+        bitness: '64-bit'
       - version: '2023'
-        bitness: 'x64'
+        bitness: '64-bit'
 # Build Output Location
   - name:    buildOutputLocation
     type:    string
@@ -54,7 +54,7 @@ stages:
     jobs:
       - ${{ each lvVersion in parameters.lvVersions }}:
         - job:
-          displayName: Build $(Build.Repository.Name) for LabVIEW ${{ lvVersion.version }}
+          displayName: Build for LabVIEW ${{ lvVersion.version }}
           steps:
             - template: azure-templates\pre-job-steps.yml # Configure variables, check out repos, Clear cache
               parameters:
