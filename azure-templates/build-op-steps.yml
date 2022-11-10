@@ -22,11 +22,6 @@ steps:
     displayName: Place lvproj.config file for ${{ parameters.projectLocation }}
     condition: eq(variables['configFileExists'], 'False') # skip if lvproj.config already placed
 
-  # - powershell: |
-
-  #   displayName: Update lvproj.config to reference correct .NET Assembly version for ${{ parameters.projectLocation }}
-  #   condition: eq(variables['configFileExists'], 'False') # skip if lvproj.config already placed
-
 ###########  Execute LabVIEW Build Operation  ###########
   - powershell: |
       Write-Host '##vso[task.setvariable variable=targetArgument]'
