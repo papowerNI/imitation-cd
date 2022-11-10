@@ -48,8 +48,8 @@ steps:
         $(lvCLICall) ^
         -OperationName "${{ parameters.buildOperation }}" ^
         -ProjectPath "%cd%\$(customDevice)\${{ parameters.projectLocation }}" ^
-        $(targetArgument)^
-        $(buildSpecArgument)^
+        $(targetArgument) ^
+        $(buildSpecArgument) ^
         -LogFilePath "%cd%\$(customDevice)\lvBuildSpecs.log"
       displayName: Build ${{ parameters.buildSpec }} on ${{ parameters.target }} in ${{ parameters.projectLocation }}
     - script: taskkill /im labview.exe /f
