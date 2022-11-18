@@ -18,7 +18,7 @@ steps:
         New-Item -Path "$(nipkgPath)" -Name "data" -ItemType "Directory"
         New-Item -Path "$(nipkgPath)" -Name "debian-binary"
         Set-Content "$(nipkgPath)\debian-binary" '2.0\n'
-        Copy-Item -Path "$(customDeviceRepoName)\control" -Destination "$(nipkgPath)\"
+        Copy-Item -Path "$(customDeviceRepoName)\control" -Destination "$(nipkgPath)"
       displayName: stage nipkg directory
     - script: echo "this is incomplete"
       displayName: Update control version parameters (INCOMPLETE)
