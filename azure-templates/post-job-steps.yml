@@ -13,7 +13,7 @@ steps:
     - powershell: Write-Host "##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg"
       displayName: set nipkg path variable
     - powershell: |
-        Remove-Item -Path "$(nipkgPath)" -Recurse
+        If (Test-Path "$(nipkgPath)") { Remove-Item -Path "$(nipkgPath)" -Recurse -Force }
         New-Item -Path "$(nipkgPath)" -Name "control" -ItemType "Directory"
         New-Item -Path "$(nipkgPath)" -Name "data" -ItemType "Directory"
         New-Item -Path "$(nipkgPath)" -Name "debian-binary"
