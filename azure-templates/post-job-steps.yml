@@ -21,7 +21,7 @@ steps:
         Copy-Item -Path "$(customDeviceRepoName)\control" -Destination "$(nipkgPath)\control"
       displayName: stage nipkg directory
     - powershell: |
-        $controlContents = Get-Content -Path $(nipkgPath)\control
+        $controlContents = Get-Content -Path '$(nipkgPath)\control\control'
         $controlContents -replace '{veristand_version}', '$(lvVersion)'
         $controlContents -replace '{labview_version}', '$(lvVersion)'
         $controlContents -replace '{nipkg_version}', '$(releaseVersion)'
