@@ -42,7 +42,7 @@ steps:
     - powershell: |
         Copy-Item `
         -Path '$(nipkgPath)\*' `
-        -Destination '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer\' `
+        -Destination '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer' `
         -Filter *.nipkg `
         -Recurse `
         -Verbose
