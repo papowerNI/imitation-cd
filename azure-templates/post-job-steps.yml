@@ -14,13 +14,22 @@ steps:
       displayName: set nipkg path variable
     - powershell: |
         If (Test-Path "$(nipkgPath)") { Remove-Item -Path "$(nipkgPath)" -Recurse -Force }
+        New-Item -Path "$(nipkgPath)" -Name "control" -ItemType "Directory"
         New-Item -Path "$(nipkgPath)" -Name "data" -ItemType "Directory"
         New-Item -Path "$(nipkgPath)" -Name "debian-binary"
         Set-Content "$(nipkgPath)\debian-binary" '2.0\n'
-        Copy-Item -Path "$(customDeviceRepoName)\control" -Destination "$(nipkgPath)"
+        Copy-Item -Path "$(customDeviceRepoName)\control" -Destination "$(nipkgPath)\control"
       displayName: stage nipkg directory
-    - script: echo "this is incomplete"
-      displayName: Update control version parameters (INCOMPLETE)
+    - powershell: |
+        $lvConfigFilePath = '$(customDeviceRepoName)\${{ parameters.projectLocation }}.config'
+        Copy-Item "$(buildTools)\resources\LabVIEW.exe.config" -Destination $lvConfigFilePath
+        (Get-Content -Path $(nipkgPath)\control) -replace '{veristand_version}', '$(lvVersion)'
+        (Get-Content -Path $(nipkgPath)\control) -replace '{labview_version}', '$(lvVersion)'
+        (Get-Content -Path $(nipkgPath)\control) -replace '{nipkg_version}', '$(releaseVersion)'
+        (Get-Content -Path $(nipkgPath)\control) -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)'
+        (Get-Content -Path $(nipkgPath)\control) -replace '{labview_short_version}', '$(shortLvVersion)'
+        Set-Content -Path $lvConfigFilePath
+        displayName: Update control version parameters
     - script: echo "this is incomplete"
       displayName: Pack nipkg (INCOMPLETE)
   - powershell: |
