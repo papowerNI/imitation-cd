@@ -12,15 +12,15 @@ parameters:
 steps:
 ###########  Archive  ###########
   - ${{ if eq( parameters.pack, true )}}:
-    - powershell: Write-Host "##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg"
+    - powershell: Write-Host '##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg'
       displayName: set nipkg path variable
     - powershell: |
-        If (Test-Path "$(nipkgPath)") { Remove-Item -Path "$(nipkgPath)" -Recurse -Force }
-        New-Item -Path "$(nipkgPath)" -Name "control" -ItemType "Directory"
-        New-Item -Path "$(nipkgPath)" -Name "data" -ItemType "Directory"
-        New-Item -Path "$(nipkgPath)" -Name "debian-binary"
-        Set-Content "$(nipkgPath)\debian-binary" '2.0\n'
-        Copy-Item -Path "$(customDeviceRepoName)\control" -Destination "$(nipkgPath)\control"
+        If (Test-Path '$(nipkgPath)') { Remove-Item -Path '$(nipkgPath)' -Recurse -Force }
+        New-Item -Path '$(nipkgPath)' -Name 'control' -ItemType 'Directory'
+        New-Item -Path '$(nipkgPath)' -Name 'data' -ItemType 'Directory'
+        New-Item -Path '$(nipkgPath)' -Name 'debian-binary'
+        Set-Content '(nipkgPath)\debian-binary' '2.0\n'
+        Copy-Item -Path '$(customDeviceRepoName)\control' -Destination '$(nipkgPath)\control'
       displayName: stage nipkg directory
     - powershell: |
         $controlContents = Get-Content -Path '$(nipkgPath)\control\control'
@@ -31,20 +31,21 @@ steps:
         $controlContents = $controlContents -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)'
         $controlContents = $controlContents -replace '{labview_short_version}', '$(shortLvVersion)'
         Set-Content -Value $controlContents -Path '$(nipkgPath)\control\control'
-      displayName: Update control version parameters
+      displayName: Update nipkg control version parameters
     - powershell: |
         Copy-Item `
-        -Path "$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*" `
-        -Destination "$(nipkgPath)\data\${{ parameters.nipkgInstallLocation }}\"
-        $programFiles\National Instruments\NI Package Manager\nipkg.exe pack $(nipkgPath) $(nipkgPath)
+        -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
+        -Destination '$(nipkgPath)\data\${{ parameters.nipkgInstallLocation }}\'
+        '$programFiles\National Instruments\NI Package Manager\nipkg.exe' pack '$(nipkgPath)' '$(nipkgPath)'
         Copy-Item `
-        -Path "$(nipkgPath)\*.nipkg" `
-        -Destination "$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer\"
-      displayName: Pack nipkg (INCOMPLETE)
+        -Path '$(nipkgPath)\*.nipkg' `
+        -Destination '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer\' `
+        -Recurse
+      displayName: Build Installer
   
   - powershell: |
       Copy-Item `
-      -Path "$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*" `
-      -Destination "${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\$(Build.BuildId)\$(lvVersion)\$(architecture)\" `
+      -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
+      -Destination '${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\$(Build.BuildId)\$(lvVersion)\$(architecture)\' `
       -Recurse
     displayName: Copying built files to nirvana Archive
