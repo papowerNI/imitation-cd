@@ -19,7 +19,7 @@ steps:
         New-Item -Path '$(nipkgPath)' -Name 'control' -ItemType 'Directory'
         New-Item -Path '$(nipkgPath)' -Name 'data' -ItemType 'Directory'
         New-Item -Path '$(nipkgPath)' -Name 'debian-binary' -ItemType 'File'
-        Set-Content '(nipkgPath)\debian-binary' '2.0\n'
+        Set-Content '$(nipkgPath)\debian-binary' '2.0\n'
         Copy-Item -Path '$(customDeviceRepoName)\control' -Destination '$(nipkgPath)\control'
       displayName: stage nipkg directory
     - powershell: |
