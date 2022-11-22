@@ -21,8 +21,6 @@ steps:
         Copy-Item -Path "$(customDeviceRepoName)\control" -Destination "$(nipkgPath)\control"
       displayName: stage nipkg directory
     - powershell: |
-        $lvConfigFilePath = '$(customDeviceRepoName)\${{ parameters.projectLocation }}.config'
-        Copy-Item "$(buildTools)\resources\LabVIEW.exe.config" -Destination $lvConfigFilePath
         (Get-Content -Path $(nipkgPath)\control) -replace '{veristand_version}', '$(lvVersion)'
         (Get-Content -Path $(nipkgPath)\control) -replace '{labview_version}', '$(lvVersion)'
         (Get-Content -Path $(nipkgPath)\control) -replace '{nipkg_version}', '$(releaseVersion)'
