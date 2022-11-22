@@ -44,7 +44,8 @@ steps:
         -Path '$(nipkgPath)\*' `
         -Destination '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer\' `
         -Filter *.nipkg `
-        -Recurse
+        -Recurse `
+        -Verbose
       displayName: Copy installer to build output location
   - powershell: |
       Copy-Item `
