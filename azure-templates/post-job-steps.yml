@@ -13,15 +13,20 @@ steps:
 ###########  Archive  ###########
   - ${{ if eq( parameters.pack, true )}}:
     - powershell: Write-Host '##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg'
-      displayName: set nipkg path variable
+      displayName: Set nipkg path variable
     - powershell: |
         If (Test-Path '$(nipkgPath)') { Remove-Item -Path '$(nipkgPath)' -Recurse -Force }
         New-Item -Path '$(nipkgPath)' -Name 'control' -ItemType 'Directory'
         New-Item -Path '$(nipkgPath)' -Name 'data' -ItemType 'Directory'
         New-Item -Path '$(nipkgPath)' -Name 'debian-binary' -ItemType 'File'
         Set-Content '$(nipkgPath)\debian-binary' '2.0\n'
-        Copy-Item -Path '$(customDeviceRepoName)\control' -Destination '$(nipkgPath)\control'
-      displayName: stage nipkg directory
+        Copy-Item `
+        -Path '$(customDeviceRepoName)\control' `
+        -Destination '$(nipkgPath)\control'
+        Copy-Item `
+        -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
+        -Destination '$(nipkgPath)\data\${{ parameters.nipkgInstallLocation }}\'
+      displayName: Stage nipkg directory
     - powershell: |
         $controlContents = Get-Content -Path '$(nipkgPath)\control\control'
         $controlContents = $controlContents -replace '{veristand_version}', '$(lvVersion)'
@@ -32,17 +37,14 @@ steps:
         $controlContents = $controlContents -replace '{labview_short_version}', '$(shortLvVersion)'
         Set-Content -Value $controlContents -Path '$(nipkgPath)\control\control'
       displayName: Update nipkg control version parameters
+    - script: "%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack '$(nipkgPath)' '$(nipkgPath)'
+      displayName: Pack nipkg
     - powershell: |
-        Copy-Item `
-        -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
-        -Destination '$(nipkgPath)\data\${{ parameters.nipkgInstallLocation }}\'
-        "$env:ProgramFiles\National Instruments\NI Package Manager\nipkg.exe" pack '$(nipkgPath)' '$(nipkgPath)'
         Copy-Item `
         -Path '$(nipkgPath)\*.nipkg' `
         -Destination '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer\' `
         -Recurse
-      displayName: Build Installer
-  
+      displayName: Copy installer to build output location
   - powershell: |
       Copy-Item `
       -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
