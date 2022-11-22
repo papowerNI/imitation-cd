@@ -36,7 +36,7 @@ steps:
         Copy-Item `
         -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
         -Destination '$(nipkgPath)\data\${{ parameters.nipkgInstallLocation }}\'
-        '$programFiles\National Instruments\NI Package Manager\nipkg.exe' pack '$(nipkgPath)' '$(nipkgPath)'
+        "$env:ProgramFiles\National Instruments\NI Package Manager\nipkg.exe" pack '$(nipkgPath)' '$(nipkgPath)'
         Copy-Item `
         -Path '$(nipkgPath)\*.nipkg' `
         -Destination '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer\' `
