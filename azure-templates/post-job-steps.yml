@@ -42,8 +42,7 @@ steps:
     - powershell: |
         Copy-Item `
         -Path '$(nipkgPath)\*.nipkg' `
-        -Destination '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer\' `
-        -Recurse
+        -Destination '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer\'
       displayName: Copy installer to build output location
   - powershell: |
       Copy-Item `
