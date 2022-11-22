@@ -22,10 +22,10 @@ steps:
       displayName: stage nipkg directory
     - powershell: |
         $controlContents = Get-Content -Path '$(nipkgPath)\control\control'
-        $controlContents -replace '{veristand_version}', '$(lvVersion)'
-        $controlContents -replace '{labview_version}', '$(lvVersion)'
-        $controlContents -replace '{nipkg_version}', '$(releaseVersion)'
-        $controlContents -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)'
+        $controlContents = $controlContents -replace '{veristand_version}', '$(lvVersion)'
+        $controlContents = $controlContents -replace '{labview_version}', '$(lvVersion)'
+        $controlContents = $controlContents -replace '{nipkg_version}', '$(releaseVersion)'
+        $controlContents = $controlContents -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)'
         $controlContents -replace '{labview_short_version}', '$(shortLvVersion)'
         Set-Content -Value $controlContents -Path $lvConfigFilePath
         displayName: Update control version parameters
