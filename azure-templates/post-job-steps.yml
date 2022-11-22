@@ -26,8 +26,8 @@ steps:
         $controlContents = $controlContents -replace '{labview_version}', '$(lvVersion)'
         $controlContents = $controlContents -replace '{nipkg_version}', '$(releaseVersion)'
         $controlContents = $controlContents -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)'
-        $controlContents -replace '{labview_short_version}', '$(shortLvVersion)'
-        Set-Content -Value $controlContents -Path $lvConfigFilePath
+        $controlContents = $controlContents -replace '{labview_short_version}', '$(shortLvVersion)'
+        Set-Content -Value $controlContents -Path '$(nipkgPath)\control\control'
         displayName: Update control version parameters
     - script: echo "this is incomplete"
       displayName: Pack nipkg (INCOMPLETE)
