@@ -37,7 +37,7 @@ steps:
         $controlContents = $controlContents -replace '{labview_short_version}', '$(shortLvVersion)'
         Set-Content -Value $controlContents -Path '$(nipkgPath)\control\control'
       displayName: Update nipkg control version parameters
-    - script: "%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack '$(nipkgPath)' '$(nipkgPath)'
+    - script: "%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "$(nipkgPath)" "$(nipkgPath)"
       displayName: Pack nipkg
     - powershell: |
         Copy-Item `
