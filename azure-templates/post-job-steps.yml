@@ -50,7 +50,7 @@ steps:
         -Verbose
       displayName: Copy installer to build output location
     - powershell: |
-        New-Item -Path '$(installerPath)' -Name 'manifest.json' -ItemType 'File'
+        New-Item -Path '$(installerPath)\' -Name 'manifest.json' -ItemType 'File'
         Set-Content '$(installerPath)\manifest.json' '$(Build.SourceVersion)'
   - powershell: |
       Copy-Item `
