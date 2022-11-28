@@ -17,9 +17,11 @@ steps:
   - powershell: | 
       Get-ChildItem -Path '${{ parameters.archiveLocation }}\*' -Recurse -Include '*commit-id' -Verbose | ForEach-Object { `
         If (Get-Content -Path $_ -eq $(Build.SourceVersion) ) { `
-          Write-Host "##vso[task.setvariable variable=skipBuild]True } `
-        Else { `
-          Write-Host "##vso[task.setvariable variable=skipBuild]False }
+          Write-Host "##vso[task.setvariable variable=skipBuild]True `
+        } Else { `
+          Write-Host "##vso[task.setvariable variable=skipBuild]False `
+        } `
+      }
 ###########  Configure Job-wide Variables  ###########
   # --- lvPath, architecture ---
   - ${{ if eq( parameters.bitness, '32-bit' )}}:
