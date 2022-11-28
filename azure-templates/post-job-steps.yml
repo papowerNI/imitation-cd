@@ -42,10 +42,11 @@ steps:
     - script: '"%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "$(nipkgPath)" "$(nipkgPath)"'
       displayName: Pack nipkg
     - powershell: |
+        New-Item -Path '$(installerPath)' -ItemType 'Directory'
         Copy-Item `
-        -Path '$(nipkgPath)' `
-        -Destination '$(installerPath)' `
-        -Filter *.nipkg `
+        -Path '$(nipkgPath)\*' `
+        -Destination '$(installerPath)\' `
+        -Include *.nipkg `
         -Recurse `
         -Verbose
       displayName: Copy installer to build output location
