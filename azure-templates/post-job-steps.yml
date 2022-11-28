@@ -43,8 +43,8 @@ steps:
       displayName: Pack nipkg
     - powershell: |
         Copy-Item `
-        -Path '$(nipkgPath)\*' `
-        -Destination '$(installerPath)\' `
+        -Path '$(nipkgPath)' `
+        -Destination '$(installerPath)' `
         -Filter *.nipkg `
         -Recurse `
         -Verbose
