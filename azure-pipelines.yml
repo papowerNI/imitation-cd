@@ -70,7 +70,7 @@ stages:
                 lvVersion:             ${{ lvVersion.version }}
                 bitness:               ${{ lvVersion.bitness }} 
                 archiveLocation:       ${{ parameters.archiveLocation }}
-                rerun:                 false
+                alwaysRun:             false
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: azure-templates\build-op-steps.yml # config file and build specs
                 parameters:
