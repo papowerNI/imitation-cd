@@ -3,8 +3,6 @@ parameters:
     type: string
   - name: nipkgInstallLocation
     type: string
-  - name: archiveLocation
-    type: string
   - name: pack
     type: boolean
     default: false
@@ -17,7 +15,7 @@ steps:
         Write-Host '##vso[task.setvariable variable=installerPath]$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer'
       displayName: Set build output path variables
     - powershell: |
-        If (Test-Path '$(nipkgPath)') { Remove-Item -Path '$(nipkgPath)' -Recurse -Force}
+        If (Test-Path '$(nipkgPath)') { Remove-Item -Path '$(nipkgPath)' -Recurse -Force }
         New-Item -Path '$(nipkgPath)' -Name 'control' -ItemType 'Directory'
         New-Item -Path '$(nipkgPath)' -Name 'data' -ItemType 'Directory'
         New-Item -Path '$(nipkgPath)' -Name 'debian-binary' -ItemType 'File'
@@ -57,7 +55,7 @@ steps:
   - powershell: |
       Copy-Item `
       -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
-      -Destination '${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\$(Build.BuildId)\$(lvVersion)\$(architecture)\' `
+      -Destination '$(archiveLocation)\NI\export\$(Build.SourceBranchName)\$(Build.BuildId)\$(lvVersion)\$(architecture)\' `
       -Recurse `
       -Verbose
     displayName: Copying built files to nirvana Archive

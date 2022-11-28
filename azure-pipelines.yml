@@ -69,6 +69,7 @@ stages:
                 customDeviceRepoName:  ${{ parameters.customDeviceRepoName }}
                 lvVersion:             ${{ lvVersion.version }}
                 bitness:               ${{ lvVersion.bitness }} 
+                archiveLocation:      ${{ parameters.archiveLocation }}
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: azure-templates\build-op-steps.yml # config file and build specs
                 parameters:
@@ -80,5 +81,4 @@ stages:
               parameters:
                 nipkgInstallLocation: ${{ parameters.nipkgInstallLocation }}
                 buildOutputLocation:  ${{ parameters.buildOutputLocation }}
-                archiveLocation:      ${{ parameters.archiveLocation }}
                 pack:                 true

@@ -8,9 +8,16 @@ parameters:
   - name: buildTools
     type: string
     default: niveristand-custom-device-build-tools
+  - name: archiveLocation
+    type: string
 
 
 steps:
+###########  Configure Job-wide Variables  ###########
+  - powershell: | 
+      If ((Get-Content -Path '${{ parameters.archiveLocation }}\*' -Recurse -Include 'commit-id' -Verbose) -eq $(Build.SourceVersion) ) `
+      {Write-Host "##vso[task.setvariable variable=skipBuild]True} `
+      Else {Write-Host "##vso[task.setvariable variable=skipBuild]False}
 ###########  Configure Job-wide Variables  ###########
   # --- lvPath, architecture ---
   - ${{ if eq( parameters.bitness, '32-bit' )}}:
@@ -50,6 +57,7 @@ steps:
       Write-Host '##vso[task.setvariable variable=buildTools]${{ parameters.buildTools }}'
       Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersion }}'
       Write-Host '##vso[task.setvariable variable=customDeviceRepoName]${{ parameters.customDeviceRepoName }}'
+      Write-Host '##vso[task.setvariable variable=archiveLocation]${{ parameters.archiveLocation }}'
       Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildTools }}\lv\operations"'
     displayName: Define Job-wide Variables
 
