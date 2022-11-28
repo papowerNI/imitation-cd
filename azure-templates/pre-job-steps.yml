@@ -22,7 +22,7 @@ steps:
         Write-Host "##vso[task.setvariable variable=runBuild]True"
         $skipBuild = False
         Get-ChildItem -Path '${{ parameters.archiveLocation }}\*' -Recurse -Include '*commit-id' -Verbose | ForEach-Object { `
-          If (((Get-Content -Path $_) -eq '$(Build.SourceVersion)') || $skipBuild) { `
+          If ( (((Get-Content -Path $_) -eq '$(Build.SourceVersion)')) -or $skipBuild ) { `
             $skipBuild = True `
           } `
         } 
