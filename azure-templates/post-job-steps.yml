@@ -12,8 +12,10 @@ parameters:
 steps:
 ###########  Archive  ###########
   - ${{ if eq( parameters.pack, true )}}:
-    - powershell: Write-Host '##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg'
-      displayName: Set nipkg path variable
+    - powershell: |
+        Write-Host '##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg'
+        Write-Host '##vso[task.setvariable variable=installerPath]$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer'
+      displayName: Set build output path variables
     - powershell: |
         If (Test-Path '$(nipkgPath)') { Remove-Item -Path '$(nipkgPath)' -Recurse -Force }
         New-Item -Path '$(nipkgPath)' -Name 'control' -ItemType 'Directory'
@@ -42,11 +44,14 @@ steps:
     - powershell: |
         Copy-Item `
         -Path '$(nipkgPath)\*' `
-        -Destination '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer' `
+        -Destination '$(installerPath)' `
         -Filter *.nipkg `
         -Recurse `
         -Verbose
       displayName: Copy installer to build output location
+    - powershell: |
+        New-Item -Path '$(installerPath)' -Name 'manifest.json' -ItemType 'File'
+        Set-Content '$(installerPath)\manifest.json' '$(Build.SourceVersion)'
   - powershell: |
       Copy-Item `
       -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
