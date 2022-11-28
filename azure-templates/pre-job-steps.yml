@@ -16,7 +16,7 @@ steps:
 ###########  Configure Job-wide Variables  ###########
   - powershell: | 
       Get-ChildItem -Path '${{ parameters.archiveLocation }}\*' -Recurse -Include '*commit-id' -Verbose | ForEach-Object { `
-        If (Get-Content -Path $_ -eq $(Build.SourceVersion) ) { `
+        If ((Get-Content -Path $_) -eq $(Build.SourceVersion) ) { `
           Write-Host "##vso[task.setvariable variable=skipBuild]True `
         } Else { `
           Write-Host "##vso[task.setvariable variable=skipBuild]False `
