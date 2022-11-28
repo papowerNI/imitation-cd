@@ -20,10 +20,10 @@ steps:
     # Run by default, unless a commit is found that matches the current commit
     - powershell: | 
         Write-Host "##vso[task.setvariable variable=runBuild]True"
-        $skipBuild = False
+        $skipBuild = $false
         Get-ChildItem -Path '${{ parameters.archiveLocation }}\*' -Recurse -Include '*commit-id' -Verbose | ForEach-Object { `
           If ( (((Get-Content -Path $_) -eq '$(Build.SourceVersion)')) -or $skipBuild ) { `
-            $skipBuild = True `
+            $skipBuild = $true `
           } `
         } 
         If ($skipBuild) { Write-Host "##vso[task.setvariable variable=runBuild]False" }
