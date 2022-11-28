@@ -10,18 +10,24 @@ parameters:
     default: niveristand-custom-device-build-tools
   - name: archiveLocation
     type: string
-
+  - name: alwaysRun
+    type: boolean
+    default: true
 
 steps:
 ###########  Configure Job-wide Variables  ###########
-  - powershell: | 
-      Get-ChildItem -Path '${{ parameters.archiveLocation }}\*' -Recurse -Include '*commit-id' -Verbose | ForEach-Object { `
-        If ((Get-Content -Path $_) -eq '$(Build.SourceVersion)' ) { `
-          Write-Host "##vso[task.setvariable variable=skipBuild]True `
-        } Else { `
-          Write-Host "##vso[task.setvariable variable=skipBuild]False `
-        } `
-      }
+  - ${{ if eq( parameters.alwaysRun, False )}}:
+    # Run by default, unless a commit is found that matches the current commit
+    - powershell: | 
+        Write-Host "##vso[task.setvariable variable=runBuild]True"
+        $skipBuild = False
+        Get-ChildItem -Path '${{ parameters.archiveLocation }}\*' -Recurse -Include '*commit-id' -Verbose | ForEach-Object { `
+          If (((Get-Content -Path $_) -eq '$(Build.SourceVersion)') || $skipBuild) { `
+            $skipBuild = True `
+          } `
+        } 
+        If ($skipBuild) { Write-Host "##vso[task.setvariable variable=runBuild]False" }
+    displayName: check for existing build (if found, skip build)
 ###########  Configure Job-wide Variables  ###########
   # --- lvPath, architecture ---
   - ${{ if eq( parameters.bitness, '32-bit' )}}:
