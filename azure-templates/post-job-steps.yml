@@ -17,27 +17,29 @@ steps:
         Write-Host '##vso[task.setvariable variable=installerPath]$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer'
       displayName: Set build output path variables
     - powershell: |
-        If (Test-Path '$(nipkgPath)') { Remove-Item -Path '$(nipkgPath)' -Recurse -Force }
-        New-Item -Path '$(nipkgPath)' -Name 'control' -ItemType 'Directory'
-        New-Item -Path '$(nipkgPath)' -Name 'data' -ItemType 'Directory'
-        New-Item -Path '$(nipkgPath)' -Name 'debian-binary' -ItemType 'File'
-        Set-Content '$(nipkgPath)\debian-binary' '2.0\n'
+        If (Test-Path '$(nipkgPath)' -Verbose) { Remove-Item -Path '$(nipkgPath)' -Recurse -Force -Verbose}
+        New-Item -Path '$(nipkgPath)' -Name 'control' -ItemType 'Directory' -Verbose
+        New-Item -Path '$(nipkgPath)' -Name 'data' -ItemType 'Directory' -Verbose
+        New-Item -Path '$(nipkgPath)' -Name 'debian-binary' -ItemType 'File' -Verbose
+        Set-Content '$(nipkgPath)\debian-binary' '2.0\n' -Verbose
         Copy-Item `
         -Path '$(customDeviceRepoName)\control' `
-        -Destination '$(nipkgPath)\control'
+        -Destination '$(nipkgPath)\control' `
+        -Verbose
         Copy-Item `
         -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
-        -Destination '$(nipkgPath)\data\${{ parameters.nipkgInstallLocation }}\'
+        -Destination '$(nipkgPath)\data\${{ parameters.nipkgInstallLocation }}\' `
+        -Verbose
       displayName: Stage nipkg directory
     - powershell: |
-        $controlContents = Get-Content -Path '$(nipkgPath)\control\control'
-        $controlContents = $controlContents -replace '{veristand_version}', '$(lvVersion)'
-        $controlContents = $controlContents -replace '{labview_version}', '$(lvVersion)'
-        $controlContents = $controlContents -replace '{nipkg_version}', '$(releaseVersion)'
-        $controlContents = $controlContents -replace '{display_version}', '$(releaseVersion)'
-        $controlContents = $controlContents -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)'
-        $controlContents = $controlContents -replace '{labview_short_version}', '$(shortLvVersion)'
-        Set-Content -Value $controlContents -Path '$(nipkgPath)\control\control'
+        $controlContents = Get-Content -Path '$(nipkgPath)\control\control' -Verbose
+        $controlContents = $controlContents -replace '{veristand_version}', '$(lvVersion)' -Verbose
+        $controlContents = $controlContents -replace '{labview_version}', '$(lvVersion)' -Verbose
+        $controlContents = $controlContents -replace '{nipkg_version}', '$(releaseVersion)' -Verbose
+        $controlContents = $controlContents -replace '{display_version}', '$(releaseVersion)' -Verbose
+        $controlContents = $controlContents -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)' -Verbose
+        $controlContents = $controlContents -replace '{labview_short_version}', '$(shortLvVersion)' -Verbose
+        Set-Content -Value $controlContents -Path '$(nipkgPath)\control\control' -Verbose
       displayName: Update nipkg control version parameters
     - script: '"%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "$(nipkgPath)" "$(nipkgPath)"'
       displayName: Pack nipkg
@@ -48,14 +50,16 @@ steps:
         -Destination '$(installerPath)\' `
         -Include *.nipkg `
         -Recurse `
+        -Verbose
       displayName: Copy installer to build output location
     - powershell: |
-        New-Item -Path '$(installerPath)\' -Name 'manifest.json' -ItemType 'File'
-        Set-Content '$(installerPath)\commit-id' '$(Build.SourceVersion)'
+        New-Item -Path '$(installerPath)\' -Name 'commit-id' -ItemType 'File' -Verbose
+        Set-Content '$(installerPath)\commit-id' '$(Build.SourceVersion)' -Verbose
+      displayName: Store commit id for build
   - powershell: |
       Copy-Item `
       -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
       -Destination '${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\$(Build.BuildId)\$(lvVersion)\$(architecture)\' `
-      -Recurse
+      -Recurse `
       -Verbose
     displayName: Copying built files to nirvana Archive
