@@ -27,7 +27,7 @@ steps:
           } `
         } 
         If ($skipBuild) { Write-Host "##vso[task.setvariable variable=runBuild]False" }
-    displayName: check for existing build (if found, skip build)
+      displayName: check for existing build (if found, skip build)
 ###########  Configure Job-wide Variables  ###########
   # --- lvPath, architecture ---
   - ${{ if eq( parameters.bitness, '32-bit' )}}:
