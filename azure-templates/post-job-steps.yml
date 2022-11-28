@@ -44,7 +44,7 @@ steps:
     - powershell: |
         Copy-Item `
         -Path '$(nipkgPath)\*' `
-        -Destination '$(installerPath)' `
+        -Destination '$(installerPath)\' `
         -Filter *.nipkg `
         -Recurse `
         -Verbose
