@@ -22,11 +22,13 @@ steps:
         Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
         Write-Host "##vso[task.setvariable variable=architecture]x86"
       displayName: Use 32-bit LabVIEW
+
   - ${{ if eq( parameters.bitness, '64-bit' )}}:
     - powershell: |
         Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
         Write-Host "##vso[task.setvariable variable=architecture]x64"
       displayName: Use 64-bit LabVIEW
+
   # --- lvConfigVersion (.NET Assembly Version) ---
   - ${{ if eq( parameters.lvVersion, '2020' )}}:
     - powershell: |
@@ -35,6 +37,7 @@ steps:
         Write-Host '##vso[task.setvariable variable=releaseVersion]20.0.0'
         Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]$(releaseVersion)'
       displayName: Use .NET Assembly 8.0.0.0
+
   - ${{ if eq( parameters.lvVersion, '2021' )}}:
     - powershell: |
         Write-Host "##vso[task.setvariable variable=lvConfigVersion]9.0.0.0"
@@ -42,6 +45,7 @@ steps:
         Write-Host '##vso[task.setvariable variable=releaseVersion]21.0.0'
         Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]$(releaseVersion)'
       displayName: Use .NET Assembly 9.0.0.0
+
   - ${{ if eq( parameters.lvVersion, '2023' )}}:
     - powershell: |
         Write-Host "##vso[task.setvariable variable=lvConfigVersion]10.0.0.0"
@@ -49,6 +53,7 @@ steps:
         Write-Host '##vso[task.setvariable variable=releaseVersion]23.0.0'
         Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]2023 Q1'
       displayName: Use .NET Assembly 10.0.0.0
+
   # --- buildTools, lvVersion, lvCLICall ---
   - powershell: |
       Write-Host '##vso[task.setvariable variable=buildTools]${{ parameters.buildTools }}'
@@ -71,12 +76,13 @@ steps:
           } `
         } 
         If ($skipBuild) { Write-Host "##vso[task.setvariable variable=runBuild]False" }
-      displayName: check for existing build (if found, skip build)
+      displayName: alwaysRun = False, so check for existing build (if found, skip remaining steps)
   
 ###########  Checkout Necessary Repos  ###########
   - checkout: self
     displayName: Check out ${{ parameters.customDeviceRepoName }} repository
-    condition: $(runBuild)
+    condition: and(succeeded(), eq(variables['runBuild'], 'True'))
+
   - checkout: ${{ parameters.buildTools }}
     displayName: Check out NI VS Custom Device Build Tools repository
     condition: and(succeeded(), eq(variables['runBuild'], 'True'))

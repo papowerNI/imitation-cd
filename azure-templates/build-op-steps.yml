@@ -29,12 +29,15 @@ steps:
       Write-Host '##vso[task.setvariable variable=buildSpecArgument]'
     displayName: reset TargetName and BuildSpec
     condition: and(succeeded(), eq(variables['runBuild'], 'True'))
+
   - powershell: Write-Host '##vso[task.setvariable variable=targetArgument]-TargetName "${{ parameters.target }}" '
     displayName: specify TargetNames
     condition: and(succeeded(), eq(variables['runBuild'], 'True'), ne('${{ parameters.target }}', ''))
+
   - powershell: Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildSpec }}" '
     displayName: specify BuildSpecs
     condition: and(succeeded(), eq(variables['runBuild'], 'True'), ne('${{ parameters.buildSpec }}', ''))
+
   - script: |
       echo on
       $(lvCLICall) ^
@@ -45,6 +48,7 @@ steps:
       -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
     displayName: Build ${{ parameters.buildSpec }} on ${{ parameters.target }} in ${{ parameters.projectLocation }}
     condition: and(succeeded(), eq(variables['runBuild'], 'True'))
+
   - script: taskkill /im labview.exe /f
     displayName: Close LabVIEW
     condition: eq(variables['runBuild'], 'True') # close LabVIEW even if previous steps failed

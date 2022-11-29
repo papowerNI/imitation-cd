@@ -71,6 +71,7 @@ stages:
                 bitness:               ${{ lvVersion.bitness }} 
                 archiveLocation:       ${{ parameters.archiveLocation }}
                 alwaysRun:             false
+
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: azure-templates\build-op-steps.yml # config file and build specs
                 parameters:
@@ -78,6 +79,7 @@ stages:
                   buildOperation:  ${{ buildStep.buildOperation }}
                   target:          ${{ buildStep.target }}
                   buildSpec:       ${{ buildStep.buildSpec }}
+
             - template: azure-templates\post-job-steps.yml # nipkg and archive
               parameters:
                 nipkgInstallLocation: ${{ parameters.nipkgInstallLocation }}
