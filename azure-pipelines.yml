@@ -56,6 +56,10 @@ parameters:
         buildOperation: 'ExecuteAllBuildSpecs'
         target: ''
         buildSpec: ''
+# Always Run (set to True to override build skip optimization)
+  - name:    alwaysRun
+    type:    boolean
+    default: false
 
 stages:
   - stage: build
@@ -70,7 +74,7 @@ stages:
                 lvVersion:             ${{ lvVersion.version }}
                 bitness:               ${{ lvVersion.bitness }} 
                 archiveLocation:       ${{ parameters.archiveLocation }}
-                alwaysRun:             false
+                alwaysRun:             ${{ parameters.alwaysRun }}
 
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: azure-templates\build-op-steps.yml # config file and build specs

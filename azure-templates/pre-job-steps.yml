@@ -69,8 +69,10 @@ steps:
     # Run by default, unless a commit is found that matches the current commit
     - powershell: | 
         $skipBuild = $false
-        Get-ChildItem -Path '$(extendedArchiveLocation)\*\$(lvVersion)\$(architecture)\*' -Recurse -Include '*commit-id' | Sort {$_.LastWriteTime} | select -last 1 | `
-          If ( (((Get-Content -Path $_) -eq '$(Build.SourceVersion)')) -or $skipBuild ) {
+        Get-ChildItem -Path '$(extendedArchiveLocation)\*\$(lvVersion)\$(architecture)\*' -Recurse -Include '*commit-id' `
+        | Sort {$_.LastWriteTime} `
+        | select -last 1 `
+        | If ( (((Get-Content -Path $_) -eq '$(Build.SourceVersion)')) -or $skipBuild ) {
             $skipBuild = $true 
           }
         }
