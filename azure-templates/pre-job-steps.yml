@@ -69,24 +69,15 @@ steps:
     # Run by default, unless a commit is found that matches the current commit
     - powershell: | 
         $skipBuild = $false
-        Get-ChildItem -Path '$(extendedArchiveLocation)\*\$(lvVersion)\$(architecture)\*' -Recurse -Include '*commit-id' | ForEach-Object `
-        {                                                                                                                  `
-          Write-Output (Get-Content -Path $_);                                                                             `
-          Write-Output ('$(Build.SourceVersion)');                                                                         `
-          Write-Output $skipBuild;                                                                                         `
-          If ( (((Get-Content -Path $_) -eq '$(Build.SourceVersion)')) -or $skipBuild )                                    `
-          {                                                                                                                `
-            $skipBuild = $true                                                                                             `
-          }                                                                                                                `
+        Get-ChildItem -Path '$(extendedArchiveLocation)\*\$(lvVersion)\$(architecture)\*' -Recurse -Include '*commit-id' | ForEach-Object {
+          If ( (((Get-Content -Path $_) -eq '$(Build.SourceVersion)')) -or $skipBuild ) {
+            $skipBuild = $true 
+          }
         }
-        If ($skipBuild) 
-        { 
+        If ($skipBuild) { 
           Write-Host "##vso[task.setvariable variable=runBuild]False"
         }
       displayName: alwaysRun = False, so check for existing build (if found, skip remaining steps)
-
-  - powershell: Write-Output $(runBuild)
-    displayName: TEMP - display the runBuild variable to confirm its state
 
 ###########  Checkout Necessary Repos  ###########
   - checkout: self
