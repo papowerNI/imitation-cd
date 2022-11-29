@@ -77,7 +77,7 @@ steps:
         If ($skipBuild) { 
           Write-Host "##vso[task.setvariable variable=runBuild]False"
         }
-      displayName: alwaysRun = False, so check for existing build (if found, skip remaining steps)
+      displayName: alwaysRun=False, Skip if build already exists
 
 ###########  Checkout Necessary Repos  ###########
   - checkout: self
