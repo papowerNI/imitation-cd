@@ -16,19 +16,6 @@ parameters:
 
 steps:
 ###########  Configure Job-wide Variables  ###########
-  - ${{ if eq( parameters.alwaysRun, false )}}:
-    # Run by default, unless a commit is found that matches the current commit
-    - powershell: | 
-        Write-Host "##vso[task.setvariable variable=runBuild]True"
-        $skipBuild = $false
-        Get-ChildItem -Path '${{ parameters.archiveLocation }}\*' -Recurse -Include '*commit-id' -Verbose | ForEach-Object { `
-          If ( (((Get-Content -Path $_) -eq '$(Build.SourceVersion)')) -or $skipBuild ) { `
-            $skipBuild = $true `
-          } `
-        } 
-        If ($skipBuild) { Write-Host "##vso[task.setvariable variable=runBuild]False" }
-      displayName: check for existing build (if found, skip build)
-###########  Configure Job-wide Variables  ###########
   # --- lvPath, architecture ---
   - ${{ if eq( parameters.bitness, '32-bit' )}}:
     - powershell: |
@@ -69,14 +56,32 @@ steps:
       Write-Host '##vso[task.setvariable variable=customDeviceRepoName]${{ parameters.customDeviceRepoName }}'
       Write-Host '##vso[task.setvariable variable=archiveLocation]${{ parameters.archiveLocation }}'
       Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildTools }}\lv\operations"'
+      Write-Host '##vso[task.setvariable variable=archiveLocation]${{ parameters.archiveLocation }}'
+      Write-Host "##vso[task.setvariable variable=runBuild]True"
     displayName: Define Job-wide Variables
 
+###########  Decide whether to Skip this Build  ###########
+  - ${{ if eq( parameters.alwaysRun, false )}}:
+    # Run by default, unless a commit is found that matches the current commit
+    - powershell: | 
+        $skipBuild = $false
+        Get-ChildItem -Path '$(archiveLocation)\*\$(lvVersion)\*' -Recurse -Include '*commit-id' -Verbose | ForEach-Object { `
+          If ( (((Get-Content -Path $_) -eq '$(Build.SourceVersion)')) -or $skipBuild ) { `
+            $skipBuild = $true `
+          } `
+        } 
+        If ($skipBuild) { Write-Host "##vso[task.setvariable variable=runBuild]False" }
+      displayName: check for existing build (if found, skip build)
+  
 ###########  Checkout Necessary Repos  ###########
   - checkout: self
     displayName: Check out ${{ parameters.customDeviceRepoName }} repository
+    condition: $(runBuild)
   - checkout: ${{ parameters.buildTools }}
     displayName: Check out NI VS Custom Device Build Tools repository
+    condition: $(runBuild)
 
 ###########  Clear Compile Cache  ###########
   - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\$(customDeviceRepoName)\lvClearCache.log"
     displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }}
+    condition: $(runBuild)

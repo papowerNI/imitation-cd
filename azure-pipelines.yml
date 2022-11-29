@@ -78,8 +78,10 @@ stages:
                   buildOperation:  ${{ buildStep.buildOperation }}
                   target:          ${{ buildStep.target }}
                   buildSpec:       ${{ buildStep.buildSpec }}
+                condition: $(runBuild) # runBuild configured in pre-job-steps
             - template: azure-templates\post-job-steps.yml # nipkg and archive
               parameters:
                 nipkgInstallLocation: ${{ parameters.nipkgInstallLocation }}
                 buildOutputLocation:  ${{ parameters.buildOutputLocation }}
                 pack:                 true
+              condition: $(runBuild) # runBuild configured in pre-job-steps
