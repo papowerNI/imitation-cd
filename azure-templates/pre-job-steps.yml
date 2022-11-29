@@ -70,6 +70,7 @@ steps:
     # Run by default, unless a commit is found that matches the current commit
     - powershell: | 
         $skipBuild = $false
+        Write-Output (Get-ChildItem -Path '$(archiveLocation)\*\$(lvVersion)\*' -Recurse -Include '*commit-id' -Verbose)
         Get-ChildItem -Path '$(archiveLocation)\*\$(lvVersion)\*' -Recurse -Include '*commit-id' -Verbose | ForEach-Object `
         {                                                                                                                  `
           Write-Output (Get-Content -Path $_);                                                                             `
