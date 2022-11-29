@@ -75,7 +75,6 @@ steps:
         | If ( (((Get-Content -Path $_) -eq '$(Build.SourceVersion)')) -or $skipBuild ) {
             $skipBuild = $true 
           }
-        }
         If ($skipBuild) { 
           Write-Host "##vso[task.setvariable variable=runBuild]False"
         }
