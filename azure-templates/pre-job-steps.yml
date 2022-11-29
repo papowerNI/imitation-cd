@@ -79,9 +79,9 @@ steps:
     condition: $(runBuild)
   - checkout: ${{ parameters.buildTools }}
     displayName: Check out NI VS Custom Device Build Tools repository
-    condition: $(runBuild)
+    condition: and(succeeded(), eq(variables['runBuild'], 'True'))
 
 ###########  Clear Compile Cache  ###########
   - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\$(customDeviceRepoName)\lvClearCache.log"
     displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }}
-    condition: $(runBuild)
+    condition: and(succeeded(), eq(variables['runBuild'], 'True'))
