@@ -67,7 +67,7 @@ steps:
   - powershell: |
       Copy-Item `
       -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
-      -Destination '$(archiveLocation)\NI\export\$(Build.SourceBranchName)\$(Build.BuildId)\$(lvVersion)\$(architecture)\' `
+      -Destination '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)\' `
       -Recurse `
       -Verbose
     displayName: Copying built files to nirvana Archive
