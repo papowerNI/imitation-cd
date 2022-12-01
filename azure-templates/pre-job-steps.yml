@@ -74,9 +74,9 @@ steps:
     displayName: Check out NI VS Custom Device Build Tools repository
 
 ###########  Pull Dependencies in from latest build locations  ###########
-  - ${{ each dependency in parameters.dependencies }}:
+  - ${{ each dependency in parameters.dependencies }}: # TEMPORARY - default branchName is 'azure-pipelines' until things are actually committed to main on dependencies
     - powershell: |
-        $branchName = 'main'
+        $branchName = 'azure-pipelines'
         If (Test-Path -Path '${{ dependency.source }}\NI\export\$(Build.SourceBranchName)*\$(lvVersion)\$(architecture)') 
         {
           $branchName = '$(Build.SourceBranchName)'
