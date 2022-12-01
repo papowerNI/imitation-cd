@@ -10,6 +10,11 @@ parameters:
     default: niveristand-custom-device-build-tools
   - name: archiveLocation
     type: string
+  - name: dependencies
+    type: object
+    default:
+      - file: 'Main.vi'
+        destination: 'Includes'
 
 steps:
 ###########  Configure Job-wide Variables  ###########
@@ -68,8 +73,24 @@ steps:
     displayName: Check out NI VS Custom Device Build Tools repository
 
 ###########  Pull Dependencies in from latest build locations  ###########
-# find latest build
-# copy Includes
+  - ${{ each dependency in parameters.dependencies }}:
+    - powershell: |
+        $dependencyFilePath = Get-ChildItem `
+          -Path '$(extendedArchiveLocation)\*\$(lvVersion)\$(architecture)\*' `
+          -Recurse `
+          -Include '*${{ dependency.file }}' `
+          | Sort {$_.LastWriteTime} `
+          | select -last 1
+        New-Item `
+          -Path '$(customDeviceRepoName)\${{ dependency.destination }}' `
+          -ItemType 'Directory' `
+          -Verbose
+        Copy-Item `
+          -Path '$dependencyFilePath' `
+          -Destination '$(customDeviceRepoName)\${{ dependency.destination }}\' `
+          -Recurse `
+          -Verbose
+      displayName: Copy ${{ dependency.file }} to ${{ dependency.destination }}
 
 ###########  Clear Compile Cache  ###########
   - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\$(customDeviceRepoName)\lvClearCache.log"
