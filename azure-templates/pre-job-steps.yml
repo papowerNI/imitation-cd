@@ -83,7 +83,7 @@ steps:
         }
         Write-Output $branch
         $dependencyFilePath = Get-ChildItem `
-          -Path '${{ dependency.source }}\NI\export\$branch\*\$(lvVersion)\$(architecture)\*' `
+          -Path "${{ dependency.source }}\NI\export\$branch\*\$(lvVersion)\$(architecture)\*" `
           -Recurse `
           -Include '*${{ dependency.file }}' `
           | Sort {$_.LastWriteTime} `
