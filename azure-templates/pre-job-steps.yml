@@ -12,10 +12,6 @@ parameters:
     type: string
   - name: dependencies
     type: object
-    default:
-      - source: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc_eds_custom_device'
-        file: 'Main.vi'
-        destination: 'Includes'
 
 steps:
 ###########  Configure Job-wide Variables  ###########
@@ -75,32 +71,33 @@ steps:
 
 ###########  Pull Dependencies in from latest build locations  ###########
   - ${{ each dependency in parameters.dependencies }}: # TEMPORARY - default branchName is 'azure-pipelines' until things are actually committed to main on dependencies
-    - powershell: |
-        $branchName = 'azure-pipelines'
-        If (Test-Path -Path '${{ dependency.source }}\NI\export\$(Build.SourceBranchName)*\$(lvVersion)\$(architecture)') 
-        {
-          $branchName = '$(Build.SourceBranchName)'
-        }
-        Write-Output "${{ dependency.source }}\NI\export\$branchName\*\$(lvVersion)\$(architecture)\*"
-        $dependencyFilePath = Get-ChildItem `
-          -Path "${{ dependency.source }}\NI\export\$branchName\*\$(lvVersion)\$(architecture)\*" `
-          -Recurse `
-          -Include '*${{ dependency.file }}' `
-          | Sort {$_.LastWriteTime} `
-          | select -last 1
-        Write-Output $dependencyFilePath
-        Write-Output '${{ dependency.file }}'
-        Write-Output "${{ dependency.source }}\NI\export\$branch\"
-        New-Item `
-          -Path '$(customDeviceRepoName)\${{ dependency.destination }}' `
-          -ItemType 'Directory' `
-          -Verbose
-        Copy-Item `
-          -Path $dependencyFilePath `
-          -Destination '$(customDeviceRepoName)\${{ dependency.destination }}\' `
-          -Recurse `
-          -Verbose
-      displayName: Copy ${{ dependency.file }} to ${{ dependency.destination }}
+    - ${{ if ne( dependency.file, '' )}}:
+      - powershell: |
+          $branchName = 'azure-pipelines'
+          If (Test-Path -Path '${{ dependency.source }}\NI\export\$(Build.SourceBranchName)*\$(lvVersion)\$(architecture)') 
+          {
+            $branchName = '$(Build.SourceBranchName)'
+          }
+          Write-Output "${{ dependency.source }}\NI\export\$branchName\*\$(lvVersion)\$(architecture)\*"
+          $dependencyFilePath = Get-ChildItem `
+            -Path "${{ dependency.source }}\NI\export\$branchName\*\$(lvVersion)\$(architecture)\*" `
+            -Recurse `
+            -Include '*${{ dependency.file }}' `
+            | Sort {$_.LastWriteTime} `
+            | select -last 1
+          Write-Output $dependencyFilePath
+          Write-Output '${{ dependency.file }}'
+          Write-Output "${{ dependency.source }}\NI\export\$branch\"
+          New-Item `
+            -Path '$(customDeviceRepoName)\${{ dependency.destination }}' `
+            -ItemType 'Directory' `
+            -Verbose
+          Copy-Item `
+            -Path $dependencyFilePath `
+            -Destination '$(customDeviceRepoName)\${{ dependency.destination }}\' `
+            -Recurse `
+            -Verbose
+        displayName: Copy ${{ dependency.file }} to ${{ dependency.destination }}
 
 ###########  Clear Compile Cache  ###########
   - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\$(customDeviceRepoName)\lvClearCache.log"

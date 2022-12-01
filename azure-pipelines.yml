@@ -41,6 +41,14 @@ parameters:
       - version: '2023'
         bitness: '64-bit'
         releaseVersion: '23.0'
+# Dependencies
+  - name:    dependencies
+    type:    object
+    default: 
+      - source: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc_eds_custom_device'
+        file: 'Main.vi'
+        destination: 'Includes'
+
 # Build Output Location
   - name:    buildOutputLocation
     type:    string
@@ -74,6 +82,7 @@ stages:
                 lvVersion:             ${{ lvVersion.version }}
                 bitness:               ${{ lvVersion.bitness }} 
                 archiveLocation:       ${{ parameters.archiveLocation }}
+                dependencies:          ${{ parameters.dependencies }}
 
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: azure-templates\build-op-steps.yml # config file and build specs
