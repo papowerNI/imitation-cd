@@ -14,7 +14,6 @@ steps:
         Write-Host '##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg'
         Write-Host '##vso[task.setvariable variable=installerPath]$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer'
       displayName: Set build output path variables
-      condition: and(succeeded(), eq(variables['runBuild'], 'True'))
 
     - powershell: |
         If (Test-Path '$(nipkgPath)') { Remove-Item -Path '$(nipkgPath)' -Recurse -Force }
@@ -29,7 +28,6 @@ steps:
         -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
         -Destination '$(nipkgPath)\data\${{ parameters.nipkgInstallLocation }}\'
       displayName: Stage nipkg directory
-      condition: and(succeeded(), eq(variables['runBuild'], 'True'))
 
     - powershell: |
         $controlContents = Get-Content -Path '$(nipkgPath)\control\control'
@@ -41,11 +39,9 @@ steps:
         $controlContents = $controlContents -replace '{labview_short_version}', '$(shortLvVersion)'
         Set-Content -Value $controlContents -Path '$(nipkgPath)\control\control'
       displayName: Update nipkg control version parameters
-      condition: and(succeeded(), eq(variables['runBuild'], 'True'))
 
     - script: '"%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "$(nipkgPath)" "$(nipkgPath)"'
       displayName: Pack nipkg
-      condition: and(succeeded(), eq(variables['runBuild'], 'True'))
 
     - powershell: |
         New-Item -Path '$(installerPath)' -ItemType 'Directory'
@@ -56,13 +52,11 @@ steps:
         -Recurse `
         -Verbose
       displayName: Copy installer to build output location
-      condition: and(succeeded(), eq(variables['runBuild'], 'True'))
 
     - powershell: |
         New-Item -Path '$(installerPath)\' -Name 'commit-id' -ItemType 'File' -Verbose
         Set-Content '$(installerPath)\commit-id' '$(Build.SourceVersion)' -Verbose
       displayName: Store commit id for build
-      condition: and(succeeded(), eq(variables['runBuild'], 'True'))
 
   - powershell: |
       Copy-Item `
@@ -71,5 +65,4 @@ steps:
       -Recurse `
       -Verbose
     displayName: Copying built files to nirvana Archive
-    condition: and(succeeded(), eq(variables['runBuild'], 'True'))
     

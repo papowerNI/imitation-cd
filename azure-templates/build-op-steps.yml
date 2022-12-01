@@ -14,29 +14,27 @@ steps:
       $fileExists = Test-Path -Path "$(customDeviceRepoName)\${{ parameters.projectLocation }}.config"
       Write-Output "##vso[task.setvariable variable=configFileExists]$fileExists"
     displayName: Check if config file exists already for ${{ parameters.projectLocation }}
-    condition: and(succeeded(), eq(variables['runBuild'], 'True'))
 
   - powershell: |
       $lvConfigFilePath = '$(customDeviceRepoName)\${{ parameters.projectLocation }}.config'
       Copy-Item "$(buildTools)\resources\LabVIEW.exe.config" -Destination $lvConfigFilePath
       (Get-Content -Path $lvConfigFilePath) -replace '2016.0.0.0', '$(lvConfigVersion)' | Set-Content -Path $lvConfigFilePath
     displayName: Place lvproj.config file for ${{ parameters.projectLocation }}
-    condition: and(succeeded(), eq(variables['runBuild'], 'True'), eq(variables['configFileExists'], 'False')) # skip if lvproj.config already placed
+    condition: and(succeeded(), eq(variables['configFileExists'], 'False')) # skip if lvproj.config already placed
 
 ###########  Execute LabVIEW Build Operation  ###########
   - powershell: |
       Write-Host '##vso[task.setvariable variable=targetArgument]'
       Write-Host '##vso[task.setvariable variable=buildSpecArgument]'
     displayName: reset TargetName and BuildSpec
-    condition: and(succeeded(), eq(variables['runBuild'], 'True'))
 
   - powershell: Write-Host '##vso[task.setvariable variable=targetArgument]-TargetName "${{ parameters.target }}" '
     displayName: specify TargetNames
-    condition: and(succeeded(), eq(variables['runBuild'], 'True'), ne('${{ parameters.target }}', ''))
+    condition: and(succeeded(), ne('${{ parameters.target }}', ''))
 
   - powershell: Write-Host '##vso[task.setvariable variable=buildSpecArgument]-BuildSpecName "${{ parameters.buildSpec }}" '
     displayName: specify BuildSpecs
-    condition: and(succeeded(), eq(variables['runBuild'], 'True'), ne('${{ parameters.buildSpec }}', ''))
+    condition: and(succeeded(), ne('${{ parameters.buildSpec }}', ''))
 
   - script: |
       echo on
@@ -47,10 +45,9 @@ steps:
       $(buildSpecArgument) ^
       -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
     displayName: Build ${{ parameters.buildSpec }} on ${{ parameters.target }} in ${{ parameters.projectLocation }}
-    condition: and(succeeded(), eq(variables['runBuild'], 'True'))
 
   - script: taskkill /im labview.exe /f
     displayName: Close LabVIEW
-    condition: eq(variables['runBuild'], 'True') # close LabVIEW even if previous steps failed
+    condition: always() # close LabVIEW even if previous steps failed
 
 
