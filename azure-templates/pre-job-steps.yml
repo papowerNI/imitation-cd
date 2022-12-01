@@ -58,7 +58,6 @@ steps:
       Write-Host '##vso[task.setvariable variable=customDeviceRepoName]${{ parameters.customDeviceRepoName }}'
       Write-Host '##vso[task.setvariable variable=extendedArchiveLocation]${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'
       Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildTools }}\lv\operations"'
-      Write-Host "##vso[task.setvariable variable=runBuild]True"
     displayName: Define Job-wide Variables
 
 ###########  Checkout Necessary Repos  ###########
