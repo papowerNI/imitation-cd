@@ -12,6 +12,8 @@ parameters:
     type: string
   - name: dependencies
     type: object
+    default:
+      - file: ''
 
 steps:
 ###########  Configure Job-wide Variables  ###########
