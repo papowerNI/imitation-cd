@@ -87,6 +87,9 @@ steps:
           -Include '*${{ dependency.file }}' `
           | Sort {$_.LastWriteTime} `
           | select -last 1
+        Write-Output $dependencyFilePath
+        Write-Output '${{ dependency.file }}'
+        Write-Output '${{ dependency.source }}\NI\export\$branch\'
         New-Item `
           -Path '$(customDeviceRepoName)\${{ dependency.destination }}' `
           -ItemType 'Directory' `
