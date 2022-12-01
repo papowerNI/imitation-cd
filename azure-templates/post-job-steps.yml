@@ -44,7 +44,9 @@ steps:
       displayName: Pack nipkg
 
     - powershell: |
-        New-Item -Path '$(installerPath)' -ItemType 'Directory'
+        New-Item `
+        -Path '$(installerPath)' `
+        -ItemType 'Directory'
         Copy-Item `
         -Path '$(nipkgPath)\*' `
         -Destination '$(installerPath)\' `
@@ -54,15 +56,23 @@ steps:
       displayName: Copy installer to build output location
 
     - powershell: |
-        New-Item -Path '$(installerPath)\' -Name 'commit-id' -ItemType 'File' -Verbose
-        Set-Content '$(installerPath)\commit-id' '$(Build.SourceVersion)' -Verbose
+        New-Item `
+        -Path '$(installerPath)\' `
+        -Name 'commit-id' `
+        -ItemType 'File' `
+        -Verbose
+        Set-Content '$(installerPath)\commit-id' '$(Build.SourceVersion)' `
+        -Verbose
       displayName: Store commit id for build
 
   - powershell: |
-      New-Item -Path '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)' -ItemType 'Directory' -Verbose
+      New-Item `
+      -Path '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)' `
+      -ItemType 'Directory' `
+      -Verbose
       Copy-Item `
       -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
-      -Destination '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)' `
+      -Destination '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)\' `
       -Recurse `
       -Verbose
     displayName: Copying built files to nirvana Archive
