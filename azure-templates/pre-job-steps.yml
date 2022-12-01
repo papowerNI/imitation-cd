@@ -76,21 +76,21 @@ steps:
 ###########  Pull Dependencies in from latest build locations  ###########
   - ${{ each dependency in parameters.dependencies }}:
     - powershell: |
-        $branch = 'main'
+        $branchName = 'main'
         If (Test-Path -Path '${{ dependency.source }}\NI\export\$(Build.SourceBranchName)*\$(lvVersion)\$(architecture)') 
         {
-          $branch = '$(Build.SourceBranchName)'
+          $branchName = '$(Build.SourceBranchName)'
         }
-        Write-Output $branch
+        Write-Output "${{ dependency.source }}\NI\export\$branchName\*\$(lvVersion)\$(architecture)\*"
         $dependencyFilePath = Get-ChildItem `
-          -Path "${{ dependency.source }}\NI\export\$branch\*\$(lvVersion)\$(architecture)\*" `
+          -Path "${{ dependency.source }}\NI\export\$branchName\*\$(lvVersion)\$(architecture)\*" `
           -Recurse `
           -Include '*${{ dependency.file }}' `
           | Sort {$_.LastWriteTime} `
           | select -last 1
         Write-Output $dependencyFilePath
         Write-Output '${{ dependency.file }}'
-        Write-Output '${{ dependency.source }}\NI\export\$branch\'
+        Write-Output "${{ dependency.source }}\NI\export\$branch\"
         New-Item `
           -Path '$(customDeviceRepoName)\${{ dependency.destination }}' `
           -ItemType 'Directory' `
