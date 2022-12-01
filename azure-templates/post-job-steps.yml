@@ -59,6 +59,7 @@ steps:
       displayName: Store commit id for build
 
   - powershell: |
+      New-Item -Path '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)' -ItemType 'Directory' -Verbose
       Copy-Item `
       -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
       -Destination '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)' `
