@@ -79,8 +79,9 @@ steps:
         $branch = 'main'
         If (Test-Path -Path '${{ dependency.source }}\NI\export\$(Build.SourceBranchName)*\$(lvVersion)\$(architecture)') 
         {
-          $branch = $(Build.SourceBranchName)
+          $branch = '$(Build.SourceBranchName)''
         }
+        Write-Output $branch
         $dependencyFilePath = Get-ChildItem `
           -Path '${{ dependency.source }}\NI\export\$branch\*\$(lvVersion)\$(architecture)\*' `
           -Recurse `
