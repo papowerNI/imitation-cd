@@ -13,7 +13,8 @@ parameters:
   - name: dependencies
     type: object
     default:
-      - file: 'Main.vi'
+      - source: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc-eds-custom-device'
+        file: 'Main.vi'
         destination: 'Includes'
 
 steps:
@@ -75,8 +76,13 @@ steps:
 ###########  Pull Dependencies in from latest build locations  ###########
   - ${{ each dependency in parameters.dependencies }}:
     - powershell: |
+        $branch = 'main'
+        If (Test-Path -Path '${{ dependency.source }}\NI\export\$(Build.SourceBranchName)*\$(lvVersion)\$(architecture)') 
+        {
+          $branch = $(Build.SourceBranchName)
+        }
         $dependencyFilePath = Get-ChildItem `
-          -Path '$(extendedArchiveLocation)\*\$(lvVersion)\$(architecture)\*' `
+          -Path '${{ dependency.source }}\NI\export\$branch\*\$(lvVersion)\$(architecture)\*' `
           -Recurse `
           -Include '*${{ dependency.file }}' `
           | Sort {$_.LastWriteTime} `
