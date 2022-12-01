@@ -16,17 +16,20 @@ steps:
       displayName: Set build output path variables
 
     - powershell: |
-        If (Test-Path '$(nipkgPath)') { Remove-Item -Path '$(nipkgPath)' -Recurse -Force }
+        If (Test-Path '$(nipkgPath)') 
+        { 
+          Remove-Item -Path '$(nipkgPath)' -Recurse -Force 
+        }
         New-Item -Path '$(nipkgPath)' -Name 'control' -ItemType 'Directory'
         New-Item -Path '$(nipkgPath)' -Name 'data' -ItemType 'Directory'
         New-Item -Path '$(nipkgPath)' -Name 'debian-binary' -ItemType 'File'
         Set-Content '$(nipkgPath)\debian-binary' '2.0\n'
         Copy-Item `
-        -Path '$(customDeviceRepoName)\control' `
-        -Destination '$(nipkgPath)\control'
+          -Path '$(customDeviceRepoName)\control' `
+          -Destination '$(nipkgPath)\control'
         Copy-Item `
-        -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
-        -Destination '$(nipkgPath)\data\${{ parameters.nipkgInstallLocation }}\'
+          -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
+          -Destination '$(nipkgPath)\data\${{ parameters.nipkgInstallLocation }}\'
       displayName: Stage nipkg directory
 
     - powershell: |
@@ -44,36 +47,33 @@ steps:
       displayName: Pack nipkg
 
     - powershell: |
-        New-Item `
-        -Path '$(installerPath)' `
-        -ItemType 'Directory'
+        New-Item -Path '$(installerPath)' -ItemType 'Directory'
         Copy-Item `
-        -Path '$(nipkgPath)\*' `
-        -Destination '$(installerPath)\' `
-        -Include *.nipkg `
-        -Recurse `
-        -Verbose
+          -Path '$(nipkgPath)\*' `
+          -Destination '$(installerPath)\' `
+          -Include *.nipkg `
+          -Recurse `
+          -Verbose
       displayName: Copy installer to build output location
 
     - powershell: |
         New-Item `
-        -Path '$(installerPath)\' `
-        -Name 'commit-id' `
-        -ItemType 'File' `
-        -Verbose
-        Set-Content '$(installerPath)\commit-id' '$(Build.SourceVersion)' `
-        -Verbose
+          -Path '$(installerPath)\' `
+          -Name 'commit-id' `
+          -ItemType 'File' `
+          -Verbose
+        Set-Content '$(installerPath)\commit-id' '$(Build.SourceVersion)' -Verbose
       displayName: Store commit id for build
 
   - powershell: |
       New-Item `
-      -Path '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)' `
-      -ItemType 'Directory' `
-      -Verbose
+        -Path '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)' `
+        -ItemType 'Directory' `
+        -Verbose
       Copy-Item `
-      -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
-      -Destination '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)\' `
-      -Recurse `
-      -Verbose
+        -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
+        -Destination '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)\' `
+        -Recurse `
+        -Verbose
     displayName: Copying built files to nirvana Archive
     
