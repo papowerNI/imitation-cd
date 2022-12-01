@@ -13,7 +13,7 @@ parameters:
   - name: dependencies
     type: object
     default:
-      - source: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc-eds-custom-device'
+      - source: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc_eds_custom_device'
         file: 'Main.vi'
         destination: 'Includes'
 
