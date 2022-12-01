@@ -92,7 +92,7 @@ steps:
           -ItemType 'Directory' `
           -Verbose
         Copy-Item `
-          -Path '$dependencyFilePath' `
+          -Path $dependencyFilePath `
           -Destination '$(customDeviceRepoName)\${{ dependency.destination }}\' `
           -Recurse `
           -Verbose
