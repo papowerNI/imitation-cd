@@ -80,16 +80,12 @@ steps:
           {
             $branchName = '$(Build.SourceBranchName)'
           }
-          Write-Output "${{ dependency.source }}\NI\export\$branchName\*\$(lvVersion)\$(architecture)\*"
           $dependencyFilePath = Get-ChildItem `
             -Path "${{ dependency.source }}\NI\export\$branchName\*\$(lvVersion)\$(architecture)\*" `
             -Recurse `
             -Include '*${{ dependency.file }}' `
             | Sort {$_.LastWriteTime} `
             | select -last 1
-          Write-Output $dependencyFilePath
-          Write-Output '${{ dependency.file }}'
-          Write-Output "${{ dependency.source }}\NI\export\$branch\"
           New-Item `
             -Path '$(customDeviceRepoName)\${{ dependency.destination }}' `
             -ItemType 'Directory' `
