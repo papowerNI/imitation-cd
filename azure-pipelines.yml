@@ -46,7 +46,10 @@ parameters:
     type:    object
     default: 
       - source: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc_eds_custom_device'
-        file: 'Main.vi'
+        file: 'SLSC EDS Configuration.llb'
+        destination: 'Includes'
+      - source: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc_eds_custom_device'
+        file: 'SLSC EDS Engine Windows.llb'
         destination: 'Includes'
 
 # Build Output Location
