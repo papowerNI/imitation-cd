@@ -12,22 +12,25 @@ resources:
       ref: main
       endpoint: ni (2)
       name: ni/niveristand-custom-device-build-tools
+
   pipelines:
     - pipeline: SlscEdsCustomDevice
       source: ni.niveristand-slsc-eds-custom-device
       trigger: true
 
 pool:
-  name: custom-device-temp
+  name: custom-device-temp # TEMPORARY, eventually use an official build pool of custom device agents
   demands:
     - agent.os -equals Windows_NT
 
-# Custom Device-specific Parameters
+# --------- Set Build Parameters ---------
 parameters:
+    # customDeviceRepoName - Name of the Custom Device Repository on GitHub
   - name:    customDeviceRepoName
     type:    string
     default: imitation-cd
-    # LabVIEW Versions to Build
+
+    # lvVersions - each LabVIEW version, bitness, and release nomenclature combination to build
   - name:    lvVersions
     type:    object
     default:
@@ -41,7 +44,8 @@ parameters:
       - version: '2023'
         bitness: '64-bit'
         releaseVersion: '23.0'
-# Dependencies
+
+    # dependencies - source location, file, and copy destination
   - name:    dependencies
     type:    object
     default: 
@@ -52,18 +56,26 @@ parameters:
         file: 'SLSC EDS Engine Windows.llb'
         destination: 'Includes'
 
-# Build Output Location
+    # buildOutputLocation - location where LV build outputs are stored
   - name:    buildOutputLocation
     type:    string
     default: 'Built'
-  - name:    nipkgInstallLocation
-    type:    string
-    default: 'documents\National Instruments\NI VeriStand $(lvVersion)\SLSC Plugins\Modules'
-# Post-build Archive Location
+
+    # packages - configuration for each nipkg to build
+  - name:    packages
+    type:    object
+    default: 
+      - installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)\SLSC Plugins\Modules'
+        controlFileName: 'control'
+        payloadLocation: 'Built'
+
+    # archiveLocation - location to store build artifacts for archival
   - name:    archiveLocation
     type:    string
     default: '\\nirvana\temp\papower\Measurements\VeriStandAddons\imitation-cd'
-# Custom Device Build Steps (project location, LabVIEW CLI Build operation)
+
+    # buildSteps - list of each project, buildOperation, target, and buildSpec combination to build 
+    # Note: target and buildSpec may be empty for some buildOperations
   - name:    buildSteps
     type:    object
     default:
@@ -72,6 +84,9 @@ parameters:
         target: ''
         buildSpec: ''
 
+
+# --------- Call Build Templates ---------
+# Note: If custom build steps are needed for a particular custom device, they can be inserted before or after existing templates below
 stages:
   - stage: build
     jobs:
@@ -95,8 +110,9 @@ stages:
                   target:          ${{ buildStep.target }}
                   buildSpec:       ${{ buildStep.buildSpec }}
 
+            - ${{ each package in parameters.packages }}:
             - template: azure-templates\post-job-steps.yml # nipkg and archive
               parameters:
-                nipkgInstallLocation: ${{ parameters.nipkgInstallLocation }}
-                buildOutputLocation:  ${{ parameters.buildOutputLocation }}
-                pack:                 true
+                package:             ${{ package }}
+                buildOutputLocation: ${{ parameters.buildOutputLocation }}
+                pack:                true

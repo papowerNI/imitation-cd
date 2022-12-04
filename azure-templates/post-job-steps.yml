@@ -1,8 +1,8 @@
 parameters:
   - name: buildOutputLocation
     type: string
-  - name: nipkgInstallLocation
-    type: string
+  - name: package
+    type: object
   - name: pack
     type: boolean
     default: false
@@ -25,11 +25,11 @@ steps:
         New-Item -Path '$(nipkgPath)' -Name 'debian-binary' -ItemType 'File'
         Set-Content '$(nipkgPath)\debian-binary' '2.0\n'
         Copy-Item `
-          -Path '$(customDeviceRepoName)\control' `
+          -Path '$(customDeviceRepoName)\${{ parameters.package.controlFileName }}' `
           -Destination '$(nipkgPath)\control'
         Copy-Item `
-          -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
-          -Destination '$(nipkgPath)\data\${{ parameters.nipkgInstallLocation }}\'
+          -Path '$(customDeviceRepoName)\${{ parameters.package.payloadLocation }}\*' `
+          -Destination '$(nipkgPath)\data\${{ parameters.package.installLocation }}\'
       displayName: Stage nipkg directory
 
     - powershell: |
