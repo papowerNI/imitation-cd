@@ -85,11 +85,11 @@ steps:
             | select -last 1
           New-Item `
             -Path '$(customDeviceRepoName)\${{ dependency.destination }}' `
-            -ItemType 'Directory' `
+            -ItemType 'Directory'
           Copy-Item `
             -Path $dependencyFilePath `
             -Destination '$(customDeviceRepoName)\${{ dependency.destination }}\' `
-            -Recurse `
+            -Recurse
         displayName: Copy ${{ dependency.file }} to ${{ dependency.destination }}
 
 ###########  Clear Compile Cache  ###########

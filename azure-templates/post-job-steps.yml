@@ -55,24 +55,24 @@ steps:
           -Path '$(nipkgPath)\*' `
           -Destination '$(installerPath)\' `
           -Include *.nipkg `
-          -Recurse `
+          -Recurse
       displayName: Copy installer to build output location
 
     - powershell: |
         New-Item `
           -Path '$(installerPath)\' `
           -Name 'commit-id' `
-          -ItemType 'File' `
+          -ItemType 'File'
         Set-Content '$(installerPath)\commit-id' '$(Build.SourceVersion)'
       displayName: Store commit id for build
 
   - powershell: |
       New-Item `
         -Path '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)' `
-        -ItemType 'Directory' `
+        -ItemType 'Directory'
       Copy-Item `
         -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
         -Destination '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)\' `
-        -Recurse `
+        -Recurse
     displayName: Copying built files to nirvana Archive
     
