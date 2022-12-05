@@ -52,6 +52,16 @@ parameters:
         file: 'SLSC EDS Engine Windows.llb'
         destination: 'Includes'
 
+    # buildSteps - list of each project, buildOperation, target, and buildSpec combination to build 
+    # Note: target and buildSpec may be empty for some buildOperations
+  - name:    buildSteps
+    type:    object
+    default:
+      - projectLocation: 'Source\TestProject.lvproj'
+        buildOperation: 'ExecuteAllBuildSpecs'
+        target: ''
+        buildSpec: ''
+
     # buildOutputLocation - location where LV build outputs are stored
   - name:    buildOutputLocation
     type:    string
@@ -69,17 +79,6 @@ parameters:
   - name:    archiveLocation
     type:    string
     default: '\\nirvana\temp\papower\Measurements\VeriStandAddons\imitation-cd'
-
-    # buildSteps - list of each project, buildOperation, target, and buildSpec combination to build 
-    # Note: target and buildSpec may be empty for some buildOperations
-  - name:    buildSteps
-    type:    object
-    default:
-      - projectLocation: 'Source\TestProject.lvproj'
-        buildOperation: 'ExecuteAllBuildSpecs'
-        target: ''
-        buildSpec: ''
-
 
 # --------- Call Build Templates ---------
 # Note: If custom build steps are needed for a particular custom device, they can be inserted before or after existing templates below

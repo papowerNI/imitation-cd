@@ -33,7 +33,8 @@ steps:
           -Destination '$(nipkgPath)\control\control'
         Copy-Item `
           -Path '$(customDeviceRepoName)\${{ parameters.package.payloadLocation }}\*' `
-          -Destination '$(nipkgPath)\data\${{ parameters.package.installLocation }}\'
+          -Destination '$(nipkgPath)\data\${{ parameters.package.installLocation }}\' `
+          -Verbose
       displayName: Stage nipkg directory
 
     - powershell: |
