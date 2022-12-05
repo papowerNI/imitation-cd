@@ -41,17 +41,6 @@ parameters:
       # - version: '2023'  TEMPORARY, disable 2023 because it's buggy
       #   bitness: '64-bit'
 
-    # dependencies - source location, file, and copy destination
-  - name:    dependencies
-    type:    object
-    default: 
-      - source: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc_eds_custom_device'
-        file: 'SLSC EDS Configuration.llb'
-        destination: 'Includes'
-      - source: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc_eds_custom_device'
-        file: 'SLSC EDS Engine Windows.llb'
-        destination: 'Includes'
-
     # buildSteps - list of each project, buildOperation, target, and buildSpec combination to build 
     # Note: target and buildSpec may be empty for some buildOperations
   - name:    buildSteps
@@ -61,6 +50,13 @@ parameters:
         buildOperation: 'ExecuteAllBuildSpecs'
         target: ''
         buildSpec: ''
+        dependencies:
+          - source: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc_eds_custom_device'
+            file: 'SLSC EDS Configuration.llb'
+            destination: 'Includes'
+          - source: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc_eds_custom_device'
+            file: 'SLSC EDS Engine Windows.llb'
+            destination: 'Includes'
 
     # buildOutputLocation - location where LV build outputs are stored
   - name:    buildOutputLocation
@@ -94,7 +90,6 @@ stages:
                 customDeviceRepoName:  ${{ parameters.customDeviceRepoName }}
                 lvVersion:             ${{ lvVersion.version }}
                 bitness:               ${{ lvVersion.bitness }} 
-                dependencies:          ${{ parameters.dependencies }}
 
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: azure-templates\build-op-steps.yml # config file and build specs
@@ -103,6 +98,8 @@ stages:
                   buildOperation:  ${{ buildStep.buildOperation }}
                   target:          ${{ buildStep.target }}
                   buildSpec:       ${{ buildStep.buildSpec }}
+                  dependencies:    ${{ buildStep.dependencies }}
+
 
             - template: azure-templates\post-job-steps.yml # nipkg and archive
               parameters:

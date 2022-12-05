@@ -7,8 +7,43 @@ parameters:
     type: string
   - name: buildSpec
     type: string
+  - name: dependencies
+    type: object
 
 steps:
+
+###########  Pull Dependencies in from latest build locations  ###########
+  - ${{ each dependency in parameters.dependencies }}: # TEMPORARY - default branchName is 'azure-pipelines' until things are actually committed to main on dependencies
+    - ${{ if eq( dependency.target, 'My Computer' )}}:
+      - powershell: Write-Output "##vso[task.setvariable variable=dependencyTargetDirectory]Windows"
+    - ${{ if eq( dependency.target, 'Linux x64' )}}:
+      - powershell: Write-Output "##vso[task.setvariable variable=dependencyTargetDirectory]Linux_x64"
+    - ${{ if ne( dependency.file, '' )}}:
+      - powershell: |
+          $branchName = 'azure-pipelines'
+          If (Test-Path -Path '${{ dependency.source }}\NI\export\$(Build.SourceBranchName)*\$(lvVersion)\$(architecture)') 
+          {
+            $branchName = '$(Build.SourceBranchName)'
+          }
+          $dependencyFilePath = Get-ChildItem `
+            -Path "${{ dependency.source }}\NI\export\$branchName\*\$(lvVersion)\$(architecture)\$(dependencyTargetDirectory)\*" `
+            -Recurse `
+            -Include '*${{ dependency.file }}' `
+            | Sort {$_.LastWriteTime} `
+            | select -last 1
+          If (-not(Test-Path -Path '$(customDeviceRepoName)\${{ dependency.destination }}'))
+          {
+            New-Item `
+              -Path '$(customDeviceRepoName)\${{ dependency.destination }}' `
+              -ItemType 'Directory'
+          }
+          Copy-Item `
+            -Path $dependencyFilePath `
+            -Destination '$(customDeviceRepoName)\${{ dependency.destination }}\' `
+            -Recurse `
+            -Force
+        displayName: Copy ${{ dependency.file }} to ${{ dependency.destination }}
+
 ###########  Set lvproj Config  ###########
   - powershell: |
       $fileExists = Test-Path -Path "$(customDeviceRepoName)\${{ parameters.projectLocation }}.config"
