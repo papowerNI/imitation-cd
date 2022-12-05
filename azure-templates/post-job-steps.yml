@@ -3,7 +3,7 @@ parameters:
     type: string
   - name: archiveLocation
     type: string
-  - name: package
+  - name: packages
     type: object
   - name: pack
     type: boolean
@@ -18,56 +18,49 @@ steps:
         Write-Host '##vso[task.setvariable variable=extendedArchiveLocation]${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'
       displayName: Set build output path variables
 
-    - powershell: |
-        If (Test-Path '$(nipkgPath)') 
-        { 
-          Remove-Item -Path '$(nipkgPath)' -Recurse -Force 
-        }
-        New-Item -Path '$(nipkgPath)' -ItemType 'Directory'
-        New-Item -Path '$(nipkgPath)' -Name 'control' -ItemType 'Directory'
-        New-Item -Path '$(nipkgPath)' -Name 'data' -ItemType 'Directory'
-        New-Item -Path '$(nipkgPath)' -Name 'debian-binary' -ItemType 'File'
-        Set-Content '$(nipkgPath)\debian-binary' '2.0\n'
-        Copy-Item `
-          -Path '$(customDeviceRepoName)\${{ parameters.package.controlFileName }}' `
-          -Destination '$(nipkgPath)\control\control'
-        New-Item -Path '$(nipkgPath)\data\${{ parameters.package.installLocation }}' -ItemType 'Directory' 
-        Copy-Item `
-          -Path '$(customDeviceRepoName)\${{ parameters.package.payloadLocation }}\*' `
-          -Destination '$(nipkgPath)\data\${{ parameters.package.installLocation }}' `
-          -Verbose
-      displayName: Stage nipkg directory
+    - ${{ each package in parameters.packages }}:
+      - powershell: |
+          If (Test-Path '$(nipkgPath)') 
+          { 
+            Remove-Item -Path '$(nipkgPath)' -Recurse -Force 
+          }
+          New-Item -Path '$(nipkgPath)' -ItemType 'Directory'
+          New-Item -Path '$(nipkgPath)' -Name 'control' -ItemType 'Directory'
+          New-Item -Path '$(nipkgPath)' -Name 'data' -ItemType 'Directory'
+          New-Item -Path '$(nipkgPath)' -Name 'debian-binary' -ItemType 'File'
+          Set-Content '$(nipkgPath)\debian-binary' '2.0\n'
+          Copy-Item `
+            -Path '$(customDeviceRepoName)\${{ package.controlFileName }}' `
+            -Destination '$(nipkgPath)\control\control'
+          New-Item -Path '$(nipkgPath)\data\${{ package.installLocation }}' -ItemType 'Directory' 
+          Copy-Item `
+            -Path '$(customDeviceRepoName)\${{ package.payloadLocation }}\*' `
+            -Destination '$(nipkgPath)\data\${{ package.installLocation }}' `
+            -Verbose
+        displayName: Stage nipkg directory
 
-    - powershell: |
-        $controlContents = Get-Content -Path '$(nipkgPath)\control\control'
-        $controlContents = $controlContents -replace '{veristand_version}', '$(lvVersion)'
-        $controlContents = $controlContents -replace '{labview_version}', '$(lvVersion)'
-        $controlContents = $controlContents -replace '{nipkg_version}', '$(releaseVersion)'
-        $controlContents = $controlContents -replace '{display_version}', '$(releaseVersion)'
-        $controlContents = $controlContents -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)'
-        $controlContents = $controlContents -replace '{labview_short_version}', '$(shortLvVersion)'
-        Set-Content -Value $controlContents -Path '$(nipkgPath)\control\control'
-      displayName: Update nipkg control version parameters
+      - powershell: |
+          $controlContents = Get-Content -Path '$(nipkgPath)\control\control'
+          $controlContents = $controlContents -replace '{veristand_version}', '$(lvVersion)'
+          $controlContents = $controlContents -replace '{labview_version}', '$(lvVersion)'
+          $controlContents = $controlContents -replace '{nipkg_version}', '$(releaseVersion)'
+          $controlContents = $controlContents -replace '{display_version}', '$(releaseVersion)'
+          $controlContents = $controlContents -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)'
+          $controlContents = $controlContents -replace '{labview_short_version}', '$(shortLvVersion)'
+          Set-Content -Value $controlContents -Path '$(nipkgPath)\control\control'
+        displayName: Update nipkg control version parameters
 
-    - script: '"%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "$(nipkgPath)" "$(nipkgPath)"'
-      displayName: Pack nipkg
+      - script: '"%PROGRAMFILES%\National Instruments\NI Package Manager\nipkg.exe" pack "$(nipkgPath)" "$(nipkgPath)"'
+        displayName: Pack nipkg
 
-    - powershell: |
-        New-Item -Path '$(installerPath)' -ItemType 'Directory'
-        Copy-Item `
-          -Path '$(nipkgPath)\*' `
-          -Destination '$(installerPath)\' `
-          -Include *.nipkg `
-          -Recurse
-      displayName: Copy installer to build output location
-
-    - powershell: |
-        New-Item `
-          -Path '$(installerPath)\' `
-          -Name 'commit-id' `
-          -ItemType 'File'
-        Set-Content '$(installerPath)\commit-id' '$(Build.SourceVersion)'
-      displayName: Store commit id for build
+      - powershell: |
+          New-Item -Path '$(installerPath)' -ItemType 'Directory'
+          Copy-Item `
+            -Path '$(nipkgPath)\*' `
+            -Destination '$(installerPath)\' `
+            -Include *.nipkg `
+            -Recurse
+        displayName: Copy installer to build output location
 
   - powershell: |
       New-Item `
