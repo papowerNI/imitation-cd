@@ -1,6 +1,8 @@
 parameters:
   - name: buildOutputLocation
     type: string
+  - name: archiveLocation
+    type: string
   - name: package
     type: object
   - name: pack
@@ -13,6 +15,7 @@ steps:
     - powershell: |
         Write-Host '##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg'
         Write-Host '##vso[task.setvariable variable=installerPath]$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer'
+        Write-Host '##vso[task.setvariable variable=extendedArchiveLocation]${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'
       displayName: Set build output path variables
 
     - powershell: |

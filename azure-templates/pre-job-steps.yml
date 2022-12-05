@@ -8,8 +8,6 @@ parameters:
   - name: buildTools
     type: string
     default: niveristand-custom-device-build-tools
-  - name: archiveLocation
-    type: string
   - name: dependencies
     type: object
     default:
@@ -60,7 +58,6 @@ steps:
       Write-Host '##vso[task.setvariable variable=buildTools]${{ parameters.buildTools }}'
       Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersion }}'
       Write-Host '##vso[task.setvariable variable=customDeviceRepoName]${{ parameters.customDeviceRepoName }}'
-      Write-Host '##vso[task.setvariable variable=extendedArchiveLocation]${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'
       Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\${{ parameters.buildTools }}\lv\operations"'
     displayName: Define Job-wide Variables
 

@@ -8,15 +8,15 @@ trigger:
 resources:
   repositories:
     - repository: niveristand-custom-device-build-tools
-      type: github
-      ref: main
-      endpoint: ni (2)
-      name: ni/niveristand-custom-device-build-tools
+      type:       github
+      ref:        main
+      endpoint:   ni (2)
+      name:       ni/niveristand-custom-device-build-tools
 
   pipelines:
     - pipeline: SlscEdsCustomDevice
-      source: ni.niveristand-slsc-eds-custom-device
-      trigger: true
+      source:   ni.niveristand-slsc-eds-custom-device
+      trigger:  true
 
 pool:
   name: custom-device-temp # TEMPORARY, eventually use an official build pool of custom device agents
@@ -30,20 +30,16 @@ parameters:
     type:    string
     default: imitation-cd
 
-    # lvVersions - each LabVIEW version, bitness, and release nomenclature combination to build
+    # lvVersions - each LabVIEW version and bitness combination to build
   - name:    lvVersions
     type:    object
     default:
       - version: '2020'
         bitness: '32-bit'
-        releaseVersion: '20.0'
-        quarterlyVersion: ''
       - version: '2021'
         bitness: '64-bit'
-        releaseVersion: '21.0'
       - version: '2023'
         bitness: '64-bit'
-        releaseVersion: '23.0'
 
     # dependencies - source location, file, and copy destination
   - name:    dependencies
@@ -99,7 +95,6 @@ stages:
                 customDeviceRepoName:  ${{ parameters.customDeviceRepoName }}
                 lvVersion:             ${{ lvVersion.version }}
                 bitness:               ${{ lvVersion.bitness }} 
-                archiveLocation:       ${{ parameters.archiveLocation }}
                 dependencies:          ${{ parameters.dependencies }}
 
             - ${{ each buildStep in parameters.buildSteps }}:
@@ -115,4 +110,5 @@ stages:
                 parameters:
                   package:             ${{ package }}
                   buildOutputLocation: ${{ parameters.buildOutputLocation }}
+                  archiveLocation:     ${{ parameters.archiveLocation }}
                   pack:                true
