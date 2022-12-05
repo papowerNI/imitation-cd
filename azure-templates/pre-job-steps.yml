@@ -20,12 +20,16 @@ steps:
     - powershell: |
         Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
         Write-Host "##vso[task.setvariable variable=architecture]x86"
+        Write-Host "##vso[task.setvariable variable=nipkgx86suffix]-x86"
+        Write-Host "##vso[task.setvariable variable=nipkgx64suffix]"
       displayName: Use 32-bit LabVIEW
 
   - ${{ if eq( parameters.bitness, '64-bit' )}}:
     - powershell: |
         Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
         Write-Host "##vso[task.setvariable variable=architecture]x64"
+        Write-Host "##vso[task.setvariable variable=nipkgx86suffix]"
+        Write-Host "##vso[task.setvariable variable=nipkgx64suffix]64"
       displayName: Use 64-bit LabVIEW
 
   # --- lvConfigVersion (.NET Assembly Version) ---
