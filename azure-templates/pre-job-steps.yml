@@ -8,10 +8,6 @@ parameters:
   - name: buildTools
     type: string
     default: niveristand-custom-device-build-tools
-  - name: dependencies
-    type: object
-    default:
-      - file: ''
 
 steps:
 ###########  Configure Job-wide Variables  ###########
