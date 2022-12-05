@@ -13,11 +13,6 @@ resources:
       endpoint:   ni (2)
       name:       ni/niveristand-custom-device-build-tools
 
-  pipelines:
-    - pipeline: SlscEdsCustomDevice
-      source:   ni.niveristand-slsc-eds-custom-device
-      trigger:  true
-
 pool:
   name: custom-device-temp # TEMPORARY, eventually use an official build pool of custom device agents
   demands:
@@ -50,13 +45,6 @@ parameters:
         buildOperation: 'ExecuteAllBuildSpecs'
         target: ''
         buildSpec: ''
-        dependencies:
-          - source: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc_eds_custom_device'
-            file: 'SLSC EDS Configuration.llb'
-            destination: 'Includes'
-          - source: '\\nirvana\temp\papower\Measurements\VeriStandAddons\slsc_eds_custom_device'
-            file: 'SLSC EDS Engine Windows.llb'
-            destination: 'Includes'
 
     # buildOutputLocation - location where LV build outputs are stored
   - name:    buildOutputLocation
@@ -98,7 +86,7 @@ stages:
                   buildOperation:  ${{ buildStep.buildOperation }}
                   target:          ${{ buildStep.target }}
                   buildSpec:       ${{ buildStep.buildSpec }}
-                  dependencies:    ${{ buildStep.dependencies }}
+                  # dependencies:    ${{ buildStep.dependencies }}
 
 
             - template: azure-templates\post-job-steps.yml # nipkg and archive
