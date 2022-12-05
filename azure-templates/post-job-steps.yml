@@ -34,7 +34,7 @@ steps:
         New-Item -Path '$(nipkgPath)\data\${{ parameters.package.installLocation }}' -ItemType 'Directory' 
         Copy-Item `
           -Path '$(customDeviceRepoName)\${{ parameters.package.payloadLocation }}\*' `
-          -Destination '$(nipkgPath)\data\${{ parameters.package.installLocation }}\' `
+          -Destination '$(nipkgPath)\data\${{ parameters.package.installLocation }}' `
           -Verbose
       displayName: Stage nipkg directory
 
