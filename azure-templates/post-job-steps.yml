@@ -31,6 +31,7 @@ steps:
         Copy-Item `
           -Path '$(customDeviceRepoName)\${{ parameters.package.controlFileName }}' `
           -Destination '$(nipkgPath)\control\control'
+        New-Item -Path '$(nipkgPath)\data\${{ parameters.package.installLocation }}' -ItemType 'Directory' 
         Copy-Item `
           -Path '$(customDeviceRepoName)\${{ parameters.package.payloadLocation }}\*' `
           -Destination '$(nipkgPath)\data\${{ parameters.package.installLocation }}\' `
