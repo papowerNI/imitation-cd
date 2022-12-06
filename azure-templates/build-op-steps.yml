@@ -26,7 +26,7 @@ steps:
         - powershell: Write-Output "##vso[task.setvariable variable=dependencyTargetDirectory]Linux_x64"
           displayName: set target for dependency to Linux RT
       - powershell: |
-          $branchName = 'azure-pipelines'
+          $branchName = 'azure-pipeline'
           If (Test-Path -Path '${{ dependency.source }}\NI\export\$(Build.SourceBranchName)*\$(lvVersion)\$(architecture)') 
           {
             $branchName = '$(Build.SourceBranchName)'
