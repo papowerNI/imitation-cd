@@ -15,7 +15,6 @@ steps:
     - powershell: |
         Write-Host '##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg'
         Write-Host '##vso[task.setvariable variable=installerPath]$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\installer'
-        Write-Host '##vso[task.setvariable variable=extendedArchiveLocation]${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'
       displayName: Set build output path variables
 
     - ${{ each package in parameters.packages }}:
@@ -63,12 +62,13 @@ steps:
         displayName: Copy installer to build output location
 
   - powershell: |
+      $extendedArchiveLocation = '{{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'
       New-Item `
-        -Path '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)' `
+        -Path '$extendedArchiveLocation\$(Build.BuildId)\$(lvVersion)\$(architecture)' `
         -ItemType 'Directory'
       Copy-Item `
         -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\*' `
-        -Destination '$(extendedArchiveLocation)\$(Build.BuildId)\$(lvVersion)\$(architecture)\' `
+        -Destination '$extendedArchiveLocation\$(Build.BuildId)\$(lvVersion)\$(architecture)\' `
         -Recurse
     displayName: Copying built files to nirvana Archive
     
