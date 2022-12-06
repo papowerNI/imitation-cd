@@ -37,7 +37,7 @@ steps:
             New-Item -Path '$(nipkgPath)\data\${{ payloadMap.installLocation }}' -ItemType 'Directory' 
             Copy-Item `
               -Path '$(customDeviceRepoName)\${{ payloadMap.payloadLocation }}\*' `
-              -Destination '$(nipkgPath)\data\${{ payloadMap.installLocation }}' `
+              -Destination '$(nipkgPath)\data\${{ payloadMap.installLocation }}'
           displayName: Copying payload ${{ payloadMap.payloadLocation }} to install location
 
       - powershell: |
