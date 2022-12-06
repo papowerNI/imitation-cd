@@ -5,8 +5,10 @@ parameters:
     type: string
   - name: target
     type: string
+    default: ''
   - name: buildSpec
     type: string
+    default: ''
   - name: dependencies
     type: object
     default:
@@ -17,10 +19,10 @@ steps:
 ###########  Pull Dependencies in from latest build locations  ###########
   - ${{ each dependency in parameters.dependencies }}: # TEMPORARY - default branchName is 'azure-pipelines' until things are actually committed to main on dependencies
     - ${{ if ne( dependency.file, '' )}}:
-      - ${{ if eq( dependency.target, 'My Computer' )}}:
+      - ${{ if eq( parameters.target, 'My Computer' )}}:
         - powershell: Write-Output "##vso[task.setvariable variable=dependencyTargetDirectory]Windows"
           displayName: set target for dependency to Windows
-      - ${{ if eq( dependency.target, 'Linux x64' )}}:
+      - ${{ if eq( parameters.target, 'Linux x64' )}}:
         - powershell: Write-Output "##vso[task.setvariable variable=dependencyTargetDirectory]Linux_x64"
           displayName: set target for dependency to Linux RT
       - powershell: |

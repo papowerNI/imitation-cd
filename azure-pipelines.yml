@@ -13,6 +13,11 @@ resources:
       endpoint:   ni (2)
       name:       ni/niveristand-custom-device-build-tools
 
+  pipelines:
+    - pipeline: VeristandMessageLibrary
+      source:   ni.niveristand-custom-device-message-library
+      trigger:  true
+
 pool:
   name: custom-device-temp # TEMPORARY, eventually use an official build pool of custom device agents
   demands:
@@ -36,15 +41,33 @@ parameters:
       # - version: '2023'  TEMPORARY, disable 2023 because it's buggy
       #   bitness: '64-bit'
 
+      # dependencies - source location, file, and copy destination
+  - name:    dependencies
+    type:    object
+    default: 
+      - source: '\\nirvana\temp\papower\Measurements\VeriStandAddons\messaging_library'
+        file: 'CDMessaging.lvlibp'
+        destination: 'Includes'
+
     # buildSteps - list of each project, buildOperation, target, and buildSpec combination to build 
     # Note: target and buildSpec may be empty for some buildOperations
   - name:    buildSteps
     type:    object
     default:
       - projectLocation: 'Source\TestProject.lvproj'
-        buildOperation: 'ExecuteAllBuildSpecs'
-        target: ''
-        buildSpec: ''
+        buildOperation: 'ExecuteBuildSpec'
+        target: 'My Computer'
+        buildSpec: 'BuildSpec'
+
+      - projectLocation: 'Source\TestProject.lvproj'
+        buildOperation: 'ExecuteBuildSpec'
+        target: 'Linux x64'
+        buildSpec: 'BuildSpec'
+
+      - projectLocation: 'Source\TestProject.lvproj'
+        buildOperation: 'ExecuteBuildSpec'
+        target: 'Linux x64'
+        buildSpec: 'LinuxOnlyBuildSpec'
 
     # buildOutputLocation - location where LV build outputs are stored
   - name:    buildOutputLocation
@@ -86,7 +109,7 @@ stages:
                   buildOperation:  ${{ buildStep.buildOperation }}
                   target:          ${{ buildStep.target }}
                   buildSpec:       ${{ buildStep.buildSpec }}
-                  # dependencies:    ${{ buildStep.dependencies }}
+                  dependencies:    ${{ parameters.dependencies }}
 
 
             - template: azure-templates\post-job-steps.yml # nipkg and archive
