@@ -31,12 +31,14 @@ steps:
           Copy-Item `
             -Path '$(customDeviceRepoName)\${{ package.controlFileName }}' `
             -Destination '$(nipkgPath)\control\control'
-          New-Item -Path '$(nipkgPath)\data\${{ package.installLocation }}' -ItemType 'Directory' 
-          Copy-Item `
-            -Path '$(customDeviceRepoName)\${{ package.payloadLocation }}\*' `
-            -Destination '$(nipkgPath)\data\${{ package.installLocation }}' `
-            -Verbose
         displayName: Stage nipkg directory
+      - ${{ each payloadMap in package.payloadMaps }}:
+        - powershell: |
+            New-Item -Path '$(nipkgPath)\data\${{ payloadMap.installLocation }}' -ItemType 'Directory' 
+            Copy-Item `
+              -Path '$(customDeviceRepoName)\${{ payloadMap.payloadLocation }}\*' `
+              -Destination '$(nipkgPath)\data\${{ payloadMap.installLocation }}' `
+          displayName: Copying payload ${{ payloadMap.payloadLocation }} to install location
 
       - powershell: |
           $controlContents = Get-Content -Path '$(nipkgPath)\control\control'
