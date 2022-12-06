@@ -64,7 +64,7 @@ steps:
         displayName: Copy installer to build output location
 
   - powershell: |
-      $extendedArchiveLocation = '{{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'
+      $extendedArchiveLocation = '${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'
       New-Item `
         -Path "$extendedArchiveLocation\$(Build.BuildId)\$(lvVersion)\$(architecture)" `
         -ItemType 'Directory'
