@@ -55,7 +55,7 @@ steps:
         displayName: Pack nipkg
 
       - powershell: |
-          If (Test-Path '$(installerPath)') 
+          If (-not(Test-Path '$(installerPath)')) 
           {
             New-Item -Path '$(installerPath)' -ItemType 'Directory'
           }
