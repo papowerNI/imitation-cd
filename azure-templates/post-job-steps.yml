@@ -55,7 +55,10 @@ steps:
         displayName: Pack nipkg
 
       - powershell: |
-          New-Item -Path '$(installerPath)' -ItemType 'Directory'
+          If (Test-Path '$(installerPath)') 
+          {
+            New-Item -Path '$(installerPath)' -ItemType 'Directory'
+          }
           Copy-Item `
             -Path '$(nipkgPath)\*' `
             -Destination '$(installerPath)\' `
