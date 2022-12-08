@@ -5,13 +5,14 @@ parameters:
     type: string
   - name: bitness
     type: string
-  - name: buildTools
-    type: string
   - name: releaseVersion
     type: string
   - name: quarterlyReleaseVersion
     type: string
+  - name: buildTools
+    type: string
     default: niveristand-custom-device-build-tools
+
 
 steps:
 ###########  Configure Job-wide Variables  ###########

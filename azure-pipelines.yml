@@ -106,9 +106,11 @@ stages:
           steps:
             - template: azure-templates\pre-job-steps.yml # Configure variables, check out repos, Clear cache
               parameters:
-                customDeviceRepoName:  ${{ parameters.customDeviceRepoName }}
-                lvVersion:             ${{ lvVersion.version }}
-                bitness:               ${{ lvVersion.bitness }} 
+                customDeviceRepoName:    ${{ parameters.customDeviceRepoName }}
+                lvVersion:               ${{ lvVersion.version }}
+                bitness:                 ${{ lvVersion.bitness }}
+                releaseVersion:          ${{ parameters.releaseVersion }}
+                quarterlyReleaseVersion: ${{ parameters.quarterlyReleaseVersion }}
 
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: azure-templates\build-op-steps.yml # config file and build specs
