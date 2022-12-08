@@ -41,6 +41,14 @@ parameters:
       # - version: '2023'  TEMPORARY, disable 2023 because it's buggy
       #   bitness: '64-bit'
 
+    # releaseVersionm quarterlyReleaseVersion - release versions for output package
+  - name:    releaseVersion
+    type:    string
+    default: '23.0.0'
+  - name:    quarterlyReleaseVersion
+    type:    string
+    default: '2023 Q1'
+
       # dependencies - source location, file, and copy destination
   - name:    dependencies
     type:    object
