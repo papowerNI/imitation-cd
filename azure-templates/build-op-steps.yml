@@ -31,12 +31,11 @@ steps:
           {
             $branchName = '$(Build.SourceBranchName)'
           }
-          $dependencyFilePath = Get-ChildItem `
-            -Path "${{ dependency.source }}\NI\export\$branchName\*\$(lvVersion)\$(architecture)\$(dependencyTargetDirectory)\*" `
-            -Recurse `
-            -Include '*${{ dependency.file }}' `
-            | Sort {$_.LastWriteTime} `
+          $newestDependencyBuild = Get-ChildItem `
+            -Path "${{ dependency.source }}\NI\export\$branchName\*" `
+            | Sort {$_.Name} `
             | select -last 1
+          $dependencyFilePath = "$newestDependencyBuild\$(lvVersion)\$(architecture)\$(dependencyTargetDirectory)\${{ dependency.file }}"
           If (-not(Test-Path -Path '$(customDeviceRepoName)\${{ dependency.destination }}'))
           {
             New-Item `
