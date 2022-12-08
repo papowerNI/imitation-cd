@@ -31,11 +31,18 @@ steps:
           {
             $branchName = '$(Build.SourceBranchName)'
           }
-          $newestDependencyBuild = Get-ChildItem `
+          $allDependencyBuilds = Get-ChildItem `
             -Path "${{ dependency.source }}\NI\export\$branchName\*" `
-            | Sort {$_.Name} `
-            | select -last 1
-          $dependencyFilePath = "$newestDependencyBuild\$(lvVersion)\$(architecture)\$(dependencyTargetDirectory)\${{ dependency.file }}"
+            | Sort {$_.Name} -Descending
+          $alreadyFound = $false
+          Foreach ($build in $allDependencyBuilds)
+          {
+            If(-and(Test-Path -Path "$build\$(lvVersion)\$(architecture)\.finished", -not($alreadyFound)))
+            {
+              $alreadyFound = $true
+              $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$(dependencyTargetDirectory)\${{ dependency.file }}"
+            }
+          }
           If (-not(Test-Path -Path '$(customDeviceRepoName)\${{ dependency.destination }}'))
           {
             New-Item `
