@@ -37,7 +37,7 @@ steps:
           $alreadyFound = $false
           Foreach ($build in $allDependencyBuilds)
           {
-            If(-and((Test-Path -Path "$build\$(lvVersion)\$(architecture)\.finished"), -not($alreadyFound)))
+            If(((Test-Path -Path "$build\$(lvVersion)\$(architecture)\.finished") -and -not($alreadyFound)))
             {
               $alreadyFound = $true
               $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$(dependencyTargetDirectory)\${{ dependency.file }}"
