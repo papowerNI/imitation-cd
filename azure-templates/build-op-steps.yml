@@ -25,28 +25,41 @@ steps:
               Write-Output "##vso[task.setvariable variable=dependencyTargetDirectory]Linux_x64"
             }
             `
-            Write-Output "Checking for development branch path at $(Build.SourceBranchName)..."
             $branchName = 'main'
-            If (Test-Path -Path "${{ dependency.source }}\NI\export\$(Build.SourceBranchName)\*\$(lvVersion)\$(architecture)") 
+            If ($(Build.SourceBranchName) -ne $branchName )
             {
-              Write-Output "branch path found, using $(Build.SourceBranchName) instead of $branchName"
-              $branchName = '$(Build.SourceBranchName)'
+              Write-Output "Checking for builds of $(Build.SourceBranchName) branch..."
+              If (Test-Path -Path "${{ dependency.source }}\NI\export\$(Build.SourceBranchName)\*\$(lvVersion)\$(architecture)") 
+              {
+                Write-Output "branch was found, using $(Build.SourceBranchName) instead of $branchName..."
+                $branchName = '$(Build.SourceBranchName)'
+              }
+              Else
+              {
+                Write-Output "branch not found, using a build of $branchName..."
+              }
+            }
+            Else
+            {
+              Write-Output "Using $branchName branch..."
             }
             `
-            Write-Output "Finding latest successful build of dependency..."
+            Write-Output "Finding latest successful build of dependency ${{ dependency.file }}..."
             $allDependencyBuilds = Get-ChildItem `
               -Path "${{ dependency.source }}\NI\export\$branchName\*" `
               | Sort {$_.Name} -Descending
             Foreach ($build in $allDependencyBuilds)
             {
+              Write-Output "Checking $build..."
               If((Test-Path -Path "$build\$(lvVersion)\$(architecture)\.finished"))
               {
+                Write-Output "latest successful build: $build"
                 $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$(dependencyTargetDirectory)\${{ dependency.file }}"
                 Break
               }
             }
             `
-            Write-Output "Copying dependency..."
+            Write-Output "Copying dependency ${{ dependency.file }}..."
             If (-not(Test-Path -Path '$(customDeviceRepoName)\${{ dependency.destination }}'))
             {
               New-Item `
