@@ -1,45 +1,35 @@
 parameters:
-  - name: customDeviceRepoName
-    type: string
-  - name: lvVersion
-    type: string
-  - name: bitness
-    type: string
+  - name: lvVersionInfo
+    type: object
   - name: releaseVersion
     type: string
   - name: quarterlyReleaseVersion
     type: string
-  - name: buildTools
-    type: string
-    default: niveristand-custom-device-build-tools
-
 
 steps:
   - task: PowerShell@2
-    displayName: Configure Job-wide Variables for LabVIEW ${{ parameters.lvVersion }} ${{ parameters.bitness }}
+    displayName: Configure Job-wide Variables for LabVIEW ${{ parameters.lvVersionInfo.version }} ${{ parameters.lvVersionInfo.bitness }}
     inputs: 
       targetType: 'inline'
-      failOnStderr: true
       script: |
-        Write-Host '##vso[task.setvariable variable=buildTools]${{ parameters.buildTools }}'
+        Write-Host '##vso[task.setvariable variable=buildTools]niveristand-custom-device-build-tools'
         $customDeviceRepoName = '$(Build.Repository.Name)' -replace '.+\/', ''
-        Write-Output "$customDeviceRepoName"
-        Write-Host '##vso[task.setvariable variable=customDeviceRepoName]${{ parameters.customDeviceRepoName }}'
+        Write-Host "##vso[task.setvariable variable=customDeviceRepoName]$customDeviceRepoName"
         Write-Output "Defining repository variables..."
         `
         Write-Host '##vso[task.setvariable variable=releaseVersion]${{ parameters.releaseVersion }}'
         Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]${{ parameters.quarterlyReleaseVersion }}'
         Write-Output 'Configuring release version...'
         `
-        Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersion }}'
-        If ('${{ parameters.bitness }}' -eq '32-bit')
+        Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersionInfo.version }}'
+        If ('${{ parameters.lvVersionInfo.bitness }}' -eq '32-bit')
         {
           Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW $(lvVersion)'
           Write-Host '##vso[task.setvariable variable=architecture]x86'
           Write-Host '##vso[task.setvariable variable=nipkgx86suffix]-x86'
           Write-Host '##vso[task.setvariable variable=nipkgx64suffix]'
         }
-        If ('${{ parameters.bitness }}' -eq '64-bit')
+        If ('${{ parameters.lvVersionInfo.bitness }}' -eq '64-bit')
         {
           Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW $(lvVersion)'
           Write-Host '##vso[task.setvariable variable=architecture]x64'
@@ -47,7 +37,7 @@ steps:
           Write-Host '##vso[task.setvariable variable=nipkgx64suffix]64'
         }     
         Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
-        Write-Output 'Configuring to build for LabVIEW $(lvVersion) ${{ parameters.bitness }}...'
+        Write-Output 'Configuring to build for LabVIEW $(lvVersion) ${{ parameters.lvVersionInfo.bitness }}...'
         `
         If ('$(lvVersion)' -eq '2020')
         {
@@ -69,8 +59,10 @@ steps:
   - checkout: self
     displayName: Check out ${{ parameters.customDeviceRepoName }} repository
 
-  - checkout: ${{ parameters.buildTools }}
+  - checkout: niveristand-custom-device-build-tools
     displayName: Check out NI VS Custom Device Build Tools repository
 
-  - script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\$(customDeviceRepoName)\lvClearCache.log"
-    displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersion }}
+  - task: CmdLine@2
+    displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersionInfo.version }}
+    inputs:
+      script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\$(customDeviceRepoName)\lvClearCache.log"

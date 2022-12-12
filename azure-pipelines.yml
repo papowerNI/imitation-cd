@@ -25,11 +25,6 @@ pool:
 
 # --------- Set Build Parameters ---------
 parameters:
-    # customDeviceRepoName - Name of the Custom Device Repository on GitHub
-  - name:    customDeviceRepoName
-    type:    string
-    default: imitation-cd
-
     # lvVersions - each LabVIEW version and bitness combination to build
   - name:    lvVersions
     type:    object
@@ -106,7 +101,6 @@ stages:
           steps:
             - template: azure-templates\pre-job-steps.yml # Configure variables, check out repos, Clear cache
               parameters:
-                customDeviceRepoName:    ${{ parameters.customDeviceRepoName }}
                 lvVersion:               ${{ lvVersion.version }}
                 bitness:                 ${{ lvVersion.bitness }}
                 releaseVersion:          ${{ parameters.releaseVersion }}
