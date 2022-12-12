@@ -12,6 +12,12 @@ resources:
       ref:        main
       endpoint:   ni (2)
       name:       ni/niveristand-custom-device-build-tools
+# TEMPORARY, include fake custom device to use templates until migrating the templates into build tools makes sense
+    - repository: imitation-cd
+      type: github
+      ref: main
+      endpoint: papowerNI
+      name: papowerNI/imitation-cd
 
   pipelines:
     - pipeline: VeristandMessageLibrary
@@ -24,7 +30,7 @@ pool:
     - agent.os -equals Windows_NT
 
 stages:
-  - template: azure-templates/stages-template.yml # TEMPORARY, Point to imitation-cd instead of build-tools
+  - template: azure-templates/stages-template.yml@imitation-cd # TEMPORARY, Point to imitation-cd instead of build-tools
     parameters:
       lvVersionsToBuild: 
         - version: '2020'
