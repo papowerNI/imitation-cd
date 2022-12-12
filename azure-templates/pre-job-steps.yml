@@ -55,7 +55,7 @@ steps:
         Write-Output 'Using .NET Assembly ${lvConfigVersion)...'
 
   - checkout: self
-    displayName: Check out ${{ parameters.customDeviceRepoName }} repository
+    displayName: Check out repository to build
 
   - checkout: niveristand-custom-device-build-tools
     displayName: Check out NI VS Custom Device Build Tools repository
