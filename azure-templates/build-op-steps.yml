@@ -51,7 +51,7 @@ steps:
             Foreach ($build in $allDependencyBuilds)
             {
               Write-Output "Checking $build..."
-              If((Test-Path -Path "$build\$(lvVersion)\$(architecture)\.finished"))
+              If((Test-Path -Path "$build\.finished"))
               {
                 Write-Output "latest successful build: $build"
                 $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$(dependencyTargetDirectory)\${{ dependency.file }}"

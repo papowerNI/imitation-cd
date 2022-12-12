@@ -96,7 +96,7 @@ stages:
   - stage: build
     jobs:
       - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
-        - job:
+        - job: Job
           displayName: Build for LabVIEW ${{ lvVersionToBuild.version }}
           steps:
             - template: azure-templates\pre-job-steps.yml # Configure variables, check out repos, Clear cache

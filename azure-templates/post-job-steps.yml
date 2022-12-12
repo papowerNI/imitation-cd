@@ -67,11 +67,6 @@ steps:
         displayName: Copy installer to build output location
 
   - powershell: |
-      New-Item -Path '$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}\' -Name '.finished' -ItemType 'File'
-    displayName: Add .finished file to built directory
-    condition: succeeded()
-
-  - powershell: |
       $extendedArchiveLocation = '${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'
       New-Item `
         -Path "$extendedArchiveLocation\$(Build.BuildNumber)\$(lvVersion)\$(architecture)" `
@@ -81,4 +76,3 @@ steps:
         -Destination "$extendedArchiveLocation\$(Build.BuildNumber)\$(lvVersion)\$(architecture)\" `
         -Recurse
     displayName: Copying built files to nirvana Archive
-    
