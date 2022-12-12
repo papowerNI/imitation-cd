@@ -4,8 +4,9 @@ parameters:
     type: object
   - name: dependencies
     type: object
-    default:
-      - file: ''
+# Note: the following variables are defined in pre-job-steps.yml:
+  # lvVersion, architecture, customDeviceRepoName, lvConfigVersion, 
+  # buildTools, lvCLICall
 
 steps:
   - ${{ each dependency in parameters.dependencies }}: # TEMPORARY - default branchName is 'azure-pipelines' until things are actually committed to main on dependencies
@@ -18,11 +19,11 @@ steps:
             Write-Output "Configuring target directory environment..."
             If ('${{ parameters.buildStep.target }}' -eq 'My Computer')
             {
-              Write-Output "##vso[task.setvariable variable=dependencyTargetDirectory]Windows"
+              $dependencyTargetDirectory = "Windows"
             }
             If ('${{ parameters.buildStep.target }}' -eq 'Linux x64')
             {
-              Write-Output "##vso[task.setvariable variable=dependencyTargetDirectory]Linux_x64"
+              $dependencyTargetDirectory = "Linux_x64"
             }
             `
             $branchName = 'main'
@@ -51,10 +52,10 @@ steps:
             Foreach ($build in $allDependencyBuilds)
             {
               Write-Output "Checking $build..."
-              If((Test-Path -Path "$build\.finished"))
+              If((Test-Path -Path "$build\$(lvVersion)\$(architecture)\"))
               {
                 Write-Output "latest successful build: $build"
-                $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$(dependencyTargetDirectory)\${{ dependency.file }}"
+                $dependencyFilePath = "$build\$(lvVersion)\$(architecture)\$dependencyTargetDirectory\${{ dependency.file }}"
                 Break
               }
             }

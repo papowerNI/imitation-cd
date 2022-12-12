@@ -3,6 +3,10 @@ parameters:
     type: object
   - name: releaseInfo
     type: object
+  - name: archiveLocation
+    type: string
+  - name: buildOutputLocation
+    type: string
 
 steps:
   - task: PowerShell@2
@@ -12,8 +16,11 @@ steps:
       script: |
         Write-Output "Defining repository variables..."
         Write-Host '##vso[task.setvariable variable=buildTools]niveristand-custom-device-build-tools'
+        Write-Host '##vso[task.setvariable variable=fullArchiveLocation]${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'
         $customDeviceRepoName = '$(Build.Repository.Name)' -replace '.+\/', ''
         Write-Host "##vso[task.setvariable variable=customDeviceRepoName]$customDeviceRepoName"
+        Write-Host '##vso[task.setvariable variable=buildOutputPath]$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}'
+        Write-Host '##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg'
         `
         Write-Output 'Configuring release version...'
         Write-Host '##vso[task.setvariable variable=releaseVersion]${{ parameters.releaseInfo.releaseVersion }}'
