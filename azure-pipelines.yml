@@ -47,7 +47,7 @@ parameters:
   - name:    dependencies
     type:    object
     default: 
-      - source: '\\daqserver\temp\papower\Measurements\VeriStandAddons\messaging_library'
+      - source: '\\nirvnaa\Measurements\VeriStandAddons\messaging_library'
         file: 'CDMessaging.lvlibp'
         destination: 'Includes'
 
@@ -107,11 +107,8 @@ stages:
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: azure-templates\build-op-steps.yml # config file and build specs
                 parameters:
-                  projectLocation: ${{ buildStep.projectLocation }}
-                  buildOperation:  ${{ buildStep.buildOperation }}
-                  target:          ${{ buildStep.target }}
-                  buildSpec:       ${{ buildStep.buildSpec }}
-                  dependencies:    ${{ parameters.dependencies }}
+                  buildStep:    ${{ buildStep }}
+                  dependencies: ${{ parameters.dependencies }}
 
 
             - template: azure-templates\post-job-steps.yml # nipkg and archive

@@ -10,15 +10,16 @@ steps:
     inputs: 
       targetType: 'inline'
       script: |
+        Write-Output "Defining repository variables..."
         Write-Host '##vso[task.setvariable variable=buildTools]niveristand-custom-device-build-tools'
         $customDeviceRepoName = '$(Build.Repository.Name)' -replace '.+\/', ''
         Write-Host "##vso[task.setvariable variable=customDeviceRepoName]$customDeviceRepoName"
-        Write-Output "Defining repository variables..."
         `
+        Write-Output 'Configuring release version...'
         Write-Host '##vso[task.setvariable variable=releaseVersion]${{ parameters.releaseInfo.releaseVersion }}'
         Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]${{ parameters.releaseInfo.quarterlyReleaseVersion }}'
-        Write-Output 'Configuring release version...'
         `
+        Write-Output 'Configuring to build for LabVIEW $(lvVersion) ${{ parameters.lvVersionToBuild.bitness }}...'
         Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersionToBuild.version }}'
         If ('${{ parameters.lvVersionToBuild.bitness }}' -eq '32-bit')
         {
@@ -35,8 +36,8 @@ steps:
           Write-Host '##vso[task.setvariable variable=nipkgx64suffix]64'
         }     
         Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
-        Write-Output 'Configuring to build for LabVIEW $(lvVersion) ${{ parameters.lvVersionToBuild.bitness }}...'
         `
+        Write-Output 'Using .NET Assembly ${lvConfigVersion)...'
         If ('$(lvVersion)' -eq '2020')
         {
           Write-Host '##vso[task.setvariable variable=lvConfigVersion]8.0.0.0'
@@ -52,7 +53,6 @@ steps:
           Write-Host '##vso[task.setvariable variable=lvConfigVersion]10.0.0.0'
           Write-Host '##vso[task.setvariable variable=shortLvVersion]23'
         }
-        Write-Output 'Using .NET Assembly ${lvConfigVersion)...'
 
   - checkout: self
     displayName: Check out repository to build
@@ -63,4 +63,9 @@ steps:
   - task: CmdLine@2
     displayName: Clear compiled cache for LabVIEW ${{ parameters.lvVersionToBuild.version }}
     inputs:
-      script: $(lvCLICall) -OperationName "SecureRunVI" -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" -LogFilePath "%cd%\$(customDeviceRepoName)\lvClearCache.log"
+      script: |
+        echo on
+        $(lvCLICall) ^
+          -OperationName "SecureRunVI" ^
+          -VIPath "%cd%\$(buildTools)\lv\operations\Utilities\ClearCache.vi" ^
+          -LogFilePath "%cd%\$(customDeviceRepoName)\lvClearCache.log"
