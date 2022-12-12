@@ -14,6 +14,7 @@ steps:
       - task: PowerShell@2
         displayName: Stage nipkg directory
         inputs:
+          targetType: 'inline'
           script: |
             Write-Output "setting up nipkg directory..."
             If (Test-Path '$(nipkgPath)') 
@@ -38,10 +39,12 @@ steps:
             $controlContents = $controlContents -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)'
             $controlContents = $controlContents -replace '{labview_short_version}', '$(shortLvVersion)'
             Set-Content -Value $controlContents -Path '$(nipkgPath)\control\control'
+
       - ${{ each payloadMap in package.payloadMaps }}:
         - task: PowerShell@2
           displayName: Copying payload ${{ payloadMap.payloadLocation }} to install location
           inputs:
+            targetType: 'inline'
             script: |
               New-Item -Path '$(nipkgPath)\data\${{ payloadMap.installLocation }}' -ItemType 'Directory' 
               Copy-Item `
@@ -57,6 +60,7 @@ steps:
       - task: PowerShell@2
         displayName: Copy installer to build output location
         inputs:
+          targetType: 'inline'
           script: |
             $installerPath = '$(buildOutputPath)\installer'
             If (-not(Test-Path $installerPath)) 
@@ -72,6 +76,7 @@ steps:
   - task: PowerShell@2
     displayName: Copy built files to Archive location
     inputs:
+      targetType: 'inline'
       script: |
         New-Item `
           -Path "$(archivePath)\$(Build.BuildNumber)\$(lvVersion)\$(architecture)" `

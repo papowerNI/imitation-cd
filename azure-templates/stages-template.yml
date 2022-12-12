@@ -28,7 +28,24 @@ parameters:
 
 # Note: If custom build steps are needed for a particular custom device, copy this entire template into the azure-pipeline and add steps before/after as needed
 stages:
-  - stage: build
+  - stage: build  
+    resources:
+      repositories:
+        - repository: niveristand-custom-device-build-tools
+          type:       github
+          ref:        main
+          endpoint:   ni (2)
+          name:       ni/niveristand-custom-device-build-tools
+          # TEMPORARY, include fake custom device to use templates until migrating the templates into build tools makes sense
+        - repository: imitation-cd
+          type: github
+          ref: main
+          endpoint: papowerNI
+          name: papowerNI/imitation-cd
+    pool:
+      name: custom-device-temp # TEMPORARY, eventually use an official build pool of custom device agents
+      demands:
+        - agent.os -equals Windows_NT
     jobs:
       - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
         - job: Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
@@ -53,7 +70,7 @@ stages:
                 pack:     ${{ parameters.pack }}
         # if all jobs have passed, place .finished file in top level archive location TEMPORARY - linked to imitation-cd instead of build-tools
       - job: Finalize
-        displayName: Final Check for Passing Builds
+        displayName: Confirm All Builds Passed
         dependsOn:
           - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
             - Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}

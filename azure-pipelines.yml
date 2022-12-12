@@ -6,28 +6,10 @@ trigger:
       - release/*
 
 resources:
-  repositories:
-    - repository: niveristand-custom-device-build-tools
-      type:       github
-      ref:        main
-      endpoint:   ni (2)
-      name:       ni/niveristand-custom-device-build-tools
-# TEMPORARY, include fake custom device to use templates until migrating the templates into build tools makes sense
-    - repository: imitation-cd
-      type: github
-      ref: main
-      endpoint: papowerNI
-      name: papowerNI/imitation-cd
-
   pipelines:
     - pipeline: VeristandMessageLibrary
       source:   ni.niveristand-custom-device-message-library
       trigger:  true
-
-pool:
-  name: custom-device-temp # TEMPORARY, eventually use an official build pool of custom device agents
-  demands:
-    - agent.os -equals Windows_NT
 
 stages:
   - template: azure-templates/stages-template.yml@imitation-cd # TEMPORARY, Point to imitation-cd instead of build-tools
@@ -68,6 +50,7 @@ stages:
       buildOutputLocation: 'Built'
       archiveLocation: '\\daqserver\temp\papower\Measurements\VeriStandAddons\imitation-cd'
 
+      pack: true
       packages:
         - controlFileName: 'control'
           payloadMaps:
