@@ -96,7 +96,7 @@ stages:
   - stage: build
     jobs:
       - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
-        - job: Job
+        - job: Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness}}
           displayName: Build for LabVIEW ${{ lvVersionToBuild.version }}
           steps:
             - template: azure-templates\pre-job-steps.yml # Configure variables, check out repos, Clear cache
@@ -110,10 +110,16 @@ stages:
                   buildStep:    ${{ buildStep }}
                   dependencies: ${{ parameters.dependencies }}
 
-
             - template: azure-templates\post-job-steps.yml # nipkg and archive
               parameters:
                 packages:            ${{ parameters.packages }}
                 buildOutputLocation: ${{ parameters.buildOutputLocation }}
                 archiveLocation:     ${{ parameters.archiveLocation }}
                 pack:                true
+      - job: Finalize
+        displayName: Final Check for Passing Builds
+        dependsOn:
+          - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
+            - Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness}}
+        steps:
+        - script: echo Hello World
