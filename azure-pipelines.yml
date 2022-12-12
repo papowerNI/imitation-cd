@@ -24,7 +24,7 @@ pool:
     - agent.os -equals Windows_NT
 
 stages:
-  - template: stages-template.yml # TEMPORARY, Point to imitation-cd instead of build-tools
+  - template: azure-templates/stages-template.yml # TEMPORARY, Point to imitation-cd instead of build-tools
     parameters:
       lvVersionsToBuild: 
         - version: '2020'
