@@ -22,7 +22,7 @@ steps:
       failOnStderr: true
       script: |
         Write-Host '##vso[task.setvariable variable=buildTools]${{ parameters.buildTools }}'
-        $customDeviceRepoName = '$(Build.Repository.Name)' -replace "*\/", ""
+        $customDeviceRepoName = '$(Build.Repository.Name)' -replace "*", ""
         Write-Output "$customDeviceRepoName"
         Write-Host '##vso[task.setvariable variable=customDeviceRepoName]${{ parameters.customDeviceRepoName }}'
         Write-Output "Defining repository variables..."
