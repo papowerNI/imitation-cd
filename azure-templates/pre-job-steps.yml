@@ -35,14 +35,14 @@ steps:
         Write-Output "Configuring release version..."
         `
         Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersion }}'
-        If (eq(${{ parameters.bitness }}, '32-bit')
+        If (eq('${{ parameters.bitness }}', '32-bit')
         {
           Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
           Write-Host "##vso[task.setvariable variable=architecture]x86"
           Write-Host "##vso[task.setvariable variable=nipkgx86suffix]-x86"
           Write-Host "##vso[task.setvariable variable=nipkgx64suffix]"
         }
-        If (eq(${{ parameters.bitness }}, '64-bit')
+        If (eq('${{ parameters.bitness }}', '64-bit')
         {
           Write-Host "##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW ${{ parameters.lvVersion }}"
           Write-Host "##vso[task.setvariable variable=architecture]x64"
@@ -52,17 +52,17 @@ steps:
         Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
         Write-Output "Configuring to build for LabVIEW $(lvVersion) ${{ parameters.bitness }}..."
         `
-        If (eq($(lvVersion), '2020')
+        If (eq('$(lvVersion)', '2020')
         {
           Write-Host "##vso[task.setvariable variable=lvConfigVersion]8.0.0.0"
           Write-Host '##vso[task.setvariable variable=shortLvVersion]20'
         }
-        If (eq($(lvVersion), '2021')
+        If (eq('$(lvVersion)', '2021')
         {
           Write-Host "##vso[task.setvariable variable=lvConfigVersion]9.0.0.0"
           Write-Host '##vso[task.setvariable variable=shortLvVersion]21'
         }
-        If (eq($(lvVersion), '2023')
+        If (eq('$(lvVersion)', '2023')
         {
           Write-Host "##vso[task.setvariable variable=lvConfigVersion]10.0.0.0"
           Write-Host '##vso[task.setvariable variable=shortLvVersion]23'
