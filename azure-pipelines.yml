@@ -26,7 +26,7 @@ pool:
 # --------- Set Build Parameters ---------
 parameters:
     # lvVersions - each LabVIEW version and bitness combination to build
-  - name:    lvVersions
+  - name:    lvVersionsToBuild
     type:    object
     default:
       - version: '2020'
@@ -37,12 +37,11 @@ parameters:
         bitness: '64-bit'
 
     # releaseVersionm quarterlyReleaseVersion - release versions for output package
-  - name:    releaseVersion
-    type:    string
-    default: '23.0.0'
-  - name:    quarterlyReleaseVersion
-    type:    string
-    default: '2023 Q1'
+  - name:    releaseInfo
+    type:    object
+    default: 
+      - releaseVersion: '23.0.0'
+        quarterlyReleaseVersion: '2023 Q1'
 
       # dependencies - source location, file, and copy destination
   - name:    dependencies
@@ -85,6 +84,7 @@ parameters:
         payloadMaps:
           - payloadLocation: 'Built'
             installLocation: 'documents\National Instruments\NI VeriStand $(lvVersion)\SLSC Plugins\Modules'
+
     # archiveLocation - location to store build artifacts for archival
   - name:    archiveLocation
     type:    string
@@ -95,16 +95,14 @@ parameters:
 stages:
   - stage: build
     jobs:
-      - ${{ each lvVersion in parameters.lvVersions }}:
+      - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
         - job:
-          displayName: Build ${{ parameters.customDeviceRepoName }} for LabVIEW ${{ lvVersion.version }}
+          displayName: Build for LabVIEW ${{ lvVersionToBuild.version }}
           steps:
             - template: azure-templates\pre-job-steps.yml # Configure variables, check out repos, Clear cache
               parameters:
-                lvVersion:               ${{ lvVersion.version }}
-                bitness:                 ${{ lvVersion.bitness }}
-                releaseVersion:          ${{ parameters.releaseVersion }}
-                quarterlyReleaseVersion: ${{ parameters.quarterlyReleaseVersion }}
+                lvVersionToBuild: ${{ lvVersionToBuild }}
+                releaseInfo:      ${{ parameters.releaseInfo }}
 
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: azure-templates\build-op-steps.yml # config file and build specs
