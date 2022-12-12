@@ -48,27 +48,27 @@ steps:
           Write-Host "##vso[task.setvariable variable=architecture]x64"
           Write-Host "##vso[task.setvariable variable=nipkgx86suffix]"
           Write-Host "##vso[task.setvariable variable=nipkgx64suffix]64"
-        }
-        Write-Output 'LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
-        Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
+        }     
         Write-Output "Configuring to build for LabVIEW $(lvVersion) ${{ parameters.bitness }}..."
         `
         If (eq('$(lvVersion)', '2020'))
         {
-          Write-Host "##vso[task.setvariable variable=lvConfigVersion]8.0.0.0"
+          Write-Host '##vso[task.setvariable variable=lvConfigVersion]8.0.0.0'
           Write-Host '##vso[task.setvariable variable=shortLvVersion]20'
         }
         If (eq('$(lvVersion)', '2021'))
         {
-          Write-Host "##vso[task.setvariable variable=lvConfigVersion]9.0.0.0"
+          Write-Host '##vso[task.setvariable variable=lvConfigVersion]9.0.0.0'
           Write-Host '##vso[task.setvariable variable=shortLvVersion]21'
         }
         If (eq('$(lvVersion)', '2023'))
         {
-          Write-Host "##vso[task.setvariable variable=lvConfigVersion]10.0.0.0"
+          Write-Host '##vso[task.setvariable variable=lvConfigVersion]10.0.0.0'
           Write-Host '##vso[task.setvariable variable=shortLvVersion]23'
         }
         Write-Output "Using .NET Assembly ${lvConfigVersion)..."
+
+  - powershell: Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
 
   - checkout: self
     displayName: Check out ${{ parameters.customDeviceRepoName }} repository
