@@ -47,7 +47,7 @@ parameters:
   - name:    dependencies
     type:    object
     default: 
-      - source: '\\nirvana\Measurements\VeriStandAddons\messaging_library'
+      - source: '\\daqserver\temp\papower\Measurements\VeriStandAddons\messaging_library'
         file: 'CDMessaging.lvlibp'
         destination: 'Includes'
 

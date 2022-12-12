@@ -114,7 +114,6 @@ steps:
           $(targetArgument) ^
           $(buildSpecArgument) ^
           -LogFilePath "%cd%\$(customDeviceRepoName)\lvBuildSpecs.log"
-    
 
   - task: CmdLine@2
     displayName: Close LabVIEW
