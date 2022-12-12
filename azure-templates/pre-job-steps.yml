@@ -20,14 +20,14 @@ steps:
         Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]${{ parameters.releaseInfo.quarterlyReleaseVersion }}'
         `
         Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersionToBuild.version }}'
-        If ('${{ parameters.lvVersionToBuild.bitness }}' -eq '32-bit')
+        If ('${{ parameters.lvVersionToBuild.bitness }}' -eq '32bit')
         {
           Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW $(lvVersion)'
           Write-Host '##vso[task.setvariable variable=architecture]x86'
           Write-Host '##vso[task.setvariable variable=nipkgx86suffix]-x86'
           Write-Host '##vso[task.setvariable variable=nipkgx64suffix]'
         }
-        If ('${{ parameters.lvVersionToBuild.bitness }}' -eq '64-bit')
+        If ('${{ parameters.lvVersionToBuild.bitness }}' -eq '64bit')
         {
           Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW $(lvVersion)'
           Write-Host '##vso[task.setvariable variable=architecture]x64'
