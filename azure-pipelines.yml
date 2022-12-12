@@ -6,6 +6,19 @@ trigger:
       - release/*
 
 resources:
+  repositories:
+    - repository: niveristand-custom-device-build-tools
+      type:       github
+      ref:        main
+      endpoint:   ni (2)
+      name:       ni/niveristand-custom-device-build-tools
+      # TEMPORARY, include fake custom device to use templates until migrating the templates into build tools makes sense
+    - repository: imitation-cd
+      type: github
+      ref: main
+      endpoint: papowerNI
+      name: papowerNI/imitation-cd  
+# Pipeline Completion Triggers:
   pipelines:
     - pipeline: VeristandMessageLibrary
       source:   ni.niveristand-custom-device-message-library
