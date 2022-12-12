@@ -1,7 +1,7 @@
 parameters:
   - name: lvVersionToBuild
     type: object
-  - name: releaseVersion
+  - name: releaseInfo
     type: string
   - name: quarterlyReleaseVersion
     type: string
@@ -17,8 +17,8 @@ steps:
         Write-Host "##vso[task.setvariable variable=customDeviceRepoName]$customDeviceRepoName"
         Write-Output "Defining repository variables..."
         `
-        Write-Host '##vso[task.setvariable variable=releaseVersion]${{ parameters.releaseVersion }}'
-        Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]${{ parameters.quarterlyReleaseVersion }}'
+        Write-Host '##vso[task.setvariable variable=releaseVersion]${{ parameters.releaseInfo.releaseVersion }}'
+        Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]${{ parameters.releaseInfo.quarterlyReleaseVersion }}'
         Write-Output 'Configuring release version...'
         `
         Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersionToBuild.version }}'
