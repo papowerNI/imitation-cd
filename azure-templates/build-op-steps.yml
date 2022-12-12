@@ -27,6 +27,7 @@ steps:
             `
             Write-Output "Checking for development branch path at $(Build.SourceBranchName)..."
             $branchName = 'main'
+            Write-Output "${{ dependency.source }}\NI\export\$(Build.SourceBranchName)\*\$(lvVersion)\$(architecture)"
             If (Test-Path -Path "${{ dependency.source }}\NI\export\$(Build.SourceBranchName)\*\$(lvVersion)\$(architecture)") 
             {
               Write-Output "branch path found, using $(Build.SourceBranchName) instead of $branchName"
