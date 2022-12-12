@@ -2,9 +2,7 @@ parameters:
   - name: lvVersionToBuild
     type: object
   - name: releaseInfo
-    type: string
-  - name: quarterlyReleaseVersion
-    type: string
+    type: object
 
 steps:
   - task: PowerShell@2
