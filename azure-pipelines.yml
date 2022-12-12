@@ -47,7 +47,7 @@ parameters:
   - name:    dependencies
     type:    object
     default: 
-      - source: '\\nirvnaa\Measurements\VeriStandAddons\messaging_library'
+      - source: '\\nirvana\Measurements\VeriStandAddons\messaging_library'
         file: 'CDMessaging.lvlibp'
         destination: 'Includes'
 
