@@ -2,9 +2,7 @@ parameters:
   # lvVersionsToBuild: list of {version, bitness}
   - name: lvVersionsToBuild
     type: object
-  # releaseInfo: one of {releaseVersion, quarterlyReleaseVersion}
-  - name: releaseInfo
-    type: object
+
   # buildSteps: list of {projectLocation, buildOperation, target, buildSpec}
   - name: buildSteps
     type: object
@@ -16,7 +14,11 @@ parameters:
   # packages: list of {controlFileName, payloadMaps: list of {payloadLocation, installLocation} }
   - name: packages
     type: object
-  # strings (buildOutputLocation, archiveLocation)
+  # strings (releaseVersion, quarterlyReleaseVersion, buildOutputLocation, archiveLocation)
+  - name: releaseVersion
+    type: string
+  - name: quarterlyReleaseVersion
+    type: string
   - name: buildOutputLocation
     type: string
   - name: archiveLocation
@@ -34,20 +36,17 @@ stages:
       demands:
         - agent.os -equals Windows_NT
     jobs:
-      - job: Test
-        steps: 
-          - powershell: Write-Output "${{ parameters.releaseInfo.releaseVersion }}"
-          - powershell: Write-Output "${{ parameters.releaseInfo.quarterlyReleaseVersion }}"
       - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
         - job: Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
           displayName: Build for LabVIEW ${{ lvVersionToBuild.version }}
           steps:
             - template: pre-job-steps.yml@imitation-cd # Configure variables, check out repos, Clear cache TEMPORARY - linked to imitation-cd instead of build-tools
               parameters:
-                lvVersionToBuild:    ${{ lvVersionToBuild }}
-                releaseInfo:         ${{ parameters.releaseInfo }}
-                archiveLocation:     ${{ parameters.archiveLocation }}
-                buildOutputLocation: ${{ parameters.buildOutputLocation }}
+                lvVersionToBuild:        ${{ lvVersionToBuild }}
+                releaseVersion:          ${{ parameters.releaseVersion }}
+                quarterlyReleaseVersion: ${{ parameters.quarterlyReleaseVersion }}
+                archiveLocation:         ${{ parameters.archiveLocation }}
+                buildOutputLocation:     ${{ parameters.buildOutputLocation }}
 
             - ${{ each buildStep in parameters.buildSteps }}:
               - template: build-op-steps.yml@imitation-cd # config file and build specs TEMPORARY - linked to imitation-cd instead of build-tools

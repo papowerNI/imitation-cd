@@ -35,10 +35,6 @@ stages:
         - version: '2023'
           bitness: '64bit'
 
-      releaseInfo:
-        - releaseVersion: '23.0.0'
-          quarterlyReleaseVersion: '2023 Q1'
-
       dependencies:
         - source: '\\nirvana\Measurements\VeriStandAddons\messaging_library'
           file: 'CDMessaging.lvlibp'
@@ -60,6 +56,8 @@ stages:
           target: 'Linux x64'
           buildSpec: 'LinuxOnlyBuildSpec'
 
+      releaseVersion: '23.0.0'
+      quarterlyReleaseVersion: '2023 Q1'
       buildOutputLocation: 'Built'
       archiveLocation: '\\daqserver\temp\papower\Measurements\VeriStandAddons\imitation-cd'
 

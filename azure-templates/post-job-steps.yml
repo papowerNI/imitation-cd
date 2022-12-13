@@ -17,7 +17,6 @@ steps:
           targetType: 'inline'
           script: |
             Write-Output "setting up nipkg directory..."
-            Write-Output "$(nipkgPath), $(customDeviceRepoName), $(lvVersion), $(releaseVersion), $(quarterlyReleaseVersion), $(shortLvVersion), $(buildOutputPath), $(archivePath), $(architecture)"
             If (Test-Path '$(nipkgPath)') 
             { 
               Remove-Item -Path '$(nipkgPath)' -Recurse -Force 
