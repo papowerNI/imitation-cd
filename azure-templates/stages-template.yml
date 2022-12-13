@@ -69,6 +69,6 @@ stages:
           # archivePath defined in pre-job-steps.yml
         - powershell: |
             New-Item `
-              -Path "${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\" `
+              -Path "${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\$(Build.BuildNumber)" `
               -Name ".finished" `
               -ItemType "File"
