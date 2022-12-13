@@ -44,7 +44,6 @@ steps:
         }     
         `
         Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
-        Write-Output 'Configuring to build for LabVIEW ${{ parameters.lvVersionToBuild.version }} ${{ parameters.lvVersionToBuild.bitness }}...'
         If ('${{ parameters.lvVersionToBuild.version }}' -eq '2020')
         {
           Write-Host '##vso[task.setvariable variable=lvConfigVersion]8.0.0.0'
@@ -63,7 +62,7 @@ steps:
           Write-Host '##vso[task.setvariable variable=shortLvVersion]23'
           Write-Output "Using LabVIEW 2023"
         }
-        Write-Output 'Using .NET Assembly ${lvConfigVersion)...'
+        Write-Output 'Using .NET Assembly $(lvConfigVersion)...'
 
   - checkout: self
     displayName: Check out repository to build
