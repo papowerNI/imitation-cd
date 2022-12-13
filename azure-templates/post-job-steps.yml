@@ -31,14 +31,14 @@ steps:
               -Destination '$(nipkgPath)\control\control'
             `
             Write-Output "updating nipkg control version parameters..."
-            $controlContents = Get-Content -Path '$(nipkgPath)\control\control'
-            $controlContents = $controlContents -replace '{veristand_version}', '$(lvVersion)'
-            $controlContents = $controlContents -replace '{labview_version}', '$(lvVersion)'
-            $controlContents = $controlContents -replace '{nipkg_version}', '$(releaseVersion)'
-            $controlContents = $controlContents -replace '{display_version}', '$(releaseVersion)'
-            $controlContents = $controlContents -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)'
-            $controlContents = $controlContents -replace '{labview_short_version}', '$(shortLvVersion)'
-            Set-Content -Value $controlContents -Path '$(nipkgPath)\control\control'
+            Get-Content -Path '$(nipkgPath)\control\control' | `
+              -replace '{veristand_version}', '$(lvVersion)' `
+              -replace '{labview_version}', '$(lvVersion)' `
+              -replace '{nipkg_version}', '$(releaseVersion)' `
+              -replace '{display_version}', '$(releaseVersion)' `
+              -replace '{quarterly_display_version}', '$(quarterlyReleaseVersion)' `
+              -replace '{labview_short_version}', '$(shortLvVersion)' | `
+              Set-Content -Value $_ -Path '$(nipkgPath)\control\control'
 
       - ${{ each payloadMap in package.payloadMaps }}:
         - task: PowerShell@2

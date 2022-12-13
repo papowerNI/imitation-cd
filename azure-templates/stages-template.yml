@@ -38,7 +38,7 @@ stages:
         - job: Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
           displayName: Build for LabVIEW ${{ lvVersionToBuild.version }}
           steps:
-            - template: pre-job-steps.yml # Configure variables, check out repos, Clear cache TEMPORARY - linked to imitation-cd instead of build-tools
+            - template: pre-job-steps.yml@imitation-cd # Configure variables, check out repos, Clear cache TEMPORARY - linked to imitation-cd instead of build-tools
               parameters:
                 lvVersionToBuild:    ${{ lvVersionToBuild }}
                 releaseInfo:         ${{ parameters.releaseInfo }}
@@ -46,12 +46,12 @@ stages:
                 buildOutputLocation: ${{ parameters.buildOutputLocation }}
 
             - ${{ each buildStep in parameters.buildSteps }}:
-              - template: build-op-steps.yml # config file and build specs TEMPORARY - linked to imitation-cd instead of build-tools
+              - template: build-op-steps.yml@imitation-cd # config file and build specs TEMPORARY - linked to imitation-cd instead of build-tools
                 parameters:
                   buildStep:    ${{ buildStep }}
                   dependencies: ${{ parameters.dependencies }}
 
-            - template: post-job-steps.yml # nipkg and archive
+            - template: post-job-steps.yml@imitation-cd # nipkg and archive
               parameters:
                 packages: ${{ parameters.packages }}
                 pack:     ${{ parameters.pack }}
