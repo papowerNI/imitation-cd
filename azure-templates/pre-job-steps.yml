@@ -15,48 +15,48 @@ steps:
       targetType: 'inline'
       script: |
         Write-Output "Defining repository variables..."
-        Write-Output "niveristand-custom-device-build-tools" | Write-Host '##vso[task.setvariable variable=buildTools]$_'
-        Write-Host '##vso[task.setvariable variable=archivePath]${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\' | Write-Output
+        Write-Host '##vso[task.setvariable variable=buildTools]niveristand-custom-device-build-tools'; Write-Output $(buildTools)
+        Write-Host '##vso[task.setvariable variable=archivePath]${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'; Write-Output $(archiveLocation)
         $customDeviceRepoName = '$(Build.Repository.Name)' -replace '.+\/', ''
-        Write-Host "##vso[task.setvariable variable=customDeviceRepoName]$customDeviceRepoName" | Write-Output
-        Write-Host '##vso[task.setvariable variable=buildOutputPath]$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}' | Write-Output
-        Write-Host '##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg' | Write-Output
+        Write-Host "##vso[task.setvariable variable=customDeviceRepoName]$customDeviceRepoName"; Write-Output $(customDeviceRepoName)
+        Write-Host '##vso[task.setvariable variable=buildOutputPath]$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}'; Write-Output $(buildOutputPath)
+        Write-Host '##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg'; Write-Output $(nipkgPath)
         `
         Write-Output 'Configuring release version...'
-        Write-Host '##vso[task.setvariable variable=releaseVersion]${{ parameters.releaseInfo.releaseVersion }}' | Write-Output
-        Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]${{ parameters.releaseInfo.quarterlyReleaseVersion }}' | Write-Output
-        Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersionToBuild.version }}' | Write-Output
+        Write-Host '##vso[task.setvariable variable=releaseVersion]${{ parameters.releaseInfo.releaseVersion }}'
+        Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]${{ parameters.releaseInfo.quarterlyReleaseVersion }}'
+        Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersionToBuild.version }}'
         If ('${{ parameters.lvVersionToBuild.bitness }}' -eq '32bit')
         {
-          Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW $(lvVersion)' | Write-Output
-          Write-Host '##vso[task.setvariable variable=architecture]x86' | Write-Output
-          Write-Host '##vso[task.setvariable variable=nipkgx86suffix]-x86' | Write-Output
-          Write-Host '##vso[task.setvariable variable=nipkgx64suffix]' | Write-Output
+          Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW $(lvVersion)'
+          Write-Host '##vso[task.setvariable variable=architecture]x86'
+          Write-Host '##vso[task.setvariable variable=nipkgx86suffix]-x86'
+          Write-Host '##vso[task.setvariable variable=nipkgx64suffix]'
         }
         If ('${{ parameters.lvVersionToBuild.bitness }}' -eq '64bit')
         {
-          Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW $(lvVersion)' | Write-Output
-          Write-Host '##vso[task.setvariable variable=architecture]x64' | Write-Output
-          Write-Host '##vso[task.setvariable variable=nipkgx86suffix]' | Write-Output
-          Write-Host '##vso[task.setvariable variable=nipkgx64suffix]64' | Write-Output
+          Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files\National Instruments\LabVIEW $(lvVersion)'
+          Write-Host '##vso[task.setvariable variable=architecture]x64'
+          Write-Host '##vso[task.setvariable variable=nipkgx86suffix]'
+          Write-Host '##vso[task.setvariable variable=nipkgx64suffix]64'
         }     
         `
-        Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"' | Write-Output
+        Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
         Write-Output 'Configuring to build for LabVIEW $(lvVersion) ${{ parameters.lvVersionToBuild.bitness }}...'
         If ('$(lvVersion)' -eq '2020')
         {
-          Write-Host '##vso[task.setvariable variable=lvConfigVersion]8.0.0.0' | Write-Output
-          Write-Host '##vso[task.setvariable variable=shortLvVersion]20' | Write-Output
+          Write-Host '##vso[task.setvariable variable=lvConfigVersion]8.0.0.0'
+          Write-Host '##vso[task.setvariable variable=shortLvVersion]20'
         }
         If ('$(lvVersion)' -eq '2021')
         {
-          Write-Host '##vso[task.setvariable variable=lvConfigVersion]9.0.0.0' | Write-Output
-          Write-Host '##vso[task.setvariable variable=shortLvVersion]21' | Write-Output
+          Write-Host '##vso[task.setvariable variable=lvConfigVersion]9.0.0.0'
+          Write-Host '##vso[task.setvariable variable=shortLvVersion]21'
         }
         If ('$(lvVersion)' -eq '2023')
         {
-          Write-Host '##vso[task.setvariable variable=lvConfigVersion]10.0.0.0' | Write-Output
-          Write-Host '##vso[task.setvariable variable=shortLvVersion]23' | Write-Output
+          Write-Host '##vso[task.setvariable variable=lvConfigVersion]10.0.0.0'
+          Write-Host '##vso[task.setvariable variable=shortLvVersion]23'
         }
         Write-Output 'Using .NET Assembly ${lvConfigVersion)...'
 
