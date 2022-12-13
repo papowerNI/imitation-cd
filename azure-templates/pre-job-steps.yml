@@ -32,6 +32,7 @@ steps:
           Write-Host '##vso[task.setvariable variable=architecture]x86'
           Write-Host '##vso[task.setvariable variable=nipkgx86suffix]-x86'
           Write-Host '##vso[task.setvariable variable=nipkgx64suffix]'
+          Write-Output "Using 32-bit LabVIEW"
         }
         If ('${{ parameters.lvVersionToBuild.bitness }}' -eq '64bit')
         {
@@ -39,6 +40,7 @@ steps:
           Write-Host '##vso[task.setvariable variable=architecture]x64'
           Write-Host '##vso[task.setvariable variable=nipkgx86suffix]'
           Write-Host '##vso[task.setvariable variable=nipkgx64suffix]64'
+          Write-Output "Using 64-bit LabVIEW"
         }     
         `
         Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"'
@@ -47,16 +49,19 @@ steps:
         {
           Write-Host '##vso[task.setvariable variable=lvConfigVersion]8.0.0.0'
           Write-Host '##vso[task.setvariable variable=shortLvVersion]20'
+          Write-Output "Using LabVIEW 2020"
         }
         If ('$(lvVersion)' -eq '2021')
         {
           Write-Host '##vso[task.setvariable variable=lvConfigVersion]9.0.0.0'
           Write-Host '##vso[task.setvariable variable=shortLvVersion]21'
+          Write-Output "Using LabVIEW 2021"
         }
         If ('$(lvVersion)' -eq '2023')
         {
           Write-Host '##vso[task.setvariable variable=lvConfigVersion]10.0.0.0'
           Write-Host '##vso[task.setvariable variable=shortLvVersion]23'
+          Write-Output "Using LabVIEW 2023"
         }
         Write-Output 'Using .NET Assembly ${lvConfigVersion)...'
 
