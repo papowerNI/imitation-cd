@@ -63,8 +63,9 @@ stages:
             - Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
         condition: succeeded()
         steps:
+          # archivePath defined in pre-job-steps.yml
         - powershell: |
             New-Item `
-              -Path "$(fullArchiveLocation)" `
+              -Path "$(archivePath)" `
               -Name ".finished" `
               -ItemType "File"
