@@ -15,25 +15,17 @@ steps:
       targetType: 'inline'
       script: |
         Write-Output "Defining repository variables..."
-        Write-Host '##vso[task.setvariable variable=buildTools]niveristand-custom-device-build-tools' | Write-Output
+        Write-Output "niveristand-custom-device-build-tools" | Write-Host '##vso[task.setvariable variable=buildTools]$_'
         Write-Host '##vso[task.setvariable variable=archivePath]${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\' | Write-Output
         $customDeviceRepoName = '$(Build.Repository.Name)' -replace '.+\/', ''
         Write-Host "##vso[task.setvariable variable=customDeviceRepoName]$customDeviceRepoName" | Write-Output
         Write-Host '##vso[task.setvariable variable=buildOutputPath]$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}' | Write-Output
         Write-Host '##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg' | Write-Output
-        Write-Output "buildTools: $(buildTools)"
-        Write-Output "archivePath: $(archivePath)"
-        Write-Output "customDeviceRepoName: $(customDeviceRepoName)"
-        Write-Output "buildOutputPath: $(buildOutputPath)"
-        Write-Output "nipkgPath: $(nipkgPath)"
         `
         Write-Output 'Configuring release version...'
         Write-Host '##vso[task.setvariable variable=releaseVersion]${{ parameters.releaseInfo.releaseVersion }}' | Write-Output
         Write-Host '##vso[task.setvariable variable=quarterlyReleaseVersion]${{ parameters.releaseInfo.quarterlyReleaseVersion }}' | Write-Output
         Write-Host '##vso[task.setvariable variable=lvVersion]${{ parameters.lvVersionToBuild.version }}' | Write-Output
-        Write-Output "releaseVersion: $(releaseVersion)"
-        Write-Output "quarterlyReleaseVersion: $(quarterlyReleaseVersion)"
-        Write-Output "lvVersion: $(lvVersion)"
         If ('${{ parameters.lvVersionToBuild.bitness }}' -eq '32bit')
         {
           Write-Host '##vso[task.setvariable variable=lvPath]C:\Program Files (x86)\National Instruments\LabVIEW $(lvVersion)' | Write-Output
@@ -48,10 +40,6 @@ steps:
           Write-Host '##vso[task.setvariable variable=nipkgx86suffix]' | Write-Output
           Write-Host '##vso[task.setvariable variable=nipkgx64suffix]64' | Write-Output
         }     
-        Write-Output "lvPath: $(lvPath)"
-        Write-Output "architecture: $(architecture)"
-        Write-Output "nipkgx86suffix: $(nipkgx86suffix)"
-        Write-Output "nipkgx64suffix: $(nipkgx64suffix)"
         `
         Write-Host '##vso[task.setvariable variable=lvCLICall]LabVIEWCLI -PortNumber 3363 -LabVIEWPath "$(lvPath)\LabVIEW.exe" -AdditionalOperationDirectory "%cd%\$(buildTools)\lv\operations"' | Write-Output
         Write-Output 'Configuring to build for LabVIEW $(lvVersion) ${{ parameters.lvVersionToBuild.bitness }}...'
@@ -70,10 +58,7 @@ steps:
           Write-Host '##vso[task.setvariable variable=lvConfigVersion]10.0.0.0' | Write-Output
           Write-Host '##vso[task.setvariable variable=shortLvVersion]23' | Write-Output
         }
-        Write-Output 'Using .NET Assembly ${lvConfigVersion)...' | Write-Output
-        Write-Output "lvCLICall: $(lvCLICall)" | Write-Output
-        Write-Output "lvConfigVersion: $(lvConfigVersion)" | Write-Output
-        Write-Output "shortLvVersion: $(shortLvVersion)" | Write-Output
+        Write-Output 'Using .NET Assembly ${lvConfigVersion)...'
 
   - checkout: self
     displayName: Check out repository to build
