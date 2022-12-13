@@ -17,7 +17,6 @@ steps:
           targetType: 'inline'
           script: |
             Write-Output "Configuring target directory environment..."
-            Write-Output "$(lvVersion), $(architecture), $(customDeviceRepoName), $(lvConfigVersion), $(buildTools), $(lvCLICall)"
             If ('${{ parameters.buildStep.target }}' -eq 'My Computer')
             {
               $dependencyTargetDirectory = "Windows"
