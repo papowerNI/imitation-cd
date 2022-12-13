@@ -27,7 +27,7 @@ steps:
             }
             `
             $branchName = 'main'
-            If ($(Build.SourceBranchName) -ne $branchName )
+            If ('$(Build.SourceBranchName)' -ne $branchName )
             {
               Write-Output "Checking for builds of $(Build.SourceBranchName) branch..."
               If (Test-Path -Path "${{ dependency.source }}\NI\export\$(Build.SourceBranchName)\*\$(lvVersion)\$(architecture)") 
