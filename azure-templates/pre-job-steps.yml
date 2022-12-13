@@ -15,12 +15,12 @@ steps:
       targetType: 'inline'
       script: |
         Write-Output "Defining repository variables..."
-        Write-Host '##vso[task.setvariable variable=buildTools]niveristand-custom-device-build-tools'; Write-Output "$(buildTools)"
-        Write-Host '##vso[task.setvariable variable=archivePath]${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'; Write-Output "$(archiveLocation)"
+        Write-Host '##vso[task.setvariable variable=buildTools]niveristand-custom-device-build-tools'
+        Write-Host '##vso[task.setvariable variable=archivePath]${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'
         $customDeviceRepoName = '$(Build.Repository.Name)' -replace '.+\/', ''
-        Write-Host "##vso[task.setvariable variable=customDeviceRepoName]$customDeviceRepoName"; Write-Output "$(customDeviceRepoName)"
-        Write-Host '##vso[task.setvariable variable=buildOutputPath]$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}'; Write-Output "$(buildOutputPath)"
-        Write-Host '##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg'; Write-Output "$(nipkgPath)"
+        Write-Host "##vso[task.setvariable variable=customDeviceRepoName]$customDeviceRepoName"
+        Write-Host '##vso[task.setvariable variable=buildOutputPath]$(customDeviceRepoName)\${{ parameters.buildOutputLocation }}'
+        Write-Host '##vso[task.setvariable variable=nipkgPath]$(customDeviceRepoName)\nipkg'
         `
         Write-Output 'Configuring release version...'
         Write-Host '##vso[task.setvariable variable=releaseVersion]${{ parameters.releaseInfo.releaseVersion }}'
