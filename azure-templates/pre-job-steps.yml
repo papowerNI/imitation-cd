@@ -14,6 +14,7 @@ steps:
     inputs: 
       targetType: 'inline'
       script: |
+        Write-Output "PREJOB: ${{ parameters.releaseInfo.releaseVersion }} ${{ parameters.releaseInfo.quarterlyReleaseVersion }}"
         Write-Output "Defining repository variables..."
         Write-Host '##vso[task.setvariable variable=buildTools]niveristand-custom-device-build-tools'
         Write-Host '##vso[task.setvariable variable=archivePath]${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\'

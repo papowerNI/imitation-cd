@@ -34,6 +34,10 @@ stages:
       demands:
         - agent.os -equals Windows_NT
     jobs:
+      - job: Test
+        steps: 
+          - powershell: Write-Output "${{ parameters.releaseInfo.releaseVersion }}"
+          - powershell: Write-Output "${{ parameters.releaseInfo.quarterlyReleaseVersion }}"
       - ${{ each lvVersionToBuild in parameters.lvVersionsToBuild }}:
         - job: Job${{ lvVersionToBuild.version }}_${{ lvVersionToBuild.bitness }}
           displayName: Build for LabVIEW ${{ lvVersionToBuild.version }}
