@@ -31,7 +31,7 @@ steps:
               -Destination '$(nipkgPath)\control\control'
             `
             Write-Output "updating nipkg control version parameters..."
-            Get-Content -Path '$(nipkgPath)\control\control' | `
+            (Get-Content -Path '$(nipkgPath)\control\control') `
               -replace '{veristand_version}', '$(lvVersion)' `
               -replace '{labview_version}', '$(lvVersion)' `
               -replace '{nipkg_version}', '$(releaseVersion)' `
