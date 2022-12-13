@@ -25,7 +25,7 @@ resources:
       trigger:  true
 
 stages:
-  - template: azure-templates/stages-template.yml@imitation-cd # TEMPORARY, Point to imitation-cd instead of build-tools
+  - template: azure-templates/stages.yml@imitation-cd # TEMPORARY, Point to imitation-cd instead of build-tools
     parameters:
       lvVersionsToBuild: 
         - version: '2020'
