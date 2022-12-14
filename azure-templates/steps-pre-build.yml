@@ -24,14 +24,15 @@ steps:
         Write-Host '##vso[task.setvariable variable=buildTools]niveristand-custom-device-build-tools'
         If ('$(Build.Reason)' -eq 'PullRequest')
         {
-          Write-Output "Setting variables for Pull Requests, use $(System.PullRequest.SourceBranch) in archive path..."
-          $sourceBranch = "$(System.PullRequest.SourceBranch)"
+          Write-Output "Setting variables for Pull Requests..."
+          $sourceBranch = "$(System.PullRequest.SourceBranch)" -replace 'dev/', ''
         } 
         Else
         {
-          Write-Output "Setting variables for general builds, use $(Build.SourceBranchName) in archive path..."
+          Write-Output "Setting variables for general builds..."
           $sourceBranch = "$(Build.SourceBranchName)"
         }
+        Write-Output "Using $sourceBranch in archive path..."
         Write-Host "##vso[task.setvariable variable=sourceBranch]$sourceBranch"
         Write-Host "##vso[task.setvariable variable=archivePath]${{ parameters.archiveLocation }}\NI\export\$sourceBranch\"
         $customDeviceRepoName = '$(Build.Repository.Name)' -replace '.+\/', ''
