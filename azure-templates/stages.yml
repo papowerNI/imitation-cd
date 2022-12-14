@@ -69,17 +69,18 @@ stages:
           # archivePath defined in pre-job-steps.yml
         - powershell: |
             If ('$(Build.Reason)' -eq 'PullRequest')
+            If ('$(Build.Reason)' -eq 'PullRequest')
             {
-              Write-Output "Setting variables for Pull Requests..."
-              $sourceBranch = $(System.PullRequest.SourceBranch)
+              Write-Output "Setting variables for Pull Requests, use $(System.PullRequest.SourceBranch) in archive path..."
+              $sourceBranch = "$(System.PullRequest.SourceBranch)"
             } 
             Else
             {
-              Write-Output "Setting variables for general builds..."
-              $sourceBranch = $(Build.SourceBranchName)
+              Write-Output "Setting variables for general builds, use $(Build.SourceBranchName) in archive path..."
+              $sourceBranch = "$(Build.SourceBranchName)"
             }
             Write-Output "All previous jobs complete.  Storing .finished file..."
             New-Item `
-              -Path "${{ parameters.archiveLocation }}\NI\export\$sourceBranch\$(Build.BuildNumber)" `
+              -Path "${{ parameters.archiveLocation }}\NI\export\$(Build.SourceBranchName)\$(Build.BuildNumber)" `
               -Name ".finished" `
               -ItemType "File"
