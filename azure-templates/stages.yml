@@ -69,7 +69,6 @@ stages:
           # archivePath defined in pre-job-steps.yml
         - powershell: |
             If ('$(Build.Reason)' -eq 'PullRequest')
-            If ('$(Build.Reason)' -eq 'PullRequest')
             {
               Write-Output "Setting variables for Pull Requests, use $(System.PullRequest.SourceBranch) in archive path..."
               $sourceBranch = "$(System.PullRequest.SourceBranch)"
