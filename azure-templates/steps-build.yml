@@ -29,13 +29,13 @@ steps:
             Write-Output "Setting dependency environment to $dependencyTargetDirectory"
             `
             $branchName = 'main'
-            If ('$(Build.SourceBranchName)' -ne $branchName )
+            If ('$(sourceBranch)' -ne $branchName )
             {
-              Write-Output "Checking for builds of $(Build.SourceBranchName) branch..."
-              If (Test-Path -Path "${{ dependency.source }}\NI\export\$(Build.SourceBranchName)\*\$(lvVersion)\$(architecture)") 
+              Write-Output "Checking for builds of $(sourceBranch) branch..."
+              If (Test-Path -Path "${{ dependency.source }}\NI\export\$(sourceBranch)\*\$(lvVersion)\$(architecture)") 
               {
-                Write-Output "branch was found, using $(Build.SourceBranchName) instead of $branchName..."
-                $branchName = '$(Build.SourceBranchName)'
+                Write-Output "branch was found, using $(sourceBranch) instead of $branchName..."
+                $branchName = '$(sourceBranch)'
               }
               Else
               {
