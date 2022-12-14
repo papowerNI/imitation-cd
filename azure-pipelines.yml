@@ -23,7 +23,7 @@ stages:
     parameters:
       lvVersionsToBuild: 
         - version: '2020'
-          bitness: '32-bit'
+          bitness: '32bit'
         - version: '2021'
           bitness: '64bit'
         - version: '2023'
@@ -46,7 +46,7 @@ stages:
           buildSpec: 'BuildSpec'
 
         - projectLocation: 'Source\TestProject.lvproj'
-          buildOperation: 'ExecuteBuildSpec'
+          buildOperation: 'ExecuteBuildSpecd'
           target: 'Linux x64'
           buildSpec: 'LinuxOnlyBuildSpec'
 
