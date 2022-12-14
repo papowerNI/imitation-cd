@@ -22,7 +22,7 @@ stages:
   - template: azure-templates/stages.yml
     parameters:
       lvVersionsToBuild: 
-        - version: '2020'
+        - version: '2024'
           bitness: '32bit'
         - version: '2021'
           bitness: '64bit'
