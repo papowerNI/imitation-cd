@@ -11,6 +11,9 @@ parameters:
     type: string
 
 steps:
+    # Variables that are set in a powershell script cannot be used within the same script 
+    # because the variables are resolved when the script is first loaded, so generate all 
+    # variables at the beginning.
   - task: PowerShell@2
     displayName: Configure Job-wide Variables for LabVIEW ${{ parameters.lvVersionToBuild.version }} ${{ parameters.lvVersionToBuild.bitness }}
     inputs: 
