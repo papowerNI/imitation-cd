@@ -32,7 +32,7 @@ parameters:
 stages:
   - stage: Build
     pool:
-      name: custom-device-temp # TEMPORARY, eventually use an official build pool of custom device agents
+      name: custom-device-temp # TEMPORARY, eventually use an official build pool of custom device agents!!
       demands:
         - agent.os -equals Windows_NT
     jobs:
