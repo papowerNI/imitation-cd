@@ -25,7 +25,7 @@ steps:
         If ('$(Build.Reason)' -eq 'PullRequest')
         {
           Write-Output "Setting variables for Pull Requests..."
-          $sourceBranch = "PR-$(System.PullRequest.SourceBranch)" -replace 'dev/', ''
+          $sourceBranch = "$(System.PullRequest.SourceBranch)" -replace 'dev/', ''
         } 
         Else
         {
