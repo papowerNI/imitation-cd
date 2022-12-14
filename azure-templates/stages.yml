@@ -71,7 +71,7 @@ stages:
             If ('$(Build.Reason)' -eq 'PullRequest')
             {
               Write-Output "Setting variables for Pull Requests, use $(System.PullRequest.SourceBranch) in archive path..."
-              $sourceBranch = "$(System.PullRequest.SourceBranch)" -replace "-replace 'dev/', ''
+              $sourceBranch = "$(System.PullRequest.SourceBranch)" -replace 'dev/', ''
             } 
             Else
             {
